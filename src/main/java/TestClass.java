@@ -2,8 +2,5 @@ public class TestClass {
 
     public static void main(String[] args) {
         System.out.println("test-us2");
-
-    public static random(){
-
     }
 }
