@@ -12,13 +12,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdeOrm {
     private static final Connection connection = ConnectionUtil.getConnection();
     private Logger logger = Log4j.getLogger();
 
     /**
-     * Get a String column value for a record by a String primary key
+     * Get a String column value of a record by a String primary key
      */
     public String getStringColumn(String tableName, String columnName, String id, String idValue) {
         String sql = "select " + columnName + " from " + tableName + " where " + id + "=?";
@@ -38,7 +39,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get a generic type column value for a record by a primary key of any type
+     * Get a generic type column value of a record by a primary key of any type
      *
      * @param tableName table to be read
      * @param columnName column to be retrieve
@@ -72,7 +73,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get generic type columns' values for a record by a primary key of any type.
+     * Get generic type columns' values of a record by a primary key of any type.
      *
      * @param tableName table to be read
      * @param columnNames a list of column names of the table to retrieve
@@ -107,7 +108,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get generic type columns' values for record(s) by a column value of any type.
+     * Get generic type columns' values of record(s) by a column value of any type.
      * If the primary key is used, only return one record, if other non unique value
      * column is used, return all records with the column value
      *
@@ -146,7 +147,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get generic type columns' values of all records of a table
+     * Get generic type columns' values of all records in a table
      *
      * @param tableName the name of a table
      * @return
@@ -166,6 +167,62 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Get generic type values of record(s) by a list of conditions (key, value) pairs under
+     * "and" or "or" relationship.
+      *
+     * @param tableName table to be read
+     * @param columnNames a list of column names of the table to retrieve
+     * @param conditions a list of Condition objects with a key and a value field
+     * @param criteria "and" or "or" to specific the conditions criteria
+     * @return
+     */
+    public List<List<Object>>getRecordsWithConditions(String tableName, List<String> columnNames,
+                                                      List<Condition> conditions, String criteria) {
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableName + " where ";
+
+        if (criteria.equals("and")) {
+            String s = conditions.stream().map(Condition::getKey).collect(Collectors.joining("=? and "));
+            sql += s + "=?";
+        }
+        if (criteria.equals("or")) {
+            String s = conditions.stream().map(Condition::getKey).collect(Collectors.joining("=? or "));
+            sql += s + "=?";
+        }
+
+        System.out.println(sql);
+
+        List<List<Object>> result = new ArrayList<>();
+        Method method = null;
+
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            Class<?> clazz = PreparedStatement.class;
+            for (int i = 0; i < conditions.size(); i++) {
+                Object value = conditions.get(i).getValue();
+                String valueType = value.getClass().getSimpleName();
+                String setObject = "set" + valueType;
+                method = clazz.getDeclaredMethod(setObject, int.class, value.getClass());
+                Object[] psParams = new Object[]{i+1, value};
+                method.invoke(ps, psParams);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             logger.error(e);
             e.printStackTrace();
         }

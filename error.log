@@ -1,3 +1,40 @@
 [main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: ERROR: operator does not exist: numeric = character varying
   Hint: No operator matches the given name and argument types. You might need to add explicit type casts.
   Position: 75
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.NoSuchMethodException: java.sql.PreparedStatement.setBigDecimal(int, java.lang.String)
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: ERROR: syntax error at or near "-"
+  Position: 75
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: ERROR: column "first_name" does not exist
+  Position: 16
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: No value specified for parameter 1.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: No value specified for parameter 1.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: No value specified for parameter 1.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: No value specified for parameter 1.
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException

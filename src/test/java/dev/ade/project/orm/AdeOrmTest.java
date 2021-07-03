@@ -38,4 +38,23 @@ public class AdeOrmTest {
         List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
         assertEquals(8, adeOrm.getRecords("transfer_transaction", columnNames).size());
     }
+
+    @Test
+    public void testGetRecordsWithAndConditions() {
+        List<String> columnNames = Arrays.asList("trans_type", "ac_number", "amount", "datetime");
+        Condition condition1 = new Condition("trans_type", "withdraw");
+        Condition condition2 = new Condition("amount", BigDecimal.valueOf(500));
+        Condition condition3 = new Condition("userid", "harry");
+        List<Condition> conditions = Arrays.asList(condition1, condition2, condition3);
+        assertEquals(1, adeOrm.getRecordsWithConditions("deposit_withdraw_transaction", columnNames, conditions, "and").size());
+    }
+
+    @Test
+    public void testGetRecordsWithOrConditions() {
+        List<String> columnNames = Arrays.asList("trans_type", "ac_number", "amount", "datetime");
+        Condition condition1 = new Condition("amount", BigDecimal.valueOf(1000));
+        Condition condition2 = new Condition("amount", BigDecimal.valueOf(500));
+        List<Condition> conditions = Arrays.asList(condition1, condition2);
+        assertEquals(10, adeOrm.getRecordsWithConditions("deposit_withdraw_transaction", columnNames, conditions, "or").size());
+    }
 }
