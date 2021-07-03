@@ -32,4 +32,10 @@ public class AdeOrmTest {
         List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
         assertEquals(2, adeOrm.getRecords("transfer_transaction", columnNames, "amount", BigDecimal.valueOf(10)).size());
     }
+
+    @Test
+    public void testGetAllRecords() {
+        List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
+        assertEquals(8, adeOrm.getRecords("transfer_transaction", columnNames).size());
+    }
 }

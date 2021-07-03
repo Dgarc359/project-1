@@ -145,4 +145,30 @@ public class AdeOrm {
         return result;
     }
 
+    /**
+     * Get generic type columns' values of all records of a table
+     *
+     * @param tableName the name of a table
+     * @return
+     */
+    public List<List<Object>>getRecords(String tableName, List<String> columnNames) {
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableName;
+        List<List<Object>> result = new ArrayList<>();
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

@@ -20,5 +20,7 @@ public class App {
         List<String> columnNames2 = Arrays.asList("trans_type", "datetime", "amount");
         List<List<Object>> result3 = adeOrm.getRecords("transfer_transaction", columnNames2, "amount", BigDecimal.valueOf(10));
         System.out.println(result3);
+        List<List<Object>> result4 = adeOrm.getRecords("transfer_transaction", columnNames2);
+        System.out.println(result4);
     }
 }
