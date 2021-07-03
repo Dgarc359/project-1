@@ -20,7 +20,7 @@ public class AdeOrm {
     /**
      * Get a String column value for a record by a String primary key
      */
-    public String getColumn0(String tableName, String columnName, String id, String idValue) {
+    public String getStringColumn(String tableName, String columnName, String id, String idValue) {
         String sql = "select " + columnName + " from " + tableName + " where " + id + "=?";
         String result = null;
         try (Connection conn = ConnectionUtil.getConnection();
@@ -72,7 +72,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get generic type columns value for a record by a primary key of any type.
+     * Get generic type columns' values for a record by a primary key of any type.
      *
      * @param tableName table to be read
      * @param columnNames a list of column names of the table to retrieve
@@ -80,7 +80,7 @@ public class AdeOrm {
      * @param idValue primary key value of a record to be retrieve
      * @return
      */
-    public List<Object>getColumns(String tableName, List<String> columnNames, String id, Object idValue) {
+    public List<Object>getRecord(String tableName, List<String> columnNames, String id, Object idValue) {
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + id + "=?";
         List<Object> result = new ArrayList<>();
@@ -107,7 +107,7 @@ public class AdeOrm {
     }
 
     /**
-     * Get generic type columns value for record(s) by a column value of any type.
+     * Get generic type columns' values for record(s) by a column value of any type.
      * If the primary key is used, only return one record, if other non unique value
      * column is used, return all records with the column value
      *
@@ -117,7 +117,7 @@ public class AdeOrm {
      * @param idValue the column value of record(s) to be retrieve
      * @return
      */
-    public List<List<Object>>getColumns2(String tableName, List<String> columnNames, String id, Object idValue) {
+    public List<List<Object>>getRecords(String tableName, List<String> columnNames, String id, Object idValue) {
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + id + "=?";
         List<List<Object>> result = new ArrayList<>();

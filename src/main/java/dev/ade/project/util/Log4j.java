@@ -13,8 +13,8 @@ public class Log4j {
     private static Logger logger = Logger.getLogger(Log4j.class);
 
     static {
-        File error = new File("..\\..\\..\\log4j.properties");
-        PropertyConfigurator.configure(error.getPath());
+        File error = new File("src\\main\\resources\\log4j.properties");
+        PropertyConfigurator.configure(error.getAbsolutePath());
     }
 
     public static Logger getLogger() {
