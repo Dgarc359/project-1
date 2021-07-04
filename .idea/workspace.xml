@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/exception/ArgumentFormatException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/Condition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/Field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
