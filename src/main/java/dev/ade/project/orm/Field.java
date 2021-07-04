@@ -2,11 +2,11 @@ package dev.ade.project.orm;
 
 import java.util.Objects;
 
-public class Condition {
+public class Field {
     private String key;
     private Object value;
 
-    public Condition(String key, Object value) {
+    public Field(String key, Object value) {
         this.key = key;
         this.value = value;
     }
@@ -30,8 +30,8 @@ public class Condition {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Condition)) return false;
-        Condition that = (Condition) o;
+        if (!(o instanceof Field)) return false;
+        Field that = (Field) o;
         return key.equals(that.key) && value.equals(that.value);
     }
 
@@ -42,7 +42,7 @@ public class Condition {
 
     @Override
     public String toString() {
-        return "Condition{" +
+        return "Field{" +
                 "key='" + key + '\'' +
                 ", value=" + value +
                 '}';

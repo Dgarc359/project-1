@@ -1,6 +1,6 @@
 package dev.ade.project.orm;
 
-import dev.ade.project.util.ConnectionUtil;
+import dev.ade.project.exception.ArgumentFormatException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,10 +22,15 @@ public class AdeOrm {
         conn = connection;
     }
 
+
     /**
      * Get a String column value of a record by a String primary key
      */
-    public String getStringColumn(String tableName, String columnName, String id, String idValue) {
+    /* Deprecated
+    public String getStringColumn(String tableName, String columnName, String id, String idValue) throws ArgumentFormatException {
+        if (tableName == null || columnName == null || id == null || idValue == null) {
+            return null;
+        }
         String sql = "select " + columnName + " from " + tableName + " where " + id + "=?";
         String result = null;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -35,10 +40,11 @@ public class AdeOrm {
                 result = rs.getString(columnName);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
     }
+    */
 
     /**
      * Get a generic type column value of a record by a primary key of any type
@@ -49,7 +55,10 @@ public class AdeOrm {
      * @param idValue primary key value of a record to be retrieve
      * @return
      */
-    public <T> T getColumn(String tableName, String columnName, String id, Object idValue) {
+    public <T> T get(String tableName, String columnName, String id, Object idValue) throws ArgumentFormatException {
+        if (tableName == null || columnName == null || id == null || idValue == null) {
+            return null;
+        }
         String sql = "select " + columnName + " from " + tableName + " where " + id + "=?";
         T result = null;
         String idValueType = idValue.getClass().getSimpleName();
@@ -65,7 +74,7 @@ public class AdeOrm {
                 result = (T)rs.getString(columnName);
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
     }
@@ -79,7 +88,11 @@ public class AdeOrm {
      * @param idValue primary key value of a record to be retrieve
      * @return
      */
-    public List<Object>getRecord(String tableName, List<String> columnNames, String id, Object idValue) {
+    /*
+    public List<Object>getRecord(String tableName, List<String> columnNames, String id, Object idValue) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || id == null || idValue == null) {
+            return null;
+        }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + id + "=?";
         List<Object> result = new ArrayList<>();
@@ -98,10 +111,11 @@ public class AdeOrm {
                 }
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
     }
+    */
 
     /**
      * Get generic type columns' values of record(s) by a column value of any type.
@@ -114,7 +128,10 @@ public class AdeOrm {
      * @param idValue the column value of record(s) to be retrieve
      * @return
      */
-    public List<List<Object>>getRecords(String tableName, List<String> columnNames, String id, Object idValue) {
+    public List<List<Object>>get(String tableName, List<String> columnNames, String id, Object idValue) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || id == null || idValue == null) {
+            return null;
+        }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + id + "=?";
         List<List<Object>> result = new ArrayList<>();
@@ -135,7 +152,7 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
     }
@@ -146,7 +163,10 @@ public class AdeOrm {
      * @param tableName the name of a table
      * @return
      */
-    public List<List<Object>>getRecords(String tableName, List<String> columnNames) {
+    public List<List<Object>>get(String tableName, List<String> columnNames) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null) {
+            return null;
+        }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName;
         List<List<Object>> result = new ArrayList<>();
@@ -160,32 +180,35 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Argument formats are not correct", e);
         }
         return result;
     }
 
     /**
-     * Get generic type values of record(s) by a list of conditions (key, value) pairs under
+     * Get generic type values of record(s) by a list of fields (key, value) pairs under
      * "and" or "or" relationship.
       *
      * @param tableName table to be read
      * @param columnNames a list of column names of the table to retrieve
-     * @param conditions a list of Condition objects with a key and a value field
-     * @param criteria "and" or "or" to specific the conditions criteria
+     * @param fields a list of Field objects with a key and a value of a field
+     * @param criteria "and" or "or" to specific the fields criteria
      * @return
      */
-    public List<List<Object>>getRecordsWithConditions(String tableName, List<String> columnNames,
-                                                      List<Condition> conditions, String criteria) {
+    public List<List<Object>> get(String tableName, List<String> columnNames,
+                                         List<Field> fields, String criteria) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || fields == null || criteria == null) {
+            return null;
+        }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where ";
 
         if (criteria.equals("and")) {
-            String s = conditions.stream().map(Condition::getKey).collect(Collectors.joining("=? and "));
+            String s = fields.stream().map(Field::getKey).collect(Collectors.joining("=? and "));
             sql += s + "=?";
         }
         if (criteria.equals("or")) {
-            String s = conditions.stream().map(Condition::getKey).collect(Collectors.joining("=? or "));
+            String s = fields.stream().map(Field::getKey).collect(Collectors.joining("=? or "));
             sql += s + "=?";
         }
 
@@ -194,8 +217,8 @@ public class AdeOrm {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
-            for (int i = 0; i < conditions.size(); i++) {
-                Object value = conditions.get(i).getValue();
+            for (int i = 0; i < fields.size(); i++) {
+                Object value = fields.get(i).getValue();
                 String valueType = value.getClass().getSimpleName();
                 String setObject = "set" + valueType;
                 method = clazz.getDeclaredMethod(setObject, int.class, value.getClass());
@@ -212,7 +235,7 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ArgumentFormatException("Argument formats are not correct", e);
         }
         return result;
     }
