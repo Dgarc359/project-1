@@ -1,8 +1,6 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.util.ConnectionUtil;
-import dev.ade.project.util.Log4j;
-import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,8 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdeOrm {
-    private static final Connection connection = ConnectionUtil.getConnection();
-    private Logger logger = Log4j.getLogger();
+    private Connection conn;
+
+    public AdeOrm() {
+    }
+
+    public AdeOrm(Connection connection) {
+        conn = connection;
+    }
 
     /**
      * Get a String column value of a record by a String primary key
@@ -24,15 +28,13 @@ public class AdeOrm {
     public String getStringColumn(String tableName, String columnName, String id, String idValue) {
         String sql = "select " + columnName + " from " + tableName + " where " + id + "=?";
         String result = null;
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, idValue);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 result = rs.getString(columnName);
             }
         } catch (SQLException e) {
-            logger.error(e);
             e.printStackTrace();
         }
         return result;
@@ -53,8 +55,7 @@ public class AdeOrm {
         String idValueType = idValue.getClass().getSimpleName();
         String setObject = "set" + idValueType;
         Method method;
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
             method = clazz.getDeclaredMethod(setObject, int.class, idValue.getClass());
             Object[] psParams = new Object[]{1, idValue};
@@ -63,10 +64,7 @@ public class AdeOrm {
             if (rs.next()) {
                 result = (T)rs.getString(columnName);
             }
-        } catch (SQLException e) {
-            logger.error(e);
-            e.printStackTrace();
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return result;
@@ -88,8 +86,7 @@ public class AdeOrm {
         String idValueType = idValue.getClass().getSimpleName();
         String setObject = "set" + idValueType;
         Method method;
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
             method = clazz.getDeclaredMethod(setObject, int.class, idValue.getClass());
             Object[] psParams = new Object[]{1, idValue};
@@ -101,7 +98,6 @@ public class AdeOrm {
                 }
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            logger.error(e);
             e.printStackTrace();
         }
         return result;
@@ -125,8 +121,7 @@ public class AdeOrm {
         String idValueType = idValue.getClass().getSimpleName();
         String setObject = "set" + idValueType;
         Method method;
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
             method = clazz.getDeclaredMethod(setObject, int.class, idValue.getClass());
             Object[] psParams = new Object[]{1, idValue};
@@ -140,7 +135,6 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            logger.error(e);
             e.printStackTrace();
         }
         return result;
@@ -156,8 +150,7 @@ public class AdeOrm {
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName;
         List<List<Object>> result = new ArrayList<>();
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 List<Object> record = new ArrayList<>();
@@ -167,7 +160,6 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException e) {
-            logger.error(e);
             e.printStackTrace();
         }
         return result;
@@ -197,13 +189,10 @@ public class AdeOrm {
             sql += s + "=?";
         }
 
-        System.out.println(sql);
-
         List<List<Object>> result = new ArrayList<>();
         Method method = null;
 
-        try (Connection conn = ConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
             for (int i = 0; i < conditions.size(); i++) {
                 Object value = conditions.get(i).getValue();
@@ -223,7 +212,6 @@ public class AdeOrm {
                 result.add(record);
             }
         } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            logger.error(e);
             e.printStackTrace();
         }
         return result;

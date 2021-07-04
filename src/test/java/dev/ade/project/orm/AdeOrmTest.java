@@ -1,5 +1,6 @@
 package dev.ade.project.orm;
 
+import dev.ade.project.util.ConnectionUtil;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class AdeOrmTest {
-    private AdeOrm adeOrm = new AdeOrm();
+    private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
     @Test
     public void testGetStringColumn() {

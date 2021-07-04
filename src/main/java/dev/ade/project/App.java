@@ -2,15 +2,17 @@ package dev.ade.project;
 
 import dev.ade.project.orm.AdeOrm;
 import dev.ade.project.orm.Condition;
+import dev.ade.project.util.ConnectionUtil;
 
 import java.math.BigDecimal;
 import java.util.*;
 
+// This class only serves for checking results during development, will be commented out or deleted at deployment.
 public class App {
 
     public static void main (String[] args) {
         // For checking results
-        AdeOrm adeOrm = new AdeOrm();
+        AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
         String result0 = adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry");
         System.out.println(result0);
 
