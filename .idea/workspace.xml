@@ -5,17 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/setup.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/Mapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/teardown.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestClass.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/Field.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/util/ConnectionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/util/ConnectionUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +62,7 @@
       <recent name="dev.ade.project1.orm.util" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.H2Test">
+  <component name="RunManager" selected="JUnit.AdeOrmTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dev.ade.project.App" />
       <module name="team-1-orm" />
@@ -165,11 +161,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.H2Test.testGetOneColumn" />
-        <item itemvalue="Application.App" />
-        <item itemvalue="JUnit.AdeOrmTest.testGetRecords" />
         <item itemvalue="JUnit.AdeOrmTest" />
+        <item itemvalue="Application.App" />
         <item itemvalue="JUnit.AdeOrmTest.testGetOneColumn" />
+        <item itemvalue="JUnit.H2Test.testGetOneColumn" />
+        <item itemvalue="JUnit.AdeOrmTest.testGetRecords" />
       </list>
     </recent_temporary>
   </component>

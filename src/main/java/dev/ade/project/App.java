@@ -16,7 +16,6 @@ public class App {
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
-            System.out.println(adeOrm.getUser());
             /*
             String result0 = adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry");
             System.out.println(result0);

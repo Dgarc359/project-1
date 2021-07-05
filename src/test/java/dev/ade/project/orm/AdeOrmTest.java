@@ -2,13 +2,13 @@ package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());

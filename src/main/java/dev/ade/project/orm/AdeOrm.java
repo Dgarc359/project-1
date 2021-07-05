@@ -241,17 +241,4 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
-    public int getUser() throws ArgumentFormatException {
-        String sql = "select * from user";
-        int n = 0;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                n++;
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return n;
-    }
 }
