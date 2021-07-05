@@ -16,22 +16,22 @@ public class App {
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
+            System.out.println(adeOrm.getUser());
             /*
             String result0 = adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry");
             System.out.println(result0);
              */
 
-            String result1 = adeOrm.get("transfer_transaction", "datetime", "amount", BigDecimal.valueOf(100));
+            String result1 = adeOrm.get("bank_user", "last_login", "userid", "harry");
             System.out.println(result1);
 
-            /*
             List<String> columnNames = Arrays.asList("userid", "first_name", "last_name", "pin", "status", "last_login");
-            List<Object> result2 = adeOrm.getRecord("bank_user", columnNames, "userid", "harry");
+            List<Object> result2 = adeOrm.get("bank_user", columnNames, "userid", (Object) "harry");
             System.out.println(result2);
-             */
+
 
             List<String> columnNames2 = Arrays.asList("trans_type", "userid", "datetime", "amount");
-            List<List<Object>> result3 = adeOrm.get("transfer_transaction", columnNames2, "amount", BigDecimal.valueOf(10));
+            List<List<Object>> result3 = adeOrm.get("transfer_transaction", columnNames2, BigDecimal.valueOf(10), "amount");
             System.out.println(result3);
 
             List<List<Object>> result4 = adeOrm.get("transfer_transaction", columnNames2);

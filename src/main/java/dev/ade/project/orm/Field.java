@@ -3,20 +3,20 @@ package dev.ade.project.orm;
 import java.util.Objects;
 
 public class Field {
-    private String key;
+    private String name;
     private Object value;
 
-    public Field(String key, Object value) {
-        this.key = key;
+    public Field(String name, Object value) {
+        this.name = name;
         this.value = value;
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Object getValue() {
@@ -32,18 +32,18 @@ public class Field {
         if (this == o) return true;
         if (!(o instanceof Field)) return false;
         Field that = (Field) o;
-        return key.equals(that.key) && value.equals(that.value);
+        return name.equals(that.name) && value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, value);
+        return Objects.hash(name, value);
     }
 
     @Override
     public String toString() {
         return "Field{" +
-                "key='" + key + '\'' +
+                "name='" + name + '\'' +
                 ", value=" + value +
                 '}';
     }

@@ -13,30 +13,16 @@ import static org.junit.Assert.assertEquals;
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
-    /*
-    @Test
-    public void testGetStringColumn() throws ArgumentFormatException {
-        assertEquals("Harry", adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry"));
-    }
-    */
-
     @Test
     public void testGetOneColumn() throws ArgumentFormatException {
         assertEquals("transfer", adeOrm.get("transfer_transaction", "trans_type", "amount", BigDecimal.valueOf(100)));
     }
 
-    /*
-    @Test
-    public void testGetRecord() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("userid", "first_name", "last_name", "pin", "status", "last_login");
-        assertEquals("harry", adeOrm.getRecord("bank_user", columnNames, "userid", "harry").get(0));
-    }
-    */
 
     @Test
     public void testGetRecords() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
-        assertEquals(2, adeOrm.get("transfer_transaction", columnNames, "amount", BigDecimal.valueOf(10)).size());
+        assertEquals(2, adeOrm.get("transfer_transaction", columnNames, BigDecimal.valueOf(10), "amount").size());
     }
 
     @Test
@@ -64,3 +50,4 @@ public class AdeOrmTest {
         assertEquals(10, adeOrm.get("deposit_withdraw_transaction", columnNames, conditions, "or").size());
     }
 }
+

@@ -23,7 +23,7 @@ public class ConnectionUtil {
             if (connection == null || connection.isClosed()) {
                 if (IS_TEST) {
                     // connect to local host postgresql database for testing
-                    connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST");
+                    connection = DriverManager.getConnection("jdbc:h2:~//test");
                 } else {
                     String url = "jdbc:postgresql://project0.cbkzfukaxelt.us-east-2.rds.amazonaws.com:5432/postgres";
                     final String USERNAME = "postgres";
