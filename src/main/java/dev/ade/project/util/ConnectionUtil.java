@@ -25,9 +25,9 @@ public class ConnectionUtil {
                     // connect to local host postgresql database for testing
                     connection = DriverManager.getConnection("jdbc:h2:~/test");
                 } else {
-                    String url = "jdbc:postgresql://project0.cbkzfukaxelt.us-east-2.rds.amazonaws.com:5432/postgres";
-                    final String USERNAME = "postgres";
-                    final String PASSWORD = "revature";
+                    String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+                    final String PASSWORD = System.getenv("PASSWORD");
+                    final String USERNAME = System.getenv("USERNAME");
                     //final String USERNAME = System.getenv("DB_USERNAME");
                     //final String PASSWORD = System.getenv("DB_PASSWORD");
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
