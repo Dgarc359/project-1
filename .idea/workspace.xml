@@ -5,13 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/setup.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/util/MapperUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teardown.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/orm/AdeOrm.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/util/ConnectionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/util/ConnectionUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/orm/AdeOrmTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +90,41 @@
       <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <envs>
+        <env name="TEST" value="true" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdeOrmTest.getTestInt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="team-1-orm" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dev.ade.project.orm.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
+      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
+      <option name="METHOD_NAME" value="getTestInt" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdeOrmTest.getTestNull" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="team-1-orm" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dev.ade.project.orm.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
+      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
+      <option name="METHOD_NAME" value="getTestNull" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -103,22 +140,6 @@
       <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
       <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
       <option name="METHOD_NAME" value="testGetOneColumn" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AdeOrmTest.testGetRecords" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="team-1-orm" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="dev.ade.project.orm.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
-      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
-      <option name="METHOD_NAME" value="testGetRecords" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -143,29 +164,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="H2Test.testGetOneColumn" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="team-1-orm" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="dev.ade.project.orm.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
-      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.H2Test" />
-      <option name="METHOD_NAME" value="testGetOneColumn" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.AdeOrmTest" />
+        <item itemvalue="JUnit.AdeOrmTest.getTestNull" />
         <item itemvalue="Application.App" />
+        <item itemvalue="JUnit.AdeOrmTest.getTestInt" />
         <item itemvalue="JUnit.AdeOrmTest.testGetOneColumn" />
-        <item itemvalue="JUnit.H2Test.testGetOneColumn" />
-        <item itemvalue="JUnit.AdeOrmTest.testGetRecords" />
       </list>
     </recent_temporary>
   </component>

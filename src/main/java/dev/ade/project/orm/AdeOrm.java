@@ -1,6 +1,7 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
+import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,30 +23,6 @@ public class AdeOrm implements Mapper {
         conn = connection;
     }
 
-
-    /**
-     * Get a String column value of a record by a String primary key
-     */
-    /* Deprecated
-    public String getStringColumn(String tableName, String columnName, String pkName, String pkValue) throws ArgumentFormatException {
-        if (tableName == null || columnName == null || field == null || fieldValue == null) {
-            return null;
-        }
-        String sql = "select " + columnName + " from " + tableName + " where " + field + "=?";
-        String result = null;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, fieldValue);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = rs.getString(columnName);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
-    */
-
     /**
      * Get a generic type column value of a record by a primary key of any type
      *
@@ -61,19 +38,14 @@ public class AdeOrm implements Mapper {
         }
         String sql = "select " + columnName + " from " + tableName + " where " + pkName + "=?";
         T result = null;
-        String fieldValueType = pkValue.getClass().getSimpleName();
-        String setObject = "set" + fieldValueType;
-        Method method;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Class<?> clazz = PreparedStatement.class;
-            method = clazz.getDeclaredMethod(setObject, int.class, pkValue.getClass());
-            Object[] psParams = new Object[]{1, pkValue};
-            method.invoke(ps, psParams);
+            MapperUtil.setPs(ps, pkValue);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 result = (T)rs.getString(columnName);
             }
-        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
@@ -96,21 +68,15 @@ public class AdeOrm implements Mapper {
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + pkName + "=?";
         List<Object> result = new ArrayList<>();
-        String fieldValueType = pkValue.getClass().getSimpleName();
-        String setObject = "set" + fieldValueType;
-        Method method;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            Class<?> clazz = PreparedStatement.class;
-            method = clazz.getDeclaredMethod(setObject, int.class, pkValue.getClass());
-            Object[] psParams = new Object[]{1, pkValue};
-            method.invoke(ps, psParams);
+            MapperUtil.setPs(ps, pkValue);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 for (int i = 0; i < columnNames.size(); i++) {
                     result.add(rs.getString(columnNames.get(i)));
                 }
             }
-        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
@@ -136,14 +102,8 @@ public class AdeOrm implements Mapper {
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where " + fieldName + "=?";
         List<List<Object>> result = new ArrayList<>();
-        String fieldValueType = fieldValue.getClass().getSimpleName();
-        String setObject = "set" + fieldValueType;
-        Method method;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            Class<?> clazz = PreparedStatement.class;
-            method = clazz.getDeclaredMethod(setObject, int.class, fieldValue.getClass());
-            Object[] psParams = new Object[]{1, fieldValue};
-            method.invoke(ps, psParams);
+            MapperUtil.setPs(ps, fieldValue);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 List<Object> record = new ArrayList<>();
@@ -152,7 +112,7 @@ public class AdeOrm implements Mapper {
                 }
                 result.add(record);
             }
-        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
@@ -213,20 +173,12 @@ public class AdeOrm implements Mapper {
             sql += s + "=?";
         }
 
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
         List<List<Object>> result = new ArrayList<>();
         Method method = null;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            Class<?> clazz = PreparedStatement.class;
-            for (int i = 0; i < fields.size(); i++) {
-                Object value = fields.get(i).getValue();
-                String valueType = value.getClass().getSimpleName();
-                String setObject = "set" + valueType;
-                method = clazz.getDeclaredMethod(setObject, int.class, value.getClass());
-                Object[] psParams = new Object[]{i+1, value};
-                method.invoke(ps, psParams);
-            }
-
+            MapperUtil.setPs(ps, fieldValues);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 List<Object> record = new ArrayList<>();
@@ -235,7 +187,7 @@ public class AdeOrm implements Mapper {
                 }
                 result.add(record);
             }
-        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        } catch (SQLException e) {
             throw new ArgumentFormatException("Argument formats are not correct", e);
         }
         return result;

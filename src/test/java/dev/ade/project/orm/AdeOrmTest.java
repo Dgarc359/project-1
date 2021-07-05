@@ -2,52 +2,78 @@ package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
-import org.junit.jupiter.api.Test;
+import org.h2.tools.RunScript;
+import org.junit.jupiter.api.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
+    @BeforeAll
+    public static void runSetup() throws SQLException, FileNotFoundException {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            RunScript.execute(connection, new FileReader("setup.sql"));
+        }
+    }
+
     @Test
-    public void testGetOneColumn() throws ArgumentFormatException {
-        assertEquals("transfer", adeOrm.get("transfer_transaction", "trans_type", "amount", BigDecimal.valueOf(100)));
+    public void getTestInt() throws ArgumentFormatException {
+        assertEquals("first", adeOrm.get("tableA", "stringCol", "id", 1));
     }
 
 
     @Test
-    public void testGetRecords() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
-        assertEquals(2, adeOrm.get("transfer_transaction", columnNames, BigDecimal.valueOf(10), "amount").size());
+    public void getTestNull() throws ArgumentFormatException {
+        assertNull(adeOrm.get("tableA", "stringCol", "id", null));
     }
 
     @Test
-    public void testGetAllRecords() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("trans_type", "datetime", "amount");
-        assertEquals(8, adeOrm.get("transfer_transaction", columnNames).size());
+    public void getTestObject() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
+        assertEquals(2, adeOrm.get("tableA", columnNames, BigDecimal.valueOf(10), "numericCol").size());
     }
 
     @Test
-    public void testGetRecordsWithAndFields() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("trans_type", "ac_number", "amount", "datetime");
-        Field condition1 = new Field("trans_type", "withdraw");
-        Field condition2 = new Field("amount", BigDecimal.valueOf(500));
-        Field condition3 = new Field("userid", "harry");
-        List<Field> conditions = Arrays.asList(condition1, condition2, condition3);
-        assertEquals(1, adeOrm.get("deposit_withdraw_transaction", columnNames, conditions, "and").size());
+    public void getTestGetAllRecords() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("id", "stringCol", "booleanCol", "numericCol", "dateCol");
+        assertEquals(3, adeOrm.get("tableA", columnNames).size());
+    }
+
+    @Test
+    public void getTestAndConditions() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
+        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
+        Field condition2 = new Field("booleanCol", 1);
+        List<Field> conditions = Arrays.asList(condition1, condition2);
+        assertEquals(1, adeOrm.get("tableA", columnNames, conditions, "and").size());
     }
 
     @Test
     public void testGetRecordsWithOrFields() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("trans_type", "ac_number", "amount", "datetime");
-        Field condition1 = new Field("amount", BigDecimal.valueOf(1000));
-        Field condition2 = new Field("amount", BigDecimal.valueOf(500));
+        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
+        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
+        Field condition2 = new Field("booleanCol", 1);
         List<Field> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(10, adeOrm.get("deposit_withdraw_transaction", columnNames, conditions, "or").size());
+        assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
     }
+
+    @AfterAll
+    public static void runTeardown() throws SQLException, FileNotFoundException {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            RunScript.execute(connection, new FileReader("teardown.sql"));
+        }
+
+    }
+
 }
 

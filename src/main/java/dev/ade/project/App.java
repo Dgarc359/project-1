@@ -21,11 +21,11 @@ public class App {
             System.out.println(result0);
              */
 
-            String result1 = adeOrm.get("bank_user", "last_login", "userid", "harry");
+            String result1 = adeOrm.get("bank_user", "userid", "intcol", 10);
             System.out.println(result1);
 
             List<String> columnNames = Arrays.asList("userid", "first_name", "last_name", "pin", "status", "last_login");
-            List<Object> result2 = adeOrm.get("bank_user", columnNames, "userid", (Object) "harry");
+            List<Object> result2 = adeOrm.get("bank_user", columnNames, "userid", (Object)"harry");
             System.out.println(result2);
 
 
