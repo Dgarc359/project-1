@@ -22,11 +22,14 @@ create table user_post (
 	post_id integer references post
 );
 
--- DMLinsert into users values (default, 'alpha','password123');
+-- DML
+insert into users values (default, 'alpha','password123');
 
 insert into users values (default, 'beta','password123');
-insert into users values (default, 'charlie','password123');insert into post values (default,'Shrimp Linguini Alfredo','United States','New Orleans',0);
-insert into post values (default, 'Cuban Sandwich', 'United States','Miami',5);
-insert into post values (default, 'Vanilla Ice Cream', 'United States', 'Chicago',3);insert into user_post values (default, 1, 1);
+insert into users values (default, 'charlie','password123');
+insert into post values (default,'Shrimp Linguini Alfredo','United States','New Orleans',null, 0);
+insert into post values (default, 'Cuban Sandwich', 'United States','Miami',null, 5);
+insert into post values (default, 'Vanilla Ice Cream', 'United States', 'Chicago',null, 3);
+insert into user_post values (default, 1, 1);
 insert into user_post values (default, 2, 2);
 insert into user_post values (default, 3, 3);
