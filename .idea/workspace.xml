@@ -60,11 +60,10 @@
       <recent name="dev.ade.project1.orm.util" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.App">
+  <component name="RunManager" selected="JUnit.ConnectionUtilTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
-        <env name="PASSWORD" value="Password321" />
-        <env name="USERNAME" value="postgres" />
+        <env name="TEST" value="true" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="dev.ade.project.App" />
       <module name="team-1-orm" />
@@ -97,22 +96,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AdeOrmTest.getTestInt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="team-1-orm" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="dev.ade.project.orm.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
-      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
-      <option name="METHOD_NAME" value="getTestInt" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="AdeOrmTest.getTestNull" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="team-1-orm" />
       <extension name="coverage">
@@ -139,7 +122,27 @@
       </extension>
       <option name="PACKAGE_NAME" value="dev.ade.project.util" />
       <option name="MAIN_CLASS_NAME" value="dev.ade.project.util.ConnectionUtilTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <envs>
+        <env name="TEST" value="true" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConnectionUtilTest.testConnection" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="team-1-orm" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dev.ade.project.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="dev.ade.project.util" />
+      <option name="MAIN_CLASS_NAME" value="dev.ade.project.util.ConnectionUtilTest" />
+      <option name="METHOD_NAME" value="testConnection" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -165,11 +168,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.App" />
         <item itemvalue="JUnit.ConnectionUtilTest" />
+        <item itemvalue="JUnit.ConnectionUtilTest.testConnection" />
+        <item itemvalue="Application.App" />
         <item itemvalue="JUnit.AdeOrmTest" />
         <item itemvalue="JUnit.AdeOrmTest.getTestNull" />
-        <item itemvalue="JUnit.AdeOrmTest.getTestInt" />
       </list>
     </recent_temporary>
   </component>

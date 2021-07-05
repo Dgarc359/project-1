@@ -4,7 +4,9 @@ create table users(
 	user_id serial primary key,
 	username varchar(30) unique,
 	user_password varchar(30)
-);create table post(
+);
+
+create table post(
 	post_id serial primary key,
 	title varchar(30),
 	country varchar(30),
@@ -12,7 +14,9 @@ create table users(
 	tag varchar(30),
 	rating numeric constraint rating_less_than_five check (rating <= 5),
 	constraint rating_greater_than_zero check (rating >= 0)
-);create table user_post (
+);
+
+create table user_post (
 	surrogate_id serial primary key,
 	users_id integer references users,
 	post_id integer references post
