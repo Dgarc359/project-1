@@ -38,3 +38,7 @@
 [main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
 [main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
 [main] ERROR dev.ade.project.util.Log4j  - java.lang.reflect.InvocationTargetException
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: The server requested password-based authentication, but no password was provided.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: The server requested password-based authentication, but no password was provided.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: The server requested password-based authentication, but no password was provided.
+[main] ERROR dev.ade.project.util.Log4j  - org.postgresql.util.PSQLException: The server requested password-based authentication, but no password was provided.

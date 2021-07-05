@@ -21,7 +21,7 @@ public class App {
             System.out.println(result0);
              */
 
-            String result1 = adeOrm.get("bank_user", "userid", "intcol", 10);
+            /*String result1 = adeOrm.get("bank_user", "userid", "intcol", 10);
             System.out.println(result1);
 
             List<String> columnNames = Arrays.asList("userid", "first_name", "last_name", "pin", "status", "last_login");
@@ -48,7 +48,11 @@ public class App {
             Field field5 = new Field("amount", BigDecimal.valueOf(500));
             List<Field> fields2 = Arrays.asList(field4, field5);
             List<List<Object>> result6 = adeOrm.get("deposit_withdraw_transaction", columnNames3, fields2, "or");
-            result6.forEach(System.out::println);
+            result6.forEach(System.out::println);*/
+
+            String result0 = adeOrm.get("users","username","user_id",1);
+            System.out.println(result0);
+
         } catch (ArgumentFormatException e) {
             e.printStackTrace();
         }

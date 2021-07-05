@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="" />
+    <list default="true" id="c97ffac0-20f6-4375-a9a2-2a61e71b4f98" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.sql" beforeDir="false" afterPath="$PROJECT_DIR$/setup.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/ade/project/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/ade/project/util/ConnectionUtilTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teardown.sql" beforeDir="false" afterPath="$PROJECT_DIR$/teardown.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,9 +37,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/test/java/dev/ade/project/util" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.24329692" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -54,7 +60,7 @@
       <recent name="dev.ade.project1.orm.util" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AdeOrmTest">
+  <component name="RunManager" selected="Application.App">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="PASSWORD" value="Password321" />
@@ -123,18 +129,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AdeOrmTest.testGetOneColumn" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ConnectionUtilTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="team-1-orm" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="dev.ade.project.orm.*" />
+          <option name="PATTERN" value="dev.ade.project.util.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="dev.ade.project.orm" />
-      <option name="MAIN_CLASS_NAME" value="dev.ade.project.orm.AdeOrmTest" />
-      <option name="METHOD_NAME" value="testGetOneColumn" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="dev.ade.project.util" />
+      <option name="MAIN_CLASS_NAME" value="dev.ade.project.util.ConnectionUtilTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -160,11 +165,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.App" />
+        <item itemvalue="JUnit.ConnectionUtilTest" />
         <item itemvalue="JUnit.AdeOrmTest" />
         <item itemvalue="JUnit.AdeOrmTest.getTestNull" />
-        <item itemvalue="Application.App" />
         <item itemvalue="JUnit.AdeOrmTest.getTestInt" />
-        <item itemvalue="JUnit.AdeOrmTest.testGetOneColumn" />
       </list>
     </recent_temporary>
   </component>
