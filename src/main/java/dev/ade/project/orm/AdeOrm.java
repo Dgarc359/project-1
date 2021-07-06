@@ -193,4 +193,20 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
+    public boolean addUser(String tableName, String username, String password) throws ArgumentFormatException{
+        if (tableName == null || username == null || password == null){ return false; }
+
+        String sql = "insert into " + tableName + " values (default, ?,?);";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, username, password);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
+
 }
