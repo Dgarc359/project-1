@@ -193,4 +193,36 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
+    /**
+     * Update a generic type column value of a record by a primary key of any type
+     *
+     * @param tableName table to be updated
+     * @param columnName name of column being updated
+     * @param id column name of the primary key
+     * @param idValue primary key value of a record to be updated
+     * @param newColumnValue updating columnName w/ this value
+     * @return
+     */
+    public boolean update(String tableName, String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
+        if (tableName == null || columnName == null || id == null || idValue == null) {
+            return false;
+        }
+        String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
+
+//        String idValueType = idValue.getClass().getSimpleName();
+//        String setObject = "set" + idValueType;
+//        Method method;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+//            Class<?> clazz = PreparedStatement.class;
+//            method = clazz.getDeclaredMethod(setObject, int.class, idValue.getClass());
+//            ps.setString(1, columnName);
+//            Object[] psParam1 = new Object[]{2, idValue}; // can we just do ps.setObject(2, idValue); here??
+//            method.invoke(ps, psParam1);
+            MapperUtil.setPs(ps, newColumnValue, idValue);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return true;
+    }
 }
