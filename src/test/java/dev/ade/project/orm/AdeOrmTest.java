@@ -78,6 +78,22 @@ public class AdeOrmTest {
         assertTrue(adeOrm.add("users",fields,"default"));
     }
 
+    @Test
+    public void addSinglePostTest() throws ArgumentFormatException{
+
+        Field field1 = new Field("user_id",1);
+        Field field2 = new Field("title", "Shrimp Linguini Alfredo");
+        Field field3 = new Field("country","United States");
+        Field field4 = new Field("city", "New Orleans");
+        Field field5 = new Field("tag","food");
+        Field field6 = new Field("rating",3);
+
+        List<Field> fields = Arrays.asList(field1,field2,field3,field4,field5,field6);
+
+
+        assertTrue(adeOrm.add("post",fields,"default"));
+    }
+
     /*@Test
     public void addUserPasswordList() throws ArgumentFormatException{
         List<String> usernamePassword1 = Arrays.asList("echo","password123");
@@ -93,10 +109,7 @@ public class AdeOrmTest {
         assertTrue(adeOrm.add("users", usernamePasswordList));
     }*/
 
-    /*@Test
-    public void addSinglePostTest() throws ArgumentFormatException{
-        assertTrue(adeOrm.add(pj.getTableName(),pj.getUser_id(),pj.getTitle(),pj.getCountry(),pj.getCity(),pj.getTableName(),pj.getRating()));
-    }*/
+
 
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {

@@ -207,6 +207,8 @@ public class AdeOrm implements Mapper {
      * @return
      * @throws ArgumentFormatException
      */
+
+
     @Override
     public boolean add(String tableName, List<Field> fields, String idCriteria) throws ArgumentFormatException{
         if (tableName == null || fields == null || idCriteria == null){
@@ -248,26 +250,5 @@ public class AdeOrm implements Mapper {
 
         return false;
     }*/
-
-    // add post
-
-    public boolean add(String tableName, Integer userId, String title, String country, String city, String tag, Integer rating) throws ArgumentFormatException {
-        if (tableName == null || userId == null || title == null || country == null || city == null || tag == null || rating == null){
-            return false;
-        }
-
-        String sql = "insert into " + tableName + " values (default, ?, ?, ?, ?, ?, ?);";
-
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-            MapperUtil.setPs(ps, userId, title, country, city, tag, rating);
-
-            ps.executeUpdate();
-
-        } catch (SQLException throwables) {
-            throw new ArgumentFormatException("Arguments format are not correct", throwables);
-        }
-
-        return true;
-    }
 
 }
