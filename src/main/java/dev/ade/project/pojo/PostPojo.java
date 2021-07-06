@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class PostPojo {
 
+    private String tableName = "post";
     private int post_id;
     private int user_id;
     private String title;
@@ -12,9 +13,19 @@ public class PostPojo {
     private String tag;
     private int rating;
 
-    PostPojo(){}
+    public PostPojo(){}
+    public PostPojo(int user_id, String title, String country, String city, String tag, int rating){
+        super();
+        this.user_id = user_id;
+        this.title = title;
+        this.country = country;
+        this.city = city;
+        this.tag = tag;
+        this.rating = rating;
 
-    PostPojo(int post_id, int user_id, String title, String country, String city, String tag, int rating){
+    }
+
+    public PostPojo(int post_id, int user_id, String title, String country, String city, String tag, int rating){
         super();
         this.post_id = post_id;
         this.user_id = user_id;
@@ -24,6 +35,14 @@ public class PostPojo {
         this.tag = tag;
         this.rating = rating;
 
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public int getPost_id() {
@@ -87,18 +106,19 @@ public class PostPojo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostPojo postPojo = (PostPojo) o;
-        return post_id == postPojo.post_id && user_id == postPojo.user_id && rating == postPojo.rating && Objects.equals(title, postPojo.title) && Objects.equals(country, postPojo.country) && Objects.equals(city, postPojo.city) && Objects.equals(tag, postPojo.tag);
+        return post_id == postPojo.post_id && user_id == postPojo.user_id && rating == postPojo.rating && Objects.equals(tableName, postPojo.tableName) && Objects.equals(title, postPojo.title) && Objects.equals(country, postPojo.country) && Objects.equals(city, postPojo.city) && Objects.equals(tag, postPojo.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(post_id, user_id, title, country, city, tag, rating);
+        return Objects.hash(tableName, post_id, user_id, title, country, city, tag, rating);
     }
 
     @Override
     public String toString() {
         return "PostPojo{" +
-                "post_id=" + post_id +
+                "tableName='" + tableName + '\'' +
+                ", post_id=" + post_id +
                 ", user_id=" + user_id +
                 ", title='" + title + '\'' +
                 ", country='" + country + '\'' +
