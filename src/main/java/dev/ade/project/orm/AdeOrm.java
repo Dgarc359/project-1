@@ -193,6 +193,8 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
+    // add a user to user table
+
     public boolean add(String tableName, String username, String password) throws ArgumentFormatException{
         if (tableName == null || username == null || password == null){ return false; }
 
@@ -209,16 +211,35 @@ public class AdeOrm implements Mapper {
         return true;
     }
 
-    public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
+    // Add multiple users
 
+    public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
+        if (tableName == null || fields == null){ return false; }
+        String sql = "insert into " + tableName + " values ";
+        /*String s = */
 
         return false;
     }
 
-    public boolean add(String tableName, int userId, String title, String country, String city, String tag, int rating){
+    // add post
 
+    public boolean add(String tableName, Integer userId, String title, String country, String city, String tag, Integer rating) throws ArgumentFormatException {
+        if (tableName == null || userId == null || title == null || country == null || city == null || tag == null || rating == null){
+            return false;
+        }
 
-        return false;
+        String sql = "insert into " + tableName + " values (default, ?, ?, ?, ?, ?, ?);";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, userId, title, country, city, tag, rating);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+
+        return true;
     }
 
 }

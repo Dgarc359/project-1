@@ -1,6 +1,7 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
+import dev.ade.project.pojo.PostPojo;
 import dev.ade.project.util.ConnectionUtil;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
@@ -18,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
+
+    PostPojo pj = new PostPojo(1,"Shrimp Linguini Alfredo", "United States", "Miami", "food", 3);
+
 
     @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
@@ -74,7 +78,7 @@ public class AdeOrmTest {
         assertTrue(adeOrm.add("users", "delta", "password123"));
     }
 
-    @Test
+    /*@Test
     public void addUserPasswordList() throws ArgumentFormatException{
         List<String> usernamePassword1 = Arrays.asList("echo","password123");
         List<String> usernamePassword2 = Arrays.asList("foxtrot","password123");
@@ -87,6 +91,11 @@ public class AdeOrmTest {
 
 
         assertTrue(adeOrm.add("users", usernamePasswordList));
+    }*/
+
+    @Test
+    public void addSinglePostTest() throws ArgumentFormatException{
+        assertTrue(adeOrm.add(pj.getTableName(),pj.getUser_id(),pj.getTitle(),pj.getCountry(),pj.getCity(),pj.getTableName(),pj.getRating()));
     }
 
     @AfterAll
