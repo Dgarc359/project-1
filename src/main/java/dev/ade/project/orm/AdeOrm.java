@@ -10,8 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AdeOrm implements Mapper {
     private Connection conn;
@@ -194,14 +196,29 @@ public class AdeOrm implements Mapper {
     }
 
     // add a user to user table
+    @Override
+    public boolean add(String tableName, List<Field> fields, String idCriteria) throws ArgumentFormatException{
+        if (tableName == null || fields == null || idCriteria == null){
+            throw new ArgumentFormatException();
+        }
 
-    public boolean add(String tableName, String username, String password) throws ArgumentFormatException{
-        if (tableName == null || username == null || password == null){ return false; }
+        String sql = "insert into " + tableName + " values (";
 
-        String sql = "insert into " + tableName + " values (default, ?,?);";
+        if(idCriteria.equals("default")){
+            String[] questionArray = new String[fields.size()];
+            for(int i = 0; i < questionArray.length; i++){
+                questionArray[i] = "?";
+            }
+
+            String s = Arrays.asList(questionArray).stream().collect(Collectors.joining(", ","",");"));
+            sql += "default, " + s;
+        }
+        else { return false; }
+
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
-            MapperUtil.setPs(ps, username, password);
+            MapperUtil.setPs(ps, fieldValues);
 
             ps.executeUpdate();
 
@@ -213,13 +230,13 @@ public class AdeOrm implements Mapper {
 
     // Add multiple users
 
-    public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
+    /*public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
         if (tableName == null || fields == null){ return false; }
         String sql = "insert into " + tableName + " values ";
-        /*String s = */
+        String s =
 
         return false;
-    }
+    }*/
 
     // add post
 

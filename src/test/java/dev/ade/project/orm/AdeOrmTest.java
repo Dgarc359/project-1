@@ -20,9 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
-    PostPojo pj = new PostPojo(1,"Shrimp Linguini Alfredo", "United States", "Miami", "food", 3);
-
-
     @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -73,9 +70,12 @@ public class AdeOrmTest {
 
     @Test
     public void addSingleUserTest() throws ArgumentFormatException{
+        Field field1 = new Field("username", "foxtrot");
+        Field field2 = new Field("user_password", "Password123");
 
+        List<Field> fields = Arrays.asList(field1,field2);
 
-        assertTrue(adeOrm.add("users", "delta", "password123"));
+        assertTrue(adeOrm.add("users",fields,"default"));
     }
 
     /*@Test
@@ -93,10 +93,10 @@ public class AdeOrmTest {
         assertTrue(adeOrm.add("users", usernamePasswordList));
     }*/
 
-    @Test
+    /*@Test
     public void addSinglePostTest() throws ArgumentFormatException{
         assertTrue(adeOrm.add(pj.getTableName(),pj.getUser_id(),pj.getTitle(),pj.getCountry(),pj.getCity(),pj.getTableName(),pj.getRating()));
-    }
+    }*/
 
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {

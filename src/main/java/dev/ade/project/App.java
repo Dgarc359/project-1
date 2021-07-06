@@ -18,6 +18,12 @@ public class App {
 
             String result0 = adeOrm.get("users","username","user_id",1);
             System.out.println(result0);
+            Field field1 = new Field("username", "foxtrot");
+            Field field2 = new Field("user_password", "Password123");
+
+            List<Field> fields = Arrays.asList(field1,field2);
+
+            System.out.println(adeOrm.add("users",fields,"default"));
 
         } catch (ArgumentFormatException e) {
             e.printStackTrace();
