@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,9 +68,25 @@ public class AdeOrmTest {
     }*/
 
     @Test
-    public void addUserTest() throws ArgumentFormatException{
-        assertTrue(adeOrm.addUser("users", "delta", "password123"));
+    public void addSingleUserTest() throws ArgumentFormatException{
 
+
+        assertTrue(adeOrm.add("users", "delta", "password123"));
+    }
+
+    @Test
+    public void addUserPasswordList() throws ArgumentFormatException{
+        List<String> usernamePassword1 = Arrays.asList("echo","password123");
+        List<String> usernamePassword2 = Arrays.asList("foxtrot","password123");
+        List<String> usernamePassword3 = Arrays.asList("golf","password123");
+
+        List<List<String>> usernamePasswordList = new ArrayList<List<String>>();
+        usernamePasswordList.add(usernamePassword1);
+        usernamePasswordList.add(usernamePassword2);
+        usernamePasswordList.add(usernamePassword3);
+
+
+        assertTrue(adeOrm.add("users", usernamePasswordList));
     }
 
     @AfterAll

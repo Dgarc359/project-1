@@ -193,7 +193,7 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
-    public boolean addUser(String tableName, String username, String password) throws ArgumentFormatException{
+    public boolean add(String tableName, String username, String password) throws ArgumentFormatException{
         if (tableName == null || username == null || password == null){ return false; }
 
         String sql = "insert into " + tableName + " values (default, ?,?);";
@@ -207,6 +207,18 @@ public class AdeOrm implements Mapper {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
         }
         return true;
+    }
+
+    public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
+
+
+        return false;
+    }
+
+    public boolean add(String tableName, int userId, String title, String country, String city, String tag, int rating){
+
+
+        return false;
     }
 
 }
