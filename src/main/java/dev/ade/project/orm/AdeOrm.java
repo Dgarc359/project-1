@@ -209,20 +209,40 @@ public class AdeOrm implements Mapper {
         }
         String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
 
-//        String idValueType = idValue.getClass().getSimpleName();
-//        String setObject = "set" + idValueType;
-//        Method method;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-//            Class<?> clazz = PreparedStatement.class;
-//            method = clazz.getDeclaredMethod(setObject, int.class, idValue.getClass());
-//            ps.setString(1, columnName);
-//            Object[] psParam1 = new Object[]{2, idValue}; // can we just do ps.setObject(2, idValue); here??
-//            method.invoke(ps, psParam1);
             MapperUtil.setPs(ps, newColumnValue, idValue);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return true;
+    }
+
+    /**
+     * Update multiple generic type columns values of a record by a primary key of any type
+     *
+     * @param tableName table to be updated
+     * @param columnNames name of column being updated
+     * @param pk column name of the primary key
+     * @param pkValue primary key value of a record to be updated
+     * @param newColumnValues updating columnName w/ this value
+     * @return
+     */
+    public boolean update(String tableName, List<String> columnNames, String pk, Object pkValue, List<Object> newColumnValues) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || pk == null || pkValue == null) {
+            return false;
+        }
+        Object[] valuesList = newColumnValues.toArray();
+        String colNames = String.join(" = ? , ", columnNames);
+        String sql = "update " + tableName + " set " + colNames + " = ? where " + pk + " = ?";
+        System.out.println(sql);
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            MapperUtil.setPs(ps, newColumnValues, pkValue);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
     }
 }

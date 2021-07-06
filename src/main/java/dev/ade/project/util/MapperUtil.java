@@ -1,9 +1,11 @@
 package dev.ade.project.util;
 
+import javax.management.openmbean.ArrayType;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class MapperUtil {
 
@@ -13,6 +15,7 @@ public class MapperUtil {
         }
         int i = 1;
         for (Object value : fieldValues) {
+            System.out.println("value = " + value);
             if (value instanceof Boolean) {
                 ps.setBoolean(i++, (Boolean) value);
             } else if (value instanceof Byte) {
@@ -38,10 +41,14 @@ public class MapperUtil {
             } else if (value instanceof Blob) {
                 ps.setBlob(i++, (Blob) value);
             } else if (value instanceof Array) {
+                System.out.println("setting ps");
                 ps.setArray(i++, (Array) value);
             } else if (value instanceof String) {
                 ps.setString(i++, (String) value);
+            } else if (value instanceof Arrays) {
+                System.out.println("in the new one");
             } else {
+                System.out.println("none of em");
                 return 0;
             }
         }

@@ -16,11 +16,11 @@ public class App {
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
-            String result0 = adeOrm.get("users","username","user_id",1);
-            System.out.println(result0);
+            List<String> columnList = Arrays.asList("title", "city");
+            List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
+//            Object[] valuesList = {"Chocolate Ice Cream"};
 
-            // this gave a true value when column name didn't match.. hmm...
-            boolean result1 = adeOrm.update("post","title","post_id",3, "Vanilla Ice Cream");
+            boolean result1 = adeOrm.update("post", columnList, "post_id", 4, (List)valuesList);
             System.out.println(result1);
 
 
