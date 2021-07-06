@@ -219,11 +219,9 @@ public class AdeOrm implements Mapper {
 
         if(idCriteria.equals("default")){
             String[] questionArray = new String[fields.size()];
-            for(int i = 0; i < questionArray.length; i++){
-                questionArray[i] = "?";
-            }
+            Arrays.fill(questionArray, "?");
 
-            String s = Arrays.asList(questionArray).stream().collect(Collectors.joining(", ","",");"));
+            String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
             sql += "default, " + s;
         }
         else { return false; }
