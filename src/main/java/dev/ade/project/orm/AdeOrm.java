@@ -195,7 +195,18 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
-    // add a user to user table
+    /**
+     *
+     * Add a row to a database table using String tableName, List of fields (Key, values) for
+     * populating the rows, and idCriteria to set primary key
+     *
+     * @param tableName table to be read
+     * @param fields a list of field objects with a key and a value of field
+     * @param idCriteria idCriteria, can either be a custom value, or it can be set to "default"
+     *                   for default database primary key
+     * @return
+     * @throws ArgumentFormatException
+     */
     @Override
     public boolean add(String tableName, List<Field> fields, String idCriteria) throws ArgumentFormatException{
         if (tableName == null || fields == null || idCriteria == null){
