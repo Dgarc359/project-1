@@ -27,4 +27,3 @@ insert into users values (default, 'charlie','password123');
 insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0);
 insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami',null,5);
 insert into post values (default, 3, 'Vanilla Ice Cream', 'United States','Chicago',null,3);
-

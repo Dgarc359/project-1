@@ -59,7 +59,7 @@
       <recent name="dev.ade.project1.orm.util" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AdeOrmTest">
+  <component name="RunManager" selected="JUnit.ConnectionUtilTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="PASSWORD" value="Password321" />
@@ -168,8 +168,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.AdeOrmTest" />
         <item itemvalue="JUnit.ConnectionUtilTest" />
+        <item itemvalue="JUnit.AdeOrmTest" />
         <item itemvalue="JUnit.AdeOrmTest.getTestNull" />
         <item itemvalue="Application.App" />
         <item itemvalue="JUnit.AdeOrmTest.getTestInt" />
