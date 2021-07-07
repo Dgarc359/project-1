@@ -1,1 +1,2 @@
-drop table tableA;
+drop table post;
+drop table users;

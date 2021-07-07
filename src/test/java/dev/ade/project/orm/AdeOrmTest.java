@@ -67,6 +67,23 @@ public class AdeOrmTest {
         assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
     }
 
+    @Test
+    public  void testUpdateSingleAttribute() throws ArgumentFormatException {
+        Field field1 = new Field("title", "Neapolitan Ice Cream");
+        Field field2 = new Field("city", "Ft. Collins");
+        Field pk = new Field("post_id", 3);
+        List<Field> fields = Arrays.asList(field1, field2);
+        assertEquals(true, adeOrm.update("post", fields, pk));
+    }
+
+    @Test
+    public  void testUpdateMultipleAttributes() throws ArgumentFormatException {
+        Field field = new Field("city", "Ft. Collins");
+        Field pk = new Field("post_id", 3);
+        List<Field> fields = Arrays.asList(field);
+        assertEquals(true, adeOrm.update("post", fields, pk));
+    }
+
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {

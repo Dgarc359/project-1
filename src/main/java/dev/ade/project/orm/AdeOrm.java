@@ -235,7 +235,6 @@ public class AdeOrm implements Mapper {
 
         sql += fields.stream().map(Field::getName).collect(Collectors.joining(" = ? , ", "", " = ? "));
         sql += "where " + pk.getName() + " = " + pk.getValue() + ";";
-        System.out.println(sql);
 
         Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
 

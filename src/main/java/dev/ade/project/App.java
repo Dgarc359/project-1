@@ -20,7 +20,7 @@ public class App {
             List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
             Field field1 = new Field("title", "Neapolitan Ice Cream");
             Field field2 = new Field("city", "Ft. Collins");
-            Field pk = new Field("post_id", 5);
+            Field pk = new Field("post_id", 3);
 
             List<Field> fields = Arrays.asList(field1,field2);
 
