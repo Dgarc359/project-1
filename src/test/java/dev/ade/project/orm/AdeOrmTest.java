@@ -83,6 +83,7 @@ public class AdeOrmTest {
     @Test
     public void addSinglePostWithDefaultIdCriteriaTest() throws ArgumentFormatException{
 
+        Field postField1 = new Field("post_id","default");
         Field postField2 = new Field("user_id",1);
         Field postField3 = new Field("title","Shrimp Linguini Alfredo");
         Field postField4 = new Field("country","United States");
@@ -91,14 +92,14 @@ public class AdeOrmTest {
         Field postField7 = new Field("rating",5);
 
         List<Field> postFields = Arrays.asList
-                (postField2,postField3,postField4,postField5,postField6,postField7);
+                (postField1, postField2,postField3,postField4,postField5,postField6,postField7);
 
-        assertTrue(adeOrm.add("post",postFields,-1));
+        assertTrue(adeOrm.add("post",postFields));
     }
 
     @Test
     public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
-
+        Field postField1 = new Field("post_id", 10);
         Field postField2 = new Field("user_id",1);
         Field postField3 = new Field("title","Shrimp Linguini Alfredo");
         Field postField4 = new Field("country","United States");
@@ -107,9 +108,9 @@ public class AdeOrmTest {
         Field postField7 = new Field("rating",5);
 
         List<Field> postFields = Arrays.asList
-                (postField2,postField3,postField4,postField5,postField6,postField7);
+                (postField1, postField2,postField3,postField4,postField5,postField6,postField7);
 
-        assertTrue(adeOrm.add("post",postFields,10));
+        assertTrue(adeOrm.add("post",postFields));
     }
 
     @Test

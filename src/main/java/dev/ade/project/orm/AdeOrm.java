@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -259,6 +260,7 @@ public class AdeOrm implements Mapper {
 
         sql += s;
         Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        System.out.println(Arrays.toString(fieldValues));
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
