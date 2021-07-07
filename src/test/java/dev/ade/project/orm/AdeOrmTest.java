@@ -13,8 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
@@ -85,6 +84,23 @@ public class AdeOrmTest {
         List<Field> conditions = Arrays.asList(condition1, condition2);
         assertEquals(4, adeOrm.get("inner", "users", "users.user_id", "post", "post.user_id",
                 columnNames).size());
+    }
+
+    @Test
+    public  void testUpdateSingleAttribute() throws ArgumentFormatException {
+        Field field1 = new Field("title", "Neapolitan Ice Cream");
+        Field field2 = new Field("city", "Ft. Collins");
+        Field pk = new Field("post_id", 3);
+        List<Field> fields = Arrays.asList(field1, field2);
+        assertTrue(adeOrm.update("post", fields, pk));
+    }
+
+    @Test
+    public  void testUpdateMultipleAttributes() throws ArgumentFormatException {
+        Field field = new Field("city", "Ft. Collins");
+        Field pk = new Field("post_id", 3);
+        List<Field> fields = Arrays.asList(field);
+        assertTrue(adeOrm.update("post", fields, pk));
     }
 
     @AfterAll

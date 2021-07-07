@@ -35,3 +35,6 @@ insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami','
 insert into post values (default, 3, 'Inception', 'United States','Chicago','movie',3,'02-20-2012 10:05:06');
 insert into post values (default, 1, 'Vanilla Ice Cream', 'United States','Chicago',null,3,'02-20-2012 10:05:06');
 
+insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0);
+insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami',null,5);
+insert into post values (default, 3, 'Vanilla Ice Cream', 'United States','Chicago',null,3);
