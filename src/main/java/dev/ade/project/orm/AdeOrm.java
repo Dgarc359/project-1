@@ -222,20 +222,19 @@ public class AdeOrm implements Mapper {
      * Update multiple generic type columns values of a record by a primary key of any type
      *
      * @param tableName table to be updated
-     * @param fields name of column being updated
-     * @param pk column name of the primary key
-     * @param pkValue primary key value of a record to be updated
+     * @param fields columns being updated along with their values
+     * @param pk column name and value of the primary key
      * @return
      */
-    public boolean update(String tableName, List<Field> fields, String pk, Object pkValue) throws ArgumentFormatException {
-        if (tableName == null || fields == null || pk == null || pkValue == null) {
+    public boolean update(String tableName, List<Field> fields, Field pk) throws ArgumentFormatException {
+        if (tableName == null || fields == null || pk == null) {
             return false;
         }
 
         String sql = "update " + tableName + " set ";
 
         sql += fields.stream().map(Field::getName).collect(Collectors.joining(" = ? , ", "", " = ? "));
-        sql += "where " + pk + " = " + pkValue + ";";
+        sql += "where " + pk.getName() + " = " + pk.getValue() + ";";
         System.out.println(sql);
 
         Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
