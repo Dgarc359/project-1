@@ -13,8 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
@@ -73,7 +72,7 @@ public class AdeOrmTest {
         Field field2 = new Field("city", "Ft. Collins");
         Field pk = new Field("post_id", 3);
         List<Field> fields = Arrays.asList(field1, field2);
-        assertEquals(true, adeOrm.update("post", fields, pk));
+        assertTrue(adeOrm.update("post", fields, pk));
     }
 
     @Test
@@ -81,7 +80,7 @@ public class AdeOrmTest {
         Field field = new Field("city", "Ft. Collins");
         Field pk = new Field("post_id", 3);
         List<Field> fields = Arrays.asList(field);
-        assertEquals(true, adeOrm.update("post", fields, pk));
+        assertTrue(adeOrm.update("post", fields, pk));
     }
 
     @AfterAll

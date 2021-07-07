@@ -246,4 +246,8 @@ public class AdeOrm implements Mapper {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
     }
+
+    public boolean update(Object object) {
+        return false;
+    }
 }
