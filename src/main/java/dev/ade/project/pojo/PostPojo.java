@@ -6,8 +6,8 @@ import java.util.Objects;
 public class PostPojo {
 
     private String tableName = "post";
-    private int post_id;
-    private int user_id;
+    private int postId;
+    private int userId;
     private String title;
     private String country;
     private String city;
@@ -17,10 +17,10 @@ public class PostPojo {
 
     public PostPojo(){}
 
-    public PostPojo(int post_id, int user_id, String title, String country, String city, String tag, int rating, Timestamp timestamp){
+    public PostPojo(int postId, int userId, String title, String country, String city, String tag, int rating, Timestamp timestamp){
         super();
-        this.post_id = post_id;
-        this.user_id = user_id;
+        this.postId = postId;
+        this.userId = userId;
         this.title = title;
         this.country = country;
         this.city = city;
@@ -45,20 +45,20 @@ public class PostPojo {
         this.tableName = tableName;
     }
 
-    public int getPost_id() {
-        return post_id;
+    public int getPostId() {
+        return postId;
     }
 
-    public void setPost_id(int post_id) {
-        this.post_id = post_id;
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -106,20 +106,20 @@ public class PostPojo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostPojo postPojo = (PostPojo) o;
-        return post_id == postPojo.post_id && user_id == postPojo.user_id && rating == postPojo.rating && Objects.equals(tableName, postPojo.tableName) && Objects.equals(title, postPojo.title) && Objects.equals(country, postPojo.country) && Objects.equals(city, postPojo.city) && Objects.equals(tag, postPojo.tag) && Objects.equals(timestamp, postPojo.timestamp);
+        return postId == postPojo.postId && userId == postPojo.userId && rating == postPojo.rating && Objects.equals(tableName, postPojo.tableName) && Objects.equals(title, postPojo.title) && Objects.equals(country, postPojo.country) && Objects.equals(city, postPojo.city) && Objects.equals(tag, postPojo.tag) && Objects.equals(timestamp, postPojo.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tableName, post_id, user_id, title, country, city, tag, rating, timestamp);
+        return Objects.hash(tableName, postId, userId, title, country, city, tag, rating, timestamp);
     }
 
     @Override
     public String toString() {
         return "PostPojo{" +
                 "tableName='" + tableName + '\'' +
-                ", post_id=" + post_id +
-                ", user_id=" + user_id +
+                ", postId=" + postId +
+                ", userId=" + userId +
                 ", title='" + title + '\'' +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +

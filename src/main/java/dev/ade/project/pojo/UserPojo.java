@@ -4,39 +4,39 @@ import java.util.Objects;
 
 public class UserPojo {
 
-    private int user_id;
-    private String first_name;
-    private String last_name;
+    private int userId;
+    private String firstName;
+    private String lastName;
     private char gender;
     private String username;
-    private String user_password;
+    private String userPassword;
 
     UserPojo(){}
 
-    UserPojo(int user_id, String first_name, String last_name, char gender, String username, String user_password){
+    UserPojo(int userId, String firstName, String lastName, char gender, String username, String userPassword){
         super();
-        this.user_id = user_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.gender = gender;
         this.username = username;
-        this.user_password = user_password;
+        this.userPassword = userPassword;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public char getGender() {
@@ -47,12 +47,12 @@ public class UserPojo {
         this.gender = gender;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -63,12 +63,12 @@ public class UserPojo {
         this.username = username;
     }
 
-    public String getUser_password() {
-        return user_password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setUser_password(String user_password) {
-        this.user_password = user_password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     @Override
@@ -76,23 +76,23 @@ public class UserPojo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserPojo userPojo = (UserPojo) o;
-        return user_id == userPojo.user_id && gender == userPojo.gender && Objects.equals(first_name, userPojo.first_name) && Objects.equals(last_name, userPojo.last_name) && Objects.equals(username, userPojo.username) && Objects.equals(user_password, userPojo.user_password);
+        return userId == userPojo.userId && gender == userPojo.gender && Objects.equals(firstName, userPojo.firstName) && Objects.equals(lastName, userPojo.lastName) && Objects.equals(username, userPojo.username) && Objects.equals(userPassword, userPojo.userPassword);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user_id, first_name, last_name, gender, username, user_password);
+        return Objects.hash(userId, firstName, lastName, gender, username, userPassword);
     }
 
     @Override
     public String toString() {
         return "UserPojo{" +
-                "user_id=" + user_id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", gender=" + gender +
                 ", username='" + username + '\'' +
-                ", user_password='" + user_password + '\'' +
+                ", userPassword='" + userPassword + '\'' +
                 '}';
     }
 }
