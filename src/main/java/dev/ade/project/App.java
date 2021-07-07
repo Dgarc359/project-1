@@ -6,6 +6,7 @@ import dev.ade.project.orm.Field;
 import dev.ade.project.util.ConnectionUtil;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 // This class only serves for checking results during development, will be commented out or deleted at deployment.
@@ -22,8 +23,10 @@ public class App {
             Field field2 = new Field("user_password", "Password123");
 
             List<Field> fields = Arrays.asList(field1,field2);
+            //System.out.println(adeOrm.add("users",fields,"default"));
 
-            System.out.println(adeOrm.add("users",fields,"default"));
+
+
 
         } catch (ArgumentFormatException e) {
             e.printStackTrace();

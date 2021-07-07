@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,7 +70,7 @@ public class AdeOrmTest {
         assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
     }*/
 
-    @Test
+    /*@Test
     public void addSingleUserTest() throws ArgumentFormatException{
         Field field1 = new Field("username", "foxtrot");
         Field field2 = new Field("user_password", "Password123");
@@ -76,23 +78,49 @@ public class AdeOrmTest {
         List<Field> fields = Arrays.asList(field1,field2);
 
         assertTrue(adeOrm.add("users",fields,"default"));
+    }*/
+
+    @Test
+    public void addSinglePostWithDefaultIdCriteriaTest() throws ArgumentFormatException{
+
+        Field postField2 = new Field("user_id",1);
+        Field postField3 = new Field("title","Shrimp Linguini Alfredo");
+        Field postField4 = new Field("country","United States");
+        Field postField5 = new Field("city","Miami");
+        Field postField6 = new Field("tag","food");
+        Field postField7 = new Field("rating",5);
+
+        List<Field> postFields = Arrays.asList
+                (postField2,postField3,postField4,postField5,postField6,postField7);
+
+        assertTrue(adeOrm.add("post",postFields,-1));
     }
 
     @Test
-    public void addSinglePostTest() throws ArgumentFormatException{
+    public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
 
-        Field field1 = new Field("user_id",1);
-        Field field2 = new Field("title", "Shrimp Linguini Alfredo");
-        Field field3 = new Field("country","United States");
-        Field field4 = new Field("city", "New Orleans");
-        Field field5 = new Field("tag","food");
-        Field field6 = new Field("rating",3);
+        Field postField2 = new Field("user_id",1);
+        Field postField3 = new Field("title","Shrimp Linguini Alfredo");
+        Field postField4 = new Field("country","United States");
+        Field postField5 = new Field("city","Miami");
+        Field postField6 = new Field("tag","food");
+        Field postField7 = new Field("rating",5);
 
-        List<Field> fields = Arrays.asList(field1,field2,field3,field4,field5,field6);
+        List<Field> postFields = Arrays.asList
+                (postField2,postField3,postField4,postField5,postField6,postField7);
 
-
-        assertTrue(adeOrm.add("post",fields,"default"));
+        assertTrue(adeOrm.add("post",postFields,10));
     }
+
+    @Test
+    public void addSinglePostWithNonIntegerPrimaryKeyTest() throws ArgumentFormatException{
+
+        Field field1 = new Field("prim_key","test");
+        List<Field> fields = Arrays.asList(field1);
+
+        assertTrue(adeOrm.add("test_table",fields,10));
+    }
+
 
     /*@Test
     public void addUserPasswordList() throws ArgumentFormatException{

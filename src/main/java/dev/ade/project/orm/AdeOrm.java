@@ -209,21 +209,49 @@ public class AdeOrm implements Mapper {
      */
 
 
-    public boolean add(String tableName, List<Field> fields, String idCriteria) throws ArgumentFormatException{
-        if (tableName == null || fields == null || idCriteria == null){
+    public boolean add(String tableName, List<Field> fields, int idCriteria) throws ArgumentFormatException{
+        if (tableName == null || fields == null){
             throw new ArgumentFormatException();
         }
 
         String sql = "insert into " + tableName + " values (";
 
-        if(idCriteria.equals("default")){
-            String[] questionArray = new String[fields.size()];
-            Arrays.fill(questionArray, "?");
+        String[] questionArray = new String[fields.size()];
+        Arrays.fill(questionArray, "?");
 
-            String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
+        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
+
+        if(idCriteria == -1){
             sql += "default, " + s;
         }
-        else { return false; }
+        else {
+            sql += idCriteria + ", " + s;
+        }
+
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
+
+    public boolean add(String tableName, List<Field> fields) throws ArgumentFormatException{
+        if (tableName == null || fields == null){
+            throw new ArgumentFormatException();
+        }
+
+        String sql = "insert into " + tableName + " values (";
+
+        String[] questionArray = new String[fields.size()];
+        Arrays.fill(questionArray, "?");
+
+        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
 
         Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
 
