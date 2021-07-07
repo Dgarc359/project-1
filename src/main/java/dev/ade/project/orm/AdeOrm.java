@@ -222,23 +222,26 @@ public class AdeOrm implements Mapper {
      * Update multiple generic type columns values of a record by a primary key of any type
      *
      * @param tableName table to be updated
-     * @param columnNames name of column being updated
+     * @param fields name of column being updated
      * @param pk column name of the primary key
      * @param pkValue primary key value of a record to be updated
-     * @param newColumnValues updating columnName w/ this value
      * @return
      */
-    public boolean update(String tableName, List<String> columnNames, String pk, Object pkValue, List<Object> newColumnValues) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || pk == null || pkValue == null) {
+    public boolean update(String tableName, List<Field> fields, String pk, Object pkValue) throws ArgumentFormatException {
+        if (tableName == null || fields == null || pk == null || pkValue == null) {
             return false;
         }
-        Object[] valuesList = newColumnValues.toArray();
-        String colNames = String.join(" = ? , ", columnNames);
-        String sql = "update " + tableName + " set " + colNames + " = ? where " + pk + " = ?";
+
+        String sql = "update " + tableName + " set ";
+
+        sql += fields.stream().map(Field::getName).collect(Collectors.joining(" = ? , ", "", " = ? "));
+        sql += "where " + pk + " = " + pkValue + ";";
         System.out.println(sql);
 
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, newColumnValues, pkValue);
+            MapperUtil.setPs(ps, fieldValues);
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {

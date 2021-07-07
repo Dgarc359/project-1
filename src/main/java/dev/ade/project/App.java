@@ -18,9 +18,14 @@ public class App {
 
             List<String> columnList = Arrays.asList("title", "city");
             List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
+            Field field1 = new Field("title", "Chocolate Ice Cream");
+            Field field2 = new Field("city", "Denver");
+
+            List<Field> fields = Arrays.asList(field1,field2);
+
 //            Object[] valuesList = {"Chocolate Ice Cream"};
 
-            boolean result1 = adeOrm.update("post", columnList, "post_id", 4, (List)valuesList);
+            boolean result1 = adeOrm.update("post", fields, "post_id", 5);
             System.out.println(result1);
 
 
