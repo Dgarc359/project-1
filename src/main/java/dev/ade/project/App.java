@@ -16,9 +16,26 @@ public class App {
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
+<<<<<<< HEAD
             String result0 = adeOrm.get("users","username","user_id",1);
             System.out.println(result0);
 
+=======
+            List<String> columnNames = Arrays.asList("post_id", "user_id", "country", "city", "rating");
+            List<Object> result = adeOrm.get("post", columnNames, "rating", 5);
+            System.out.println(result);
+
+            List<String> columnNames2 = Arrays.asList("user_id", "username", "user_password");
+            List<List<Object>> result2 = adeOrm.get("users", columnNames2);
+            System.out.println(result2);
+
+
+            Field field1 = new Field("rating", 5);
+            Field field2 = new Field("city", "Miami");
+            List<Field> fields = Arrays.asList(field1, field2);
+            List<List<Object>> result3 = adeOrm.get("post", columnNames, fields, "and");
+            result3.forEach(System.out::println);
+>>>>>>> origin/rp1-17
         } catch (ArgumentFormatException e) {
             e.printStackTrace();
         }

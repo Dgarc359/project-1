@@ -168,6 +168,7 @@ public class AdeOrm implements Mapper {
             String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? and "));
             sql += s + "=?";
         }
+
         if (criteria.equals("or")) {
             String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? or "));
             sql += s + "=?";
@@ -189,6 +190,83 @@ public class AdeOrm implements Mapper {
             }
         } catch (SQLException e) {
             throw new ArgumentFormatException("Argument formats are not correct", e);
+        }
+        return result;
+    }
+
+    /**
+     * Get generic type columns' values of record(s) of joint tables by a column value of any type.
+     *
+     * @param jType inner, left, right
+     * @param tableA left table to be join
+     * @param tableB right table to be join
+     * @param pkA primary key of left table
+     * @param fkA foreign key of right table reference left table
+     * @param columnNames a list of column names of the table to retrieve
+     * @param fieldName a column name
+     * @param fieldValue the column value of record(s) to be retrieve
+     * @return
+     */
+
+    public List<List<Object>>get(String jType, String tableA, String pkA, String tableB, String fkA,
+                                 List<String> columnNames, String fieldName, Object fieldValue) throws ArgumentFormatException {
+        if (tableA == null || pkA == null || tableB == null || fkA == null || columnNames == null ||
+                fieldName == null || fieldValue == null) {
+            return null;
+        }
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableA + " " + jType + " join " + tableB +
+                " on " + pkA + " = " + fkA + " where " + fieldName + "=?";
+        List<List<Object>> result = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            MapperUtil.setPs(ps, fieldValue);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
+    }
+
+    /**
+     * Get generic type columns' values of record(s) of joint tables.
+     *
+     * @param jType inner, left, right
+     * @param tableA left table to be join
+     * @param tableB right table to be join
+     * @param pkA primary key of left table
+     * @param fkA foreign key of right table reference left table
+     * @param columnNames a list of column names of the table to retrieve
+     *
+     * @return
+     */
+
+    public List<List<Object>>get(String jType, String tableA, String pkA, String tableB, String fkA,
+                                 List<String> columnNames) throws ArgumentFormatException {
+        if (tableA == null || pkA == null || tableB == null || fkA == null || columnNames == null) {
+            return null;
+        }
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableA + " " + jType + " join " + tableB +
+                " on " + pkA + " = " + fkA;
+        List<List<Object>> result = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return result;
     }

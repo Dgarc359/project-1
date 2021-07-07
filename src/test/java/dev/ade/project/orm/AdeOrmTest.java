@@ -28,43 +28,63 @@ public class AdeOrmTest {
 
     @Test
     public void getTestInt() throws ArgumentFormatException {
-        assertEquals("first", adeOrm.get("tableA", "stringCol", "id", 1));
+        assertEquals("alpha", adeOrm.get("users", "username", "user_id", 1));
     }
 
 
     @Test
     public void getTestNull() throws ArgumentFormatException {
-        assertNull(adeOrm.get("tableA", "stringCol", "id", null));
+        assertNull(adeOrm.get("users", "user_id", "id", null));
     }
 
     @Test
     public void getTestObject() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
-        assertEquals(2, adeOrm.get("tableA", columnNames, BigDecimal.valueOf(10), "numericCol").size());
+        List<String> columnNames = Arrays.asList("user_id", "username", "user_password");
+        assertEquals(1, adeOrm.get("users", columnNames, (Object)"charlie", "username").size());
     }
 
     @Test
     public void getTestGetAllRecords() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("id", "stringCol", "booleanCol", "numericCol", "dateCol");
-        assertEquals(3, adeOrm.get("tableA", columnNames).size());
+        List<String> columnNames = Arrays.asList("user_id", "username", "user_password");
+        assertEquals(3, adeOrm.get("users", columnNames).size());
     }
 
     @Test
     public void getTestAndConditions() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
-        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
-        Field condition2 = new Field("booleanCol", 1);
+        List<String> columnNames = Arrays.asList("user_id", "title", "country", "city", "rating");
+        Field condition1 = new Field("user_id", 1);
+        Field condition2 = new Field("rating", 3);
         List<Field> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(1, adeOrm.get("tableA", columnNames, conditions, "and").size());
+        assertEquals(1, adeOrm.get("post", columnNames, conditions, "and").size());
     }
 
     @Test
     public void testGetRecordsWithOrFields() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
-        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
-        Field condition2 = new Field("booleanCol", 1);
+        List<String> columnNames = Arrays.asList("user_id", "title", "country", "city", "rating");
+        Field condition1 = new Field("user_id", 1);
+        Field condition2 = new Field("rating", 3);
         List<Field> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
+        assertEquals(3, adeOrm.get("post", columnNames, conditions, "or").size());
+    }
+
+    @Test
+    public void testGetInnerJoinWithCondition() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
+        Field condition1 = new Field("user_id", 1);
+        Field condition2 = new Field("rating", 3);
+        List<Field> conditions = Arrays.asList(condition1, condition2);
+        assertEquals(2, adeOrm.get("inner", "users", "users.user_id", "post", "post.user_id",
+                columnNames, "users.user_id", 1).size());
+    }
+
+    @Test
+    public void testGetLeftJoin() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
+        Field condition1 = new Field("user_id", 1);
+        Field condition2 = new Field("rating", 3);
+        List<Field> conditions = Arrays.asList(condition1, condition2);
+        assertEquals(4, adeOrm.get("inner", "users", "users.user_id", "post", "post.user_id",
+                columnNames).size());
     }
 
     @AfterAll
