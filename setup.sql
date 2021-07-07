@@ -22,7 +22,7 @@ create table post(
 );
 
 create table test_table(
-    prim_key varchar(5) primary key,
+    prim_key varchar(5) primary key
 );
 
 -- DML

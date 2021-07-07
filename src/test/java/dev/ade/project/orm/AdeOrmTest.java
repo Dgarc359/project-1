@@ -118,26 +118,8 @@ public class AdeOrmTest {
         Field field1 = new Field("prim_key","test");
         List<Field> fields = Arrays.asList(field1);
 
-        assertTrue(adeOrm.add("test_table",fields,10));
+        assertTrue(adeOrm.add("test_table",fields));
     }
-
-
-    /*@Test
-    public void addUserPasswordList() throws ArgumentFormatException{
-        List<String> usernamePassword1 = Arrays.asList("echo","password123");
-        List<String> usernamePassword2 = Arrays.asList("foxtrot","password123");
-        List<String> usernamePassword3 = Arrays.asList("golf","password123");
-
-        List<List<String>> usernamePasswordList = new ArrayList<List<String>>();
-        usernamePasswordList.add(usernamePassword1);
-        usernamePasswordList.add(usernamePassword2);
-        usernamePasswordList.add(usernamePassword3);
-
-
-        assertTrue(adeOrm.add("users", usernamePasswordList));
-    }*/
-
-
 
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {

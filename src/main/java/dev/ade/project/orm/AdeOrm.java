@@ -250,9 +250,14 @@ public class AdeOrm implements Mapper {
 
         String[] questionArray = new String[fields.size()];
         Arrays.fill(questionArray, "?");
+        String s;
 
-        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
+        if(fields.size() > 1) {
+            s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+        }
+        else{ s = Arrays.stream(questionArray).collect(Collectors.joining("","",");"));}
 
+        sql += s;
         Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
