@@ -247,6 +247,12 @@ public class AdeOrm implements Mapper {
         }
     }
 
+    /**
+     * Update multiple generic type columns values of a record by a primary key of any type
+     * using just an object
+     * @param object record to be updated
+     * @return
+     */
     public boolean update(Object object) {
         return false;
     }
