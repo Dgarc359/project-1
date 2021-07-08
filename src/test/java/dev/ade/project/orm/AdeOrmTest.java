@@ -13,8 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdeOrmTest {
     private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
@@ -65,6 +64,11 @@ public class AdeOrmTest {
         Field condition2 = new Field("booleanCol", 1);
         List<Field> conditions = Arrays.asList(condition1, condition2);
         assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
+    }
+
+    @Test
+    public void testDeleteARecord() throws ArgumentFormatException {
+        assertTrue(adeOrm.delete("post", "post_id", 3));
     }
 
     @AfterAll

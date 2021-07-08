@@ -6,9 +6,6 @@ import dev.ade.project.orm.Field;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 // This class only serves for checking results during development, will be commented out or deleted at deployment.
 public class App {
 
@@ -19,7 +16,7 @@ public class App {
 
             Field field1 = new Field("title", "Vanilla Ice Cream");
 
-            System.out.println(MapperUtil.parseObject(field1));
+            System.out.println(MapperUtil.parseFields(adeOrm));
 
             // this gave a true value when column name didn't match.. hmm...
             boolean result1 = adeOrm.update("post","title","post_id",3, "Chocolate Ice Cream");
@@ -32,10 +29,10 @@ public class App {
 //            Field pk = new Field("post_id", 3);
 //
 //            List<Field> fields = Arrays.asList(field1,field2);
-
+//
 //            Object[] valuesList = {"Chocolate Ice Cream"};
-
-
+//
+//
 //            boolean result2 = adeOrm.delete("post","post_id",3);
 //            System.out.println(result1);
 

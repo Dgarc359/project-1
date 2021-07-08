@@ -3,12 +3,8 @@ package dev.ade.project.orm;
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.MapperUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -240,5 +236,27 @@ public class AdeOrm implements Mapper {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return true;
+    }
+
+    public boolean delete(Object object) {
+        if (object == null) return false;
+
+        List<Field> fieldList = MapperUtil.parseFields(object);
+
+
+        String tableName = (String) fieldList.get(0).getValue();
+
+        for (int i=0; i< fieldList.size(); i++) {
+            if (fieldList.get(i).getName().matches("Id")) {
+                String id = fieldList.get(i).getName();
+                Object pk = fieldList.get(i).getValue();
+                String sql = "delete from " + tableName + " where " + id + " = " + pk;
+            }
+        }
+        try (Statement s = conn.createStatement()){
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
