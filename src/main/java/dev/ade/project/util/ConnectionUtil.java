@@ -13,10 +13,6 @@ public class ConnectionUtil {
     private static Connection connection;
     private static final boolean IS_TEST = Boolean.parseBoolean(System.getenv("TEST"));
 
-    /**
-     * The getConnection method returns a singleton Connection object.
-     * A local database mirrors the actual deployed web database is used for testing.
-     */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -26,6 +22,27 @@ public class ConnectionUtil {
                     String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
                     final String PASSWORD = System.getenv("PASSWORD");
                     final String USERNAME = System.getenv("USERNAME");
+                    connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+    /**
+     * The getConnection method returns a singleton Connection object.
+     * A local database mirrors the actual deployed web database is used for testing.
+     */
+    public static Connection getConnection(String url, String USERNAME, String PASSWORD) {
+        try {
+            if (connection == null || connection.isClosed()) {
+                if (IS_TEST) {
+                    connection = DriverManager.getConnection("jdbc:h2:~/test");
+                } else {
+//                    String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+//                    final String PASSWORD = System.getenv("PASSWORD");
+//                    final String USERNAME = System.getenv("USERNAME");
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                 }
             }

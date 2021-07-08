@@ -16,7 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AdeOrmTest {
-    private AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
+
+    private AdeOrm adeOrm = new AdeOrm();
 
     @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {

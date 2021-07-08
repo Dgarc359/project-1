@@ -1,6 +1,7 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
+import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,13 +15,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
-    private Connection conn;
+    private static Connection conn;
+    // POJO class mirror with the a table in the db
+    private Class<?> clazz;
 
     public AdeOrm() {
     }
 
-    public AdeOrm(Connection connection) {
-        conn = connection;
+    public AdeOrm(Class<?> clazz) {
+        this.clazz = clazz;
+    }
+
+    // static method to set the base connection of all orm instances to the db
+    public static void setConnection(String url, String username, String password) {
+        conn = ConnectionUtil.getConnection(url, username, password);
+    }
+
+    public static Connection getConn() {
+        return conn;
     }
 
     /**

@@ -6,6 +6,7 @@ import dev.ade.project.orm.Field;
 import dev.ade.project.util.ConnectionUtil;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.*;
 
 // This class only serves for checking results during development, will be commented out or deleted at deployment.
@@ -14,7 +15,16 @@ public class App {
     public static void main (String[] args) {
         // For checking results
         try {
-            AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
+            String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+            final String USERNAME = System.getenv("USERNAME");
+            final String PASSWORD = System.getenv("PASSWORD");
+            AdeOrm.setConnection(url, USERNAME, PASSWORD);
+            AdeOrm adeOrm = new AdeOrm();
+            try {
+                System.out.println(AdeOrm.getConn().getMetaData().getDriverName());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
 
             String result0 = adeOrm.get("users","username","user_id",1);
             System.out.println(result0);
