@@ -5,14 +5,8 @@ import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.sql.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -377,15 +371,34 @@ public class AdeOrm implements Mapper {
         return true;
     }
 
-    // Add multiple users
+    public boolean add(Object pojo) throws ArgumentFormatException{
 
-    /*public boolean add(String tableName, List<List<String>> fields) throws ArgumentFormatException{
-        if (tableName == null || fields == null){ return false; }
-        String sql = "insert into " + tableName + " values ";
-        String s =
 
-        return false;
-    }*/
+        List<Field> pojoFields = MapperUtil.parseObject(pojo);
+        Object[] fieldValues = pojoFields.stream().map(Field::getValue).toArray();
+        String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
+
+        System.out.println(Arrays.toString(fieldValues));
+
+        String[] questionArray = new String[pojoFields.size()];
+        Arrays.fill(questionArray, "?");
+        String s;
+
+        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+
+        sql += s;
+        System.out.println(sql);
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
 
 
     /**

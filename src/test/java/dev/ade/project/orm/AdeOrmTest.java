@@ -1,7 +1,7 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
-import dev.ade.project.pojo.PostPojo;
+import dev.ade.project.pojo.Post;
 import dev.ade.project.util.ConnectionUtil;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
@@ -89,9 +89,10 @@ public class AdeOrmTest {
         Field postField5 = new Field("city","Miami");
         Field postField6 = new Field("tag","food");
         Field postField7 = new Field("rating",5);
+        Field postField8 = new Field("timestamp", LocalDateTime.now());
 
         List<Field> postFields = Arrays.asList
-                (postField2,postField3,postField4,postField5,postField6,postField7);
+                (postField2,postField3,postField4,postField5,postField6,postField7,postField8);
 
         assertTrue(adeOrm.add("post",postFields, -1));
     }
@@ -110,6 +111,14 @@ public class AdeOrmTest {
                 (postField1, postField2,postField3,postField4,postField5,postField6,postField7);
 
         assertTrue(adeOrm.add("post",postFields));
+    }
+
+    @Test
+    public void addObjectPostTest() throws ArgumentFormatException{
+        Post postJo = new Post
+                (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
+
+        assertTrue(adeOrm.add(postJo));
     }
 
     @Test
