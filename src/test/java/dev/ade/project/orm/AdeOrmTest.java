@@ -43,6 +43,13 @@ public class AdeOrmTest {
     }
 
     @Test
+    public void getTestSort() throws ArgumentFormatException {
+        List<String> columnNames = Arrays.asList("user_id", "title", "rating");
+        assertEquals("1", adeOrm.get("post", columnNames, 1, "user_id",
+                "user_id", "desc").get(0).get(0));
+    }
+
+    @Test
     public void getTestGetAllRecords() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("user_id", "username", "user_password");
         assertEquals(3, adeOrm.get("users", columnNames).size());
@@ -86,6 +93,8 @@ public class AdeOrmTest {
                 columnNames).size());
     }
 
+/*
+
     @Test
     public  void testUpdateSingleAttribute() throws ArgumentFormatException {
         Field field1 = new Field("title", "Neapolitan Ice Cream");
@@ -102,7 +111,7 @@ public class AdeOrmTest {
         List<Field> fields = Arrays.asList(field);
         assertTrue(adeOrm.update("post", fields, pk));
     }
-
+*/
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {

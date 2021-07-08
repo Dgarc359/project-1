@@ -27,6 +27,9 @@ public class App {
             List<List<Object>> result2 = adeOrm.get("users", columnNames2);
             System.out.println(result2);
 
+            result2 = adeOrm.get("post", columnNames, 1, "user_id", "rating","desc");
+            System.out.println(result2);
+
             List<String> columnList = Arrays.asList("title", "city");
             List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
             Field fielda = new Field("title", "Neapolitan Ice Cream");

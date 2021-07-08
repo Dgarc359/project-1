@@ -19,7 +19,7 @@ create table post(
 	tag varchar(30),
 	rating integer constraint rating_less_than_five check (rating <= 5),
 	constraint rating_greater_than_zero check (rating >= 0),
-	post_timestamp timestamp not null
+	post_timestamp date not null
 );
 
 -- DML
@@ -29,12 +29,11 @@ insert into users values (default, 'Richelle', 'Hunt','F','beta','password123');
 insert into users values (default, 'Jorge','Olivero','M','charlie','password123');
 
 
-insert into post values
-(default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0,'08-19-2000 04:05:06');
-insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami','food',5,'05-30-2010 05:07:10');
-insert into post values (default, 3, 'Inception', 'United States','Chicago','movie',3,'02-20-2012 10:05:06');
-insert into post values (default, 1, 'Vanilla Ice Cream', 'United States','Chicago',null,3,'02-20-2012 10:05:06');
+--insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0, 2000-08-09);
+--insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami','food',5, 2010-01-19);
+--insert into post values (default, 3, 'Inception', 'United States','Chicago','movie',3, 2020-08-15);
+--insert into post values (default, 1, 'Vanilla Ice Cream', 'United States','Chicago',null,3, 2012-12-15);
 
-insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0);
-insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami',null,5);
-insert into post values (default, 3, 'Vanilla Ice Cream', 'United States','Chicago',null,3);
+--insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0, 2006-01-24);
+--insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami',null,5, 2003-08-15);
+--insert into post values (default, 3, 'Vanilla Ice Cream', 'United States','Chicago',null,3, 2009-10-12);

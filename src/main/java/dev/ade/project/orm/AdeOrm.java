@@ -119,6 +119,76 @@ public class AdeOrm implements Mapper {
     }
 
     /**
+     * Get generic type columns' values of record(s) by a column value of any type.
+     * If the primary key is used, only return one record, if other non unique value
+     * column is used, return all records with the column value in the order specify
+     *
+     * @param tableName table to be read
+     * @param columnNames a list of column names of the table to retrieve
+     * @param fieldName a column name
+     * @param fieldValue the column value of record(s) to be retrieve
+     * @param orderCol the column to order by
+     * @param order "asc" for ascending, "desc" for descending
+     * @return
+     */
+
+    public List<List<Object>>get(String tableName, List<String> columnNames, Object fieldValue,
+                                 String fieldName, String orderCol, String order) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || fieldName == null || fieldValue == null ||
+                orderCol == null || order == null) {
+            return null;
+        }
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableName + " where " + fieldName + "=?";
+        sql += " order by " + orderCol + " " + order;
+        List<List<Object>> result = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            MapperUtil.setPs(ps, fieldValue);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
+    }
+
+    /**
+     * Get generic type columns' values of all records in a table in order
+     *
+     * @param tableName the name of a table
+     * @param orderCol the column to order by
+     * @param order "asc" for ascending, "desc" for descending
+     * @return
+     */
+    public List<List<Object>>get(String tableName, List<String> columnNames, String orderCol, String order) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || orderCol == null || order == null) {
+            return null;
+        }
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableName + " order by " + orderCol + " " + order;
+        List<List<Object>> result = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Argument formats are not correct", e);
+        }
+        return result;
+    }
+
+    /**
      * Get generic type columns' values of all records in a table
      *
      * @param tableName the name of a table
