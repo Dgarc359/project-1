@@ -14,7 +14,8 @@ public class App {
 
     public static void main (String[] args) {
 
-<<<<<<< HEAD
+        try{
+            AdeOrm adeOrm = new AdeOrm();
             String result0 = adeOrm.get("users","username","user_id",1);
             System.out.println(result0);
 
@@ -51,7 +52,6 @@ public class App {
         } catch (ArgumentFormatException e) {
             e.printStackTrace();
         }
-=======
->>>>>>> rp1-53
+
     }
 }
