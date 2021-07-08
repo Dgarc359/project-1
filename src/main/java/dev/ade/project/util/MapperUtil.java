@@ -1,11 +1,16 @@
 package dev.ade.project.util;
 
-import javax.management.openmbean.ArrayType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import dev.ade.project.orm.Field;
 
 public class MapperUtil {
 
@@ -15,7 +20,6 @@ public class MapperUtil {
         }
         int i = 1;
         for (Object value : fieldValues) {
-            System.out.println("value = " + value);
             if (value instanceof Boolean) {
                 ps.setBoolean(i++, (Boolean) value);
             } else if (value instanceof Byte) {
@@ -41,18 +45,45 @@ public class MapperUtil {
             } else if (value instanceof Blob) {
                 ps.setBlob(i++, (Blob) value);
             } else if (value instanceof Array) {
-                System.out.println("setting ps");
                 ps.setArray(i++, (Array) value);
             } else if (value instanceof String) {
                 ps.setString(i++, (String) value);
-            } else if (value instanceof Arrays) {
-                System.out.println("in the new one");
             } else {
-                System.out.println("none of em");
                 return 0;
             }
         }
         return 1;
+    }
+
+    public static List<Field> parseObject(Object object) {
+        List<Field> fieldList = new ArrayList<>();
+        Class<?> objectClass = object.getClass();
+        /*String className = objectClass.getSimpleName().toLowerCase(Locale.ROOT);
+
+        Field table = new Field("tableName", className);
+        fieldList.add(table);*/
+
+        java.lang.reflect.Field[] fields = objectClass.getDeclaredFields();
+        for (java.lang.reflect.Field field : fields) {
+            String fieldName = field.getName();
+
+            // access method(s)? --- getId(), getName(), getBirthday()
+            String getterName = "get" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+            // maybe we can access the getter directly based on the field name
+            try {
+                Method getterMethod = objectClass.getMethod(getterName);
+
+                // if we invoke the getter, we get the field value
+                Object fieldValue = getterMethod.invoke(object);
+
+                Field newField = new Field(fieldName, fieldValue);
+                fieldList.add(newField);
+
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return fieldList;
     }
 
 }

@@ -3,9 +3,7 @@ package dev.ade.project;
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.orm.AdeOrm;
 import dev.ade.project.orm.Field;
-import dev.ade.project.util.ConnectionUtil;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -13,6 +11,7 @@ import java.util.*;
 public class App {
 
     public static void main (String[] args) {
+
         // For checking results
         try {
             String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
@@ -20,12 +19,7 @@ public class App {
             final String PASSWORD = System.getenv("PASSWORD");
             AdeOrm.setConnection(url, USERNAME, PASSWORD);
             AdeOrm adeOrm = new AdeOrm();
-            try {
-                System.out.println(AdeOrm.getConn().getMetaData().getDriverName());
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
+            System.out.println(AdeOrm.getConn().getMetaData().getDriverName());
             String result0 = adeOrm.get("users","username","user_id",1);
             System.out.println(result0);
 
@@ -59,8 +53,9 @@ public class App {
             boolean result1 = adeOrm.update("post", fields, pk);
             System.out.println(result1);
 
-        } catch (ArgumentFormatException e) {
+        } catch (ArgumentFormatException  | SQLException e) {
             e.printStackTrace();
         }
+
     }
 }

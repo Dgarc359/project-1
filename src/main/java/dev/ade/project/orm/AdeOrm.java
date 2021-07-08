@@ -6,13 +6,10 @@ import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AdeOrm implements Mapper {
     private static Connection conn;
@@ -277,6 +274,52 @@ public class AdeOrm implements Mapper {
     }
 
     /**
+     *
+     * Add a row to a database table using String tableName, List of fields (Key, values) for
+     * populating the rows, and idCriteria to set primary key
+     *
+     * @param tableName table to be read
+     * @param fields a list of field objects with a key and a value of field
+     * @param idCriteria idCriteria, can either be a custom value, or it can be set to "default"
+     *                   for default database primary key
+     * @return
+     * @throws ArgumentFormatException
+     */
+
+
+    public boolean add(String tableName, List<Field> fields, int idCriteria) throws ArgumentFormatException{
+        if (tableName == null || fields == null){
+            throw new ArgumentFormatException();
+        }
+
+        String sql = "insert into " + tableName + " values (";
+
+        String[] questionArray = new String[fields.size()];
+        Arrays.fill(questionArray, "?");
+
+        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
+
+        if(idCriteria == -1){
+            sql += "default, " + s;
+        }
+        else {
+            sql += idCriteria + ", " + s;
+        }
+
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
+
+    /**
      * Get generic type columns' values of record(s) of joint tables by a column value of any type.
      *
      * @param jType inner, left, right
@@ -375,8 +418,70 @@ public class AdeOrm implements Mapper {
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
+                return true;
+    }
+
+
+    public boolean add(String tableName, List<Field> fields) throws ArgumentFormatException{
+        if (tableName == null || fields == null){
+            throw new ArgumentFormatException();
+        }
+
+        String sql = "insert into " + tableName + " values (";
+
+        String[] questionArray = new String[fields.size()];
+        Arrays.fill(questionArray, "?");
+        String s;
+
+        if(fields.size() > 1) {
+            s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+        }
+        else{ s = Arrays.stream(questionArray).collect(Collectors.joining("","",");"));}
+
+        sql += s;
+        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        System.out.println(Arrays.toString(fieldValues));
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
         return true;
     }
+
+    public boolean add(Object pojo) throws ArgumentFormatException{
+
+
+        List<Field> pojoFields = MapperUtil.parseObject(pojo);
+        Object[] fieldValues = pojoFields.stream().map(Field::getValue).toArray();
+        String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
+
+        System.out.println(Arrays.toString(fieldValues));
+
+        String[] questionArray = new String[pojoFields.size()];
+        Arrays.fill(questionArray, "?");
+        String s;
+
+        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+
+        sql += s;
+        System.out.println(sql);
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
+
 
     /**
      * Update multiple generic type columns values of a record by a primary key of any type
@@ -416,4 +521,5 @@ public class AdeOrm implements Mapper {
     public boolean update(Object object) {
         return false;
     }
+
 }

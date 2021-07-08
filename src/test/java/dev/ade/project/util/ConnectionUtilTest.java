@@ -25,6 +25,7 @@ public class ConnectionUtilTest {
     @Test
     public void testConnection() throws SQLException {
         assertEquals("H2 JDBC Driver", ConnectionUtil.getConnection().getMetaData().getDriverName());
+
     }
 
     @AfterAll
