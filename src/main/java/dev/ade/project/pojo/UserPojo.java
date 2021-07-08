@@ -4,6 +4,8 @@ import dev.ade.project.annotations.ColumnName;
 import dev.ade.project.annotations.PrimaryKey;
 import dev.ade.project.annotations.TableName;
 
+import java.util.Objects;
+
 @TableName(key = "users")
 public class UserPojo {
 
@@ -86,5 +88,28 @@ public class UserPojo {
         this.userPassword = userPassword;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserPojo userPojo = (UserPojo) o;
+        return userId == userPojo.userId && gender == userPojo.gender && Objects.equals(firstName, userPojo.firstName) && Objects.equals(lastName, userPojo.lastName) && Objects.equals(username, userPojo.username) && Objects.equals(userPassword, userPojo.userPassword);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, firstName, lastName, gender, username, userPassword);
+    }
+
+    @Override
+    public String toString() {
+        return "UserPojo{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
+                ", username='" + username + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                '}';
+    }
 }
