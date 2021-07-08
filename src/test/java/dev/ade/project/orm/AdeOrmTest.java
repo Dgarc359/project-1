@@ -1,19 +1,16 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
-import dev.ade.project.pojo.Post;
+import dev.ade.project.pojo.PostPojo;
 import dev.ade.project.util.ConnectionUtil;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,10 +112,10 @@ public class AdeOrmTest {
 
     @Test
     public void addObjectPostTest() throws ArgumentFormatException{
-        Post postJo = new Post
+        PostPojo postPojoJo = new PostPojo
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
 
-        assertTrue(adeOrm.add(postJo));
+        assertTrue(adeOrm.add(postPojoJo));
     }
 
     @Test
