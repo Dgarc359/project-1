@@ -4,6 +4,7 @@ import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.orm.AdeOrm;
 import dev.ade.project.orm.Field;
 import dev.ade.project.util.ConnectionUtil;
+import dev.ade.project.util.MapperUtil;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -16,12 +17,27 @@ public class App {
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
 
+            Field field1 = new Field("title", "Vanilla Ice Cream");
+
+            System.out.println(MapperUtil.parseObject(field1));
+
             // this gave a true value when column name didn't match.. hmm...
             boolean result1 = adeOrm.update("post","title","post_id",3, "Chocolate Ice Cream");
             System.out.println(result1);
 
-            boolean result2 = adeOrm.delete("post","post_id",3);
-            System.out.println(result1);
+//            List<String> columnList = Arrays.asList("title", "city");
+//            List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
+//            Field field1 = new Field("title", "Vanilla Ice Cream");
+//            Field field2 = new Field("city", "Ft. Collins");
+//            Field pk = new Field("post_id", 3);
+//
+//            List<Field> fields = Arrays.asList(field1,field2);
+
+//            Object[] valuesList = {"Chocolate Ice Cream"};
+
+
+//            boolean result2 = adeOrm.delete("post","post_id",3);
+//            System.out.println(result1);
 
             /*
             String result0 = adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry");
