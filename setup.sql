@@ -32,7 +32,13 @@ insert into users values (default, 'Jorge','Olivero','M','charlie','password123'
 
 
 insert into post values
-(default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0);
-insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami','food',5);
-insert into post values (default, 3, 'Inception', 'United States','Chicago','movie',3);
+
+(default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0,08-19-2000 04:05:06);
+insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami','food',5,05-30-2010 05:07:10);
+insert into post values (default, 3, 'Inception', 'United States','Chicago','movie',3,02-20-2012 10:05:06);
+insert into post values (default, 1, 'Vanilla Ice Cream', 'United States','Chicago',null,3,02-20-2012 10:05:06);
+
+insert into post values (default, 1, 'Shrimp Linguini Alfredo','United States','New Orleans',null,0);
+insert into post values (default, 2, 'Cuban Sandwich', 'United States','Miami',null,5);
+insert into post values (default, 3, 'Vanilla Ice Cream', 'United States','Chicago',null,3);
 

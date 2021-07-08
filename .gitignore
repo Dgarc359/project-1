@@ -1,5 +1,3 @@
-target
-.idea
-/.idea
-.idea/workspace.xml
+target/
+.idea/
 error.log
