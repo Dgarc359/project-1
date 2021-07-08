@@ -40,9 +40,7 @@ public class ConnectionUtil {
                 if (IS_TEST) {
                     connection = DriverManager.getConnection("jdbc:h2:~/test");
                 } else {
-//                    String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-//                    final String PASSWORD = System.getenv("PASSWORD");
-//                    final String USERNAME = System.getenv("USERNAME");
+//
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                 }
             }
@@ -51,5 +49,12 @@ public class ConnectionUtil {
         }
         return connection;
     }
+
+    /**
+     * getConnectionFromPool will return a connection from a pool of connections.
+     * Contains: Initial and Min / Max pool size. Pool resize Quantity. Idle Timeout. Max Wait time.
+     *
+     * Optionally: Connection validation.
+     */
 }
 
