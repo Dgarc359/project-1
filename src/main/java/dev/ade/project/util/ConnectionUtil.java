@@ -30,11 +30,12 @@ public class ConnectionUtil {
         }
         return connection;
     }
+
     /**
      * The getConnection method returns a singleton Connection object.
      * A local database mirrors the actual deployed web database is used for testing.
      */
-    public static Connection getConnection(String url, String USERNAME, String PASSWORD) {
+    public static Connection setConnection(String url, String USERNAME, String PASSWORD) {
         try {
             if (connection == null || connection.isClosed()) {
                 if (IS_TEST) {

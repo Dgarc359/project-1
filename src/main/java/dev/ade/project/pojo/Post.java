@@ -115,7 +115,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return "PostPojo{" +
+        return "Post{" +
                 "postId=" + postId +
                 ", userId=" + userId +
                 ", title='" + title + '\'' +
