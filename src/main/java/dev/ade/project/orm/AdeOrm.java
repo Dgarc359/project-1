@@ -148,28 +148,28 @@ public class AdeOrm implements Mapper {
       *
      * @param tableName table to be read
      * @param columnNames a list of column names of the table to retrieve
-     * @param fields a list of Field objects with a key and a value of a field
+     * @param fieldPairs a list of Field objects with a key and a value of a field
      * @param criteria "and" or "or" to specific the fields criteria
      * @return
      */
     public List<List<Object>> get(String tableName, List<String> columnNames,
-                                         List<Field> fields, String criteria) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || fields == null || criteria == null) {
+                                  List<FieldPair> fieldPairs, String criteria) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || fieldPairs == null || criteria == null) {
             return null;
         }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where ";
 
         if (criteria.equals("and")) {
-            String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? and "));
+            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? and "));
             sql += s + "=?";
         }
         if (criteria.equals("or")) {
-            String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? or "));
+            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? or "));
             sql += s + "=?";
         }
 
-        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
         List<List<Object>> result = new ArrayList<>();
         Method method = null;
 
@@ -241,22 +241,22 @@ public class AdeOrm implements Mapper {
     public boolean delete(Object object) {
         if (object == null) return false;
 
-        List<Field> fieldList = MapperUtil.parseFields(object);
+        List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
+        String tableName = object.getClass().getSimpleName();
+        String sql = "delete from ";
 
-
-        String tableName = (String) fieldList.get(0).getValue();
-
-        for (int i=0; i< fieldList.size(); i++) {
-            if (fieldList.get(i).getName().matches("Id")) {
-                String id = fieldList.get(i).getName();
-                Object pk = fieldList.get(i).getValue();
-                String sql = "delete from " + tableName + " where " + id + " = " + pk;
+        for (int i = 0; i< fieldPairList.size(); i++) {
+            if (fieldPairList.get(i).isPrimaryKey()) {
+                String id = fieldPairList.get(i).getName();
+                Object pk = fieldPairList.get(i).getValue();
+                sql += tableName + " where " + id + " = " + pk;
             }
         }
         try (Statement s = conn.createStatement()){
-
+            s.execute(sql);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return false;
     }
 }

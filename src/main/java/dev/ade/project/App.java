@@ -2,7 +2,8 @@ package dev.ade.project;
 
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.orm.AdeOrm;
-import dev.ade.project.orm.Field;
+import dev.ade.project.orm.FieldPair;
+import dev.ade.project.pojo.PostPojo;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
@@ -13,14 +14,17 @@ public class App {
         // For checking results
         try {
             AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
-
-            Field field1 = new Field("title", "Vanilla Ice Cream");
-
-            System.out.println(MapperUtil.parseFields(adeOrm));
-
-            // this gave a true value when column name didn't match.. hmm...
+//            PostPojo pp = new PostPojo(5, 3, "Strawberry Ice Cream", "Japan", "Akita", "tag", 5);
+//
+//            FieldPair fieldPair1 = new FieldPair("title", "Vanilla Ice Cream");
+//
+//            adeOrm.delete(pp);
+////
+//            System.out.println(MapperUtil.parseFields(pp));
+//
+//            // this gave a true value when column name didn't match.. hmm...
             boolean result1 = adeOrm.update("post","title","post_id",3, "Chocolate Ice Cream");
-            System.out.println(result1);
+//            System.out.println(result1);
 
 //            List<String> columnList = Arrays.asList("title", "city");
 //            List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");

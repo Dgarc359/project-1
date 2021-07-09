@@ -1,5 +1,7 @@
 package dev.ade.project.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -9,7 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.ade.project.orm.Field;
+import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.PrimaryKey;
+import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
 
@@ -54,13 +58,26 @@ public class MapperUtil {
         return 1;
     }
 
-    public static List<Field> parseFields(Object object) {
-        List<Field> fieldList = new ArrayList<>();
+    public static List<FieldPair> parseFields(Object object) {
+        List<FieldPair> fieldPairList = new ArrayList<>();
         Class<?> objectClass = object.getClass();
 
-        java.lang.reflect.Field[] fields = objectClass.getDeclaredFields();
-        for (java.lang.reflect.Field field : fields) {
+        Field[] fields = objectClass.getDeclaredFields();
+        for (Field field : fields) {
             String fieldName = field.getName();
+            String columnName = "";
+            boolean isPrimaryKey = false;
+            Annotation a = field.getDeclaredAnnotation(PrimaryKey.class);
+            Annotation b = field.getDeclaredAnnotation(ColumnName.class);
+            PrimaryKey pk = (PrimaryKey)a;
+            ColumnName cn = (ColumnName)b;
+            if (pk!=null) {
+                isPrimaryKey = true;
+            }
+
+            if (cn!=null) {
+                columnName = cn.key();
+            }
 
             String getterName = field.getType().getSimpleName().matches("boolean") ?
                     "is" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1) :
@@ -69,14 +86,14 @@ public class MapperUtil {
             try {
                 Method getterMethod = objectClass.getMethod(getterName);
                 Object fieldValue = getterMethod.invoke(object);
-                Field newField = new Field(fieldName, fieldValue);
-                fieldList.add(newField);
+                FieldPair newFieldPair = new FieldPair(columnName, fieldValue, isPrimaryKey);
+                fieldPairList.add(newFieldPair);
 
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        return fieldList;
+        return fieldPairList;
     }
 
 }

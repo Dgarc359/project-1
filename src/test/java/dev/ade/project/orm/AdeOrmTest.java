@@ -51,18 +51,18 @@ public class AdeOrmTest {
     @Test
     public void getTestAndConditions() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
-        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
-        Field condition2 = new Field("booleanCol", 1);
-        List<Field> conditions = Arrays.asList(condition1, condition2);
+        FieldPair condition1 = new FieldPair("numericCol", BigDecimal.valueOf(10));
+        FieldPair condition2 = new FieldPair("booleanCol", 1);
+        List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(1, adeOrm.get("tableA", columnNames, conditions, "and").size());
     }
 
     @Test
     public void testGetRecordsWithOrFields() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("id", "stringCol", "numericCol", "dateCol");
-        Field condition1 = new Field("numericCol", BigDecimal.valueOf(10));
-        Field condition2 = new Field("booleanCol", 1);
-        List<Field> conditions = Arrays.asList(condition1, condition2);
+        FieldPair condition1 = new FieldPair("numericCol", BigDecimal.valueOf(10));
+        FieldPair condition2 = new FieldPair("booleanCol", 1);
+        List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
     }
 
