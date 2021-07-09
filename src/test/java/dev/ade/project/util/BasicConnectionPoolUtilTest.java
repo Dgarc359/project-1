@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BasicConnectionPoolUtilTest {
 
-    @Test
+/*    @Test
     public void callingConnectionFromConnectionPool() throws SQLException {
         ConnectionPool connectionPool = BasicConnectionPoolUtil.create("jdbc:h2:mem:test","user","password");
 
         assertTrue(connectionPool.getConnection().isValid(1));
-    }
+    }*/
 }

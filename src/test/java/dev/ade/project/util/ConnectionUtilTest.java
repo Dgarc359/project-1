@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConnectionUtilTest {
 
-    @BeforeAll
+    /*@BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             RunScript.execute(connection, new FileReader("setup.sql"));
@@ -34,5 +34,5 @@ public class ConnectionUtilTest {
             RunScript.execute(connection, new FileReader("teardown.sql"));
         }
 
-    }
+    }*/
 }
