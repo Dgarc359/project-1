@@ -1,5 +1,7 @@
 package dev.ade.project.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -8,6 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.PrimaryKey;
 
 import dev.ade.project.orm.FieldPair;
 
@@ -54,28 +59,35 @@ public class MapperUtil {
         return 1;
     }
 
-    public static List<FieldPair> parseObject(Object object) {
+    public static List<FieldPair> parseFields(Object object) {
         List<FieldPair> fieldPairList = new ArrayList<>();
         Class<?> objectClass = object.getClass();
-        /*String className = objectClass.getSimpleName().toLowerCase(Locale.ROOT);
 
-        Field table = new Field("tableName", className);
-        fieldList.add(table);*/
-
-        java.lang.reflect.Field[] fields = objectClass.getDeclaredFields();
-        for (java.lang.reflect.Field field : fields) {
+        Field[] fields = objectClass.getDeclaredFields();
+        for (Field field : fields) {
             String fieldName = field.getName();
+            String columnName = "";
+            boolean isPrimaryKey = false;
+            Annotation a = field.getDeclaredAnnotation(PrimaryKey.class);
+            Annotation b = field.getDeclaredAnnotation(ColumnName.class);
+            PrimaryKey pk = (PrimaryKey)a;
+            ColumnName cn = (ColumnName)b;
+            if (pk!=null) {
+                isPrimaryKey = true;
+            }
 
-            // access method(s)? --- getId(), getName(), getBirthday()
-            String getterName = "get" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
-            // maybe we can access the getter directly based on the field name
+            if (cn!=null) {
+                columnName = cn.key();
+            }
+
+            String getterName = field.getType().getSimpleName().matches("boolean") ?
+                    "is" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1) :
+                    "get" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+
             try {
                 Method getterMethod = objectClass.getMethod(getterName);
-
-                // if we invoke the getter, we get the field value
                 Object fieldValue = getterMethod.invoke(object);
-
-                FieldPair newFieldPair = new FieldPair(fieldName, fieldValue);
+                FieldPair newFieldPair = new FieldPair(columnName, fieldValue, isPrimaryKey);
                 fieldPairList.add(newFieldPair);
 
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

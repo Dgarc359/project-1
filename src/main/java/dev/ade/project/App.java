@@ -21,8 +21,8 @@ public class App {
             AdeOrm adeOrm = new AdeOrm();
             System.out.println(AdeOrm.getConn().getMetaData().getDriverName());
             String result0 = adeOrm.get("users","username","user_id",1);
-            System.out.println(result0);
 
+            System.out.println(result0);
             List<String> columnNames = Arrays.asList("post_id", "user_id", "country", "city", "rating");
             List<Object> result = adeOrm.get("post", columnNames, "rating", 5);
             System.out.println(result);
@@ -53,7 +53,7 @@ public class App {
             boolean result1 = adeOrm.update("post", fieldPairs, pk);
             System.out.println(result1);
 
-        } catch (ArgumentFormatException  | SQLException e) {
+        } catch (ArgumentFormatException | SQLException e) {
             e.printStackTrace();
         }
 

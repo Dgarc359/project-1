@@ -6,7 +6,12 @@ import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.Method;
 import java.sql.*;
+<<<<<<< HEAD
 import java.util.*;
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> rp1-16/delete
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
@@ -271,6 +276,7 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
+<<<<<<< HEAD
     /**
      *
      * Add a row to a database table using String tableName, List of fields (Key, values) for
@@ -393,6 +399,8 @@ public class AdeOrm implements Mapper {
         }
         return result;
     }
+=======
+>>>>>>> rp1-16/delete
 
     /**
      * Update a generic type column value of a record by a primary key of any type
@@ -416,6 +424,7 @@ public class AdeOrm implements Mapper {
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
+<<<<<<< HEAD
                 return true;
     }
 
@@ -520,4 +529,53 @@ public class AdeOrm implements Mapper {
         return false;
     }
 
+=======
+        return true;
+    }
+
+    /**
+     * delete a generic type column value of a record by a primary key of any type
+     *
+     * @param tableName table to be updated
+     * @param id column name of the primary key
+     * @param idValue primary key value of a record to be updated
+     * @return
+     */
+    public boolean delete(String tableName, String id, Object idValue) throws ArgumentFormatException {
+        if (tableName == null || id == null || idValue == null) {
+            return false;
+        }
+        String sql = "delete from " + tableName + " where " + id + "=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            MapperUtil.setPs(ps, idValue);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return true;
+    }
+
+    public boolean delete(Object object) {
+        if (object == null) return false;
+
+        List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
+        String tableName = object.getClass().getSimpleName();
+        String sql = "delete from ";
+
+        for (int i = 0; i< fieldPairList.size(); i++) {
+            if (fieldPairList.get(i).isPrimaryKey()) {
+                String id = fieldPairList.get(i).getName();
+                Object pk = fieldPairList.get(i).getValue();
+                sql += tableName + " where " + id + " = " + pk;
+            }
+        }
+        try (Statement s = conn.createStatement()){
+            s.execute(sql);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+>>>>>>> rp1-16/delete
 }

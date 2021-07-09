@@ -72,7 +72,6 @@ public class AdeOrmTest {
         Field condition1 = new Field("user_id", 1);
         Field condition2 = new Field("rating", 3);
         List<Field> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(3, adeOrm.get("tableA", columnNames, conditions, "or").size());
     }*/
 
     /*@Test
@@ -174,6 +173,10 @@ public class AdeOrmTest {
         assertTrue(adeOrm.update("post", fields, pk));
     }
 */
+    public void testDeleteARecord() throws ArgumentFormatException {
+        assertTrue(adeOrm.delete("post", "post_id", 3));
+    }
+
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
