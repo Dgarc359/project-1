@@ -97,4 +97,44 @@ public class MapperUtil {
         return fieldPairList;
     }
 
+    public static void setField(Object object, Field field, String value) {
+            Class<?> clazz = object.getClass();
+            String fieldName = field.getName();
+            Class<?> fieldType = field.getType();
+
+            String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+
+            try {
+                Method setter = clazz.getMethod(setterName, fieldType);
+                Object fieldValue = convertStringToFieldType(value, fieldType);
+                setter.invoke(object, fieldValue);
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    private static Object convertStringToFieldType(String input, Class<?> type) throws IllegalAccessException, InstantiationException {
+        switch(type.getName()){
+            case "char":
+                return input.charAt(0);
+            case "byte":
+                return Byte.valueOf(input);
+            case "short":
+                return Short.valueOf(input);
+            case "int":
+                return Integer.valueOf(input);
+            case "long":
+                return Long.valueOf(input);
+            case "boolean":
+                return Boolean.valueOf(input);
+            case "java.lang.String":
+                return input;
+            case "java.time.LocalDate":
+                return LocalDate.parse(input);
+            default:
+                return type.newInstance();
+        }
+    }
+
 }

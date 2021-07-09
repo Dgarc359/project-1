@@ -28,9 +28,9 @@ public class User {
     @ColumnName(key = "user_password")
     private String userPassword;
 
-    User(){}
+    public User(){}
 
-    User(int userId, String firstName, String lastName, char gender, String username, String userPassword){
+    public User(int userId, String firstName, String lastName, char gender, String username, String userPassword){
         super();
         this.userId = userId;
         this.firstName = firstName;
@@ -103,7 +103,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "UserPojo{" +
+        return "User{" +
                 "userId=" + userId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

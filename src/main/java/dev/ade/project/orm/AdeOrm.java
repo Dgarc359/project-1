@@ -1,9 +1,14 @@
 package dev.ade.project.orm;
 
+import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.TableName;
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
@@ -11,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
     private static Connection conn;
-    // POJO class mirror with the a table in the db
+    // POJO class mirror with a table in the db
     private Class<?> clazz;
 
     public AdeOrm() {
@@ -58,37 +63,44 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
+
+
     /**
-     * Get generic type columns' values of a record by a primary key of any type.
+     * Get a record of a table by the primary key.
      *
-     * @param tableName table to be read
-     * @param columnNames a list of column names of the table to retrieve
      * @param pkName column name of the primary key
      * @param pkValue primary key value of a record to be retrieve
      * @return
      */
-    @Override
-    public List<Object>get(String tableName, List<String> columnNames, String pkName, Object pkValue) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || pkName == null || pkValue == null) {
+    public Object getById(String pkName, Object pkValue) throws ArgumentFormatException {
+        if (pkName == null || pkValue == null) {
             return null;
         }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName + " where " + pkName + "=?";
-        List<Object> result = new ArrayList<>();
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "select * from " + table.key() + " where " + pkName + "=?";
+        Object object = null;
+        try {
+            Constructor<?> constructor = clazz.getConstructor();
+            object = constructor.newInstance();
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        Field[] fields = clazz.getDeclaredFields();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             MapperUtil.setPs(ps, pkValue);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                for (int i = 0; i < columnNames.size(); i++) {
-                    result.add(rs.getString(columnNames.get(i)));
+                for (int i = 0; i < fields.length; i++) {
+                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
                 }
             }
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
-        return result;
+        return object;
     }
-
 
     /**
      * Get generic type columns' values of record(s) by a column value of any type.
@@ -102,7 +114,7 @@ public class AdeOrm implements Mapper {
      * @return
      */
 
-    public List<List<Object>>get(String tableName, List<String> columnNames, Object fieldValue, String fieldName) throws ArgumentFormatException {
+    public List<List<Object>> get(String tableName, List<String> columnNames, Object fieldValue, String fieldName) throws ArgumentFormatException {
         if (tableName == null || columnNames == null || fieldName == null || fieldValue == null) {
             return null;
         }
@@ -198,26 +210,28 @@ public class AdeOrm implements Mapper {
     /**
      * Get generic type columns' values of all records in a table
      *
-     * @param tableName the name of a table
      * @return
      */
-    public List<List<Object>>get(String tableName, List<String> columnNames) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName;
-        List<List<Object>> result = new ArrayList<>();
+    public List<Object> getAll() throws ArgumentFormatException {
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "select * from " + table.key();
+        Object object = null;
+        Constructor<?> constructor;
+        Field[] fields = clazz.getDeclaredFields();
+
+        List<Object> result = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            constructor = clazz.getConstructor();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
+                object = constructor.newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
                 }
-                result.add(record);
+                result.add(object);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new ArgumentFormatException("Argument formats are not correct", e);
         }
         return result;
