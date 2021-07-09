@@ -8,9 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import dev.ade.project.orm.Field;
+import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
 
@@ -55,8 +54,8 @@ public class MapperUtil {
         return 1;
     }
 
-    public static List<Field> parseObject(Object object) {
-        List<Field> fieldList = new ArrayList<>();
+    public static List<FieldPair> parseObject(Object object) {
+        List<FieldPair> fieldPairList = new ArrayList<>();
         Class<?> objectClass = object.getClass();
         /*String className = objectClass.getSimpleName().toLowerCase(Locale.ROOT);
 
@@ -76,14 +75,14 @@ public class MapperUtil {
                 // if we invoke the getter, we get the field value
                 Object fieldValue = getterMethod.invoke(object);
 
-                Field newField = new Field(fieldName, fieldValue);
-                fieldList.add(newField);
+                FieldPair newFieldPair = new FieldPair(fieldName, fieldValue);
+                fieldPairList.add(newFieldPair);
 
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        return fieldList;
+        return fieldPairList;
     }
 
 }

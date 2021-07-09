@@ -1,7 +1,7 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.exception.ArgumentFormatException;
-import dev.ade.project.pojo.PostPojo;
+import dev.ade.project.pojo.Post;
 import dev.ade.project.util.ConnectionUtil;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
@@ -88,59 +88,59 @@ public class AdeOrmTest {
     @Test
     public void addSinglePostWithDefaultIdCriteriaTest() throws ArgumentFormatException{
 
-        Field postField2 = new Field("user_id",1);
-        Field postField3 = new Field("title","Shrimp Linguini Alfredo");
-        Field postField4 = new Field("country","United States");
-        Field postField5 = new Field("city","Miami");
-        Field postField6 = new Field("tag","food");
-        Field postField7 = new Field("rating",5);
-        Field postField8 = new Field("timestamp", LocalDateTime.now());
+        FieldPair postFieldPair2 = new FieldPair("user_id",1);
+        FieldPair postFieldPair3 = new FieldPair("title","Shrimp Linguini Alfredo");
+        FieldPair postFieldPair4 = new FieldPair("country","United States");
+        FieldPair postFieldPair5 = new FieldPair("city","Miami");
+        FieldPair postFieldPair6 = new FieldPair("tag","food");
+        FieldPair postFieldPair7 = new FieldPair("rating",5);
+        FieldPair postFieldPair8 = new FieldPair("timestamp", LocalDateTime.now());
 
-        List<Field> postFields = Arrays.asList
-                (postField2,postField3,postField4,postField5,postField6,postField7,postField8);
+        List<FieldPair> postFieldPairs = Arrays.asList
+                (postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7, postFieldPair8);
 
-        assertTrue(adeOrm.add("post",postFields, -1));
+        assertTrue(adeOrm.add("post", postFieldPairs, -1));
     }
 
     @Test
     public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
-        Field postField1 = new Field("post_id", 10);
-        Field postField2 = new Field("user_id",1);
-        Field postField3 = new Field("title","Shrimp Linguini Alfredo");
-        Field postField4 = new Field("country","United States");
-        Field postField5 = new Field("city","Miami");
-        Field postField6 = new Field("tag","food");
-        Field postField7 = new Field("rating",5);
+        FieldPair postFieldPair1 = new FieldPair("post_id", 10);
+        FieldPair postFieldPair2 = new FieldPair("user_id",1);
+        FieldPair postFieldPair3 = new FieldPair("title","Shrimp Linguini Alfredo");
+        FieldPair postFieldPair4 = new FieldPair("country","United States");
+        FieldPair postFieldPair5 = new FieldPair("city","Miami");
+        FieldPair postFieldPair6 = new FieldPair("tag","food");
+        FieldPair postFieldPair7 = new FieldPair("rating",5);
 
-        List<Field> postFields = Arrays.asList
-                (postField1, postField2,postField3,postField4,postField5,postField6,postField7);
+        List<FieldPair> postFieldPairs = Arrays.asList
+                (postFieldPair1, postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7);
 
-        assertTrue(adeOrm.add("post",postFields));
+        assertTrue(adeOrm.add("post", postFieldPairs));
     }
 
     @Test
     public void addObjectPostTest() throws ArgumentFormatException{
-        PostPojo postPojoJo = new PostPojo
+        Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
 
-        assertTrue(adeOrm.add(postPojoJo));
+        assertTrue(adeOrm.add(postJo));
     }
 
     @Test
     public void addSinglePostWithNonIntegerPrimaryKeyTest() throws ArgumentFormatException{
 
-        Field field1 = new Field("prim_key","test");
-        List<Field> fields = Arrays.asList(field1);
+        FieldPair fieldPair1 = new FieldPair("prim_key","test");
+        List<FieldPair> fieldPairs = Arrays.asList(fieldPair1);
 
-        assertTrue(adeOrm.add("test_table",fields));
+        assertTrue(adeOrm.add("test_table", fieldPairs));
     }
 
     @Test
     public void testGetInnerJoinWithCondition() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
-        Field condition1 = new Field("user_id", 1);
-        Field condition2 = new Field("rating", 3);
-        List<Field> conditions = Arrays.asList(condition1, condition2);
+        FieldPair condition1 = new FieldPair("user_id", 1);
+        FieldPair condition2 = new FieldPair("rating", 3);
+        List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(2, adeOrm.get("inner", "users", "users.user_id", "post", "post.user_id",
                 columnNames, "users.user_id", 1).size());
     }
@@ -148,9 +148,9 @@ public class AdeOrmTest {
     @Test
     public void testGetLeftJoin() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
-        Field condition1 = new Field("user_id", 1);
-        Field condition2 = new Field("rating", 3);
-        List<Field> conditions = Arrays.asList(condition1, condition2);
+        FieldPair condition1 = new FieldPair("user_id", 1);
+        FieldPair condition2 = new FieldPair("rating", 3);
+        List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(4, adeOrm.get("inner", "users", "users.user_id", "post", "post.user_id",
                 columnNames).size());
     }

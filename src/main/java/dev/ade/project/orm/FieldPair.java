@@ -2,11 +2,11 @@ package dev.ade.project.orm;
 
 import java.util.Objects;
 
-public class Field {
+public class FieldPair {
     private String name;
     private Object value;
 
-    public Field(String name, Object value) {
+    public FieldPair(String name, Object value) {
         this.name = name;
         this.value = value;
     }
@@ -30,8 +30,8 @@ public class Field {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Field)) return false;
-        Field that = (Field) o;
+        if (!(o instanceof FieldPair)) return false;
+        FieldPair that = (FieldPair) o;
         return name.equals(that.name) && value.equals(that.value);
     }
 

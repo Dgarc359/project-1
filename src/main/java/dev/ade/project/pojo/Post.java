@@ -7,7 +7,7 @@ import dev.ade.project.annotations.TableName;
 import java.util.Objects;
 
 @TableName(key = "post")
-public class PostPojo {
+public class Post {
 
     @ColumnName(key = "post_id")
     private int postId;
@@ -31,9 +31,9 @@ public class PostPojo {
     @ColumnName(key = "rating")
     private int rating;
 
-    public PostPojo(){}
+    public Post(){}
 
-    public PostPojo(int postId, int userId, String title, String country, String city, String tag, int rating){
+    public Post(int postId, int userId, String title, String country, String city, String tag, int rating){
         super();
         this.postId = postId;
         this.userId = userId;
@@ -104,8 +104,8 @@ public class PostPojo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostPojo postPojo = (PostPojo) o;
-        return postId == postPojo.postId && userId == postPojo.userId && rating == postPojo.rating && Objects.equals(title, postPojo.title) && Objects.equals(country, postPojo.country) && Objects.equals(city, postPojo.city) && Objects.equals(tag, postPojo.tag);
+        Post post = (Post) o;
+        return postId == post.postId && userId == post.userId && rating == post.rating && Objects.equals(title, post.title) && Objects.equals(country, post.country) && Objects.equals(city, post.city) && Objects.equals(tag, post.tag);
     }
 
     @Override

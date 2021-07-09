@@ -4,12 +4,10 @@ import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AdeOrm implements Mapper {
     private static Connection conn;
@@ -231,29 +229,29 @@ public class AdeOrm implements Mapper {
       *
      * @param tableName table to be read
      * @param columnNames a list of column names of the table to retrieve
-     * @param fields a list of Field objects with a key and a value of a field
+     * @param fieldPairs a list of Field objects with a key and a value of a field
      * @param criteria "and" or "or" to specific the fields criteria
      * @return
      */
     public List<List<Object>> get(String tableName, List<String> columnNames,
-                                         List<Field> fields, String criteria) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || fields == null || criteria == null) {
+                                  List<FieldPair> fieldPairs, String criteria) throws ArgumentFormatException {
+        if (tableName == null || columnNames == null || fieldPairs == null || criteria == null) {
             return null;
         }
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableName + " where ";
 
         if (criteria.equals("and")) {
-            String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? and "));
+            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? and "));
             sql += s + "=?";
         }
 
         if (criteria.equals("or")) {
-            String s = fields.stream().map(Field::getName).collect(Collectors.joining("=? or "));
+            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? or "));
             sql += s + "=?";
         }
 
-        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
         List<List<Object>> result = new ArrayList<>();
         Method method = null;
 
@@ -279,7 +277,7 @@ public class AdeOrm implements Mapper {
      * populating the rows, and idCriteria to set primary key
      *
      * @param tableName table to be read
-     * @param fields a list of field objects with a key and a value of field
+     * @param fieldPairs a list of field objects with a key and a value of field
      * @param idCriteria idCriteria, can either be a custom value, or it can be set to "default"
      *                   for default database primary key
      * @return
@@ -287,14 +285,14 @@ public class AdeOrm implements Mapper {
      */
 
 
-    public boolean add(String tableName, List<Field> fields, int idCriteria) throws ArgumentFormatException{
-        if (tableName == null || fields == null){
+    public boolean add(String tableName, List<FieldPair> fieldPairs, int idCriteria) throws ArgumentFormatException{
+        if (tableName == null || fieldPairs == null){
             throw new ArgumentFormatException();
         }
 
         String sql = "insert into " + tableName + " values (";
 
-        String[] questionArray = new String[fields.size()];
+        String[] questionArray = new String[fieldPairs.size()];
         Arrays.fill(questionArray, "?");
 
         String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
@@ -306,7 +304,7 @@ public class AdeOrm implements Mapper {
             sql += idCriteria + ", " + s;
         }
 
-        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
@@ -422,24 +420,24 @@ public class AdeOrm implements Mapper {
     }
 
 
-    public boolean add(String tableName, List<Field> fields) throws ArgumentFormatException{
-        if (tableName == null || fields == null){
+    public boolean add(String tableName, List<FieldPair> fieldPairs) throws ArgumentFormatException{
+        if (tableName == null || fieldPairs == null){
             throw new ArgumentFormatException();
         }
 
         String sql = "insert into " + tableName + " values (";
 
-        String[] questionArray = new String[fields.size()];
+        String[] questionArray = new String[fieldPairs.size()];
         Arrays.fill(questionArray, "?");
         String s;
 
-        if(fields.size() > 1) {
+        if(fieldPairs.size() > 1) {
             s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
         }
         else{ s = Arrays.stream(questionArray).collect(Collectors.joining("","",");"));}
 
         sql += s;
-        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
         System.out.println(Arrays.toString(fieldValues));
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
@@ -456,13 +454,13 @@ public class AdeOrm implements Mapper {
     public boolean add(Object pojo) throws ArgumentFormatException{
 
 
-        List<Field> pojoFields = MapperUtil.parseObject(pojo);
-        Object[] fieldValues = pojoFields.stream().map(Field::getValue).toArray();
+        List<FieldPair> pojoFieldPairs = MapperUtil.parseObject(pojo);
+        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
         String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
 
         System.out.println(Arrays.toString(fieldValues));
 
-        String[] questionArray = new String[pojoFields.size()];
+        String[] questionArray = new String[pojoFieldPairs.size()];
         Arrays.fill(questionArray, "?");
         String s;
 
@@ -487,21 +485,21 @@ public class AdeOrm implements Mapper {
      * Update multiple generic type columns values of a record by a primary key of any type
      *
      * @param tableName table to be updated
-     * @param fields columns being updated along with their values
+     * @param fieldPairs columns being updated along with their values
      * @param pk column name and value of the primary key
      * @return
      */
-    public boolean update(String tableName, List<Field> fields, Field pk) throws ArgumentFormatException {
-        if (tableName == null || fields == null || pk == null) {
+    public boolean update(String tableName, List<FieldPair> fieldPairs, FieldPair pk) throws ArgumentFormatException {
+        if (tableName == null || fieldPairs == null || pk == null) {
             return false;
         }
 
         String sql = "update " + tableName + " set ";
 
-        sql += fields.stream().map(Field::getName).collect(Collectors.joining(" = ? , ", "", " = ? "));
+        sql += fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining(" = ? , ", "", " = ? "));
         sql += "where " + pk.getName() + " = " + pk.getValue() + ";";
 
-        Object[] fieldValues = fields.stream().map(Field::getValue).toArray();
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             MapperUtil.setPs(ps, fieldValues);
