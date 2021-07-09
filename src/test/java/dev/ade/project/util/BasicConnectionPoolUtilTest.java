@@ -10,7 +10,7 @@ public class BasicConnectionPoolUtilTest {
 
     @Test
     public void callingConnectionFromConnectionPool() throws SQLException {
-        ConnectionPool connectionPool = BasicConnectionPoolUtil.create();
+        ConnectionPool connectionPool = BasicConnectionPoolUtil.create("jdbc:h2:mem:test","user","password");
 
         assertTrue(connectionPool.getConnection().isValid(1));
     }

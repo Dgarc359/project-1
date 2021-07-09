@@ -11,21 +11,25 @@ public class BasicConnectionPoolUtil implements ConnectionPool{
     /*private static final String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
     private static final String password = System.getenv("PASSWORD");
     private static final String username = System.getenv("USERNAME");*/
-    private static final String url = "jdbc:h2:mem:test";
-    private static final String password = System.getenv("PASSWORD");
-    private static final String username = System.getenv("USERNAME");
+    private String url;
+    private String password;
+    private String username;
     private List<Connection> connectionPool;
     private List<Connection> usedConnections = new ArrayList<>();
     private static int INITIAL_POOL_SIZE = 10;
 
-    public BasicConnectionPoolUtil(String URL, String USERNAME, String PASSWORD, List<Connection> POOL) {
+    public BasicConnectionPoolUtil(String url, String username, String password, List<Connection> pool) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.connectionPool = pool;
     }
 
-    public static BasicConnectionPoolUtil create() throws SQLException {
+    public static BasicConnectionPoolUtil create(String url, String username, String password) throws SQLException {
         List<Connection> pool = new ArrayList<>(INITIAL_POOL_SIZE);
 
         for(int i = 0; i < INITIAL_POOL_SIZE; i++){
-            pool.add(createConnection());
+            pool.add(createConnection(url, username, password));
         }
 
         return new BasicConnectionPoolUtil(url, username, password, pool);
@@ -44,11 +48,42 @@ public class BasicConnectionPoolUtil implements ConnectionPool{
         return usedConnections.remove(connection);
     }
 
-    private static Connection createConnection() throws SQLException {
+    private static Connection createConnection(String url, String username, String password) throws SQLException {
         return DriverManager.getConnection(url,username,password);
+    }
+
+    public void shutdown() throws SQLException {
+        usedConnections.forEach(this::releaseConnection);
+        for (Connection c : connectionPool){
+            c.close();
+        }
     }
 
     public int getSize(){
         return connectionPool.size() + usedConnections.size();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
