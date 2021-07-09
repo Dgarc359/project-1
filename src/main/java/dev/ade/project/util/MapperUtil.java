@@ -84,7 +84,7 @@ public class MapperUtil {
             }
 
             if (cn!=null) {
-                columnName = cn.key();
+                columnName = cn.columnName();
             }
 
             String getterName = field.getType().getSimpleName().matches("boolean") ?

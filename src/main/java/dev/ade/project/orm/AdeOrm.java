@@ -77,7 +77,7 @@ public class AdeOrm implements Mapper {
             return null;
         }
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.key() + " where " + pkName + "=?";
+        String sql = "select * from " + table.tableName() + " where " + pkName + "=?";
         Object object = null;
         try {
             Constructor<?> constructor = clazz.getConstructor();
@@ -93,7 +93,7 @@ public class AdeOrm implements Mapper {
             while (rs.next()) {
                 for (int i = 0; i < fields.length; i++) {
                     ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
                 }
             }
         } catch (SQLException e) {
@@ -214,7 +214,7 @@ public class AdeOrm implements Mapper {
      */
     public List<Object> getAll() throws ArgumentFormatException {
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.key();
+        String sql = "select * from " + table.tableName();
         Object object = null;
         Constructor<?> constructor;
         Field[] fields = clazz.getDeclaredFields();
@@ -227,7 +227,7 @@ public class AdeOrm implements Mapper {
                 object = constructor.newInstance();
                 for (int i = 0; i < fields.length; i++) {
                     ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
                 }
                 result.add(object);
             }
