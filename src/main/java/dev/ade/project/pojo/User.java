@@ -7,7 +7,7 @@ import dev.ade.project.annotations.TableName;
 import java.util.Objects;
 
 @TableName(key = "users")
-public class UserPojo {
+public class User {
 
     @PrimaryKey
     @ColumnName(key = "user_id")
@@ -28,9 +28,9 @@ public class UserPojo {
     @ColumnName(key = "user_password")
     private String userPassword;
 
-    UserPojo(){}
+    public User(){}
 
-    UserPojo(int userId, String firstName, String lastName, char gender, String username, String userPassword){
+    public User(int userId, String firstName, String lastName, char gender, String username, String userPassword){
         super();
         this.userId = userId;
         this.firstName = firstName;
@@ -92,8 +92,8 @@ public class UserPojo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserPojo userPojo = (UserPojo) o;
-        return userId == userPojo.userId && gender == userPojo.gender && Objects.equals(firstName, userPojo.firstName) && Objects.equals(lastName, userPojo.lastName) && Objects.equals(username, userPojo.username) && Objects.equals(userPassword, userPojo.userPassword);
+        User user = (User) o;
+        return userId == user.userId && gender == user.gender && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username) && Objects.equals(userPassword, user.userPassword);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class UserPojo {
 
     @Override
     public String toString() {
-        return "UserPojo{" +
+        return "User{" +
                 "userId=" + userId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

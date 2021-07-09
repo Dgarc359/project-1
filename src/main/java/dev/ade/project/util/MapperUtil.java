@@ -1,5 +1,7 @@
 package dev.ade.project.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -8,9 +10,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import dev.ade.project.orm.Field;
+import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.PrimaryKey;
+
+import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
 
@@ -55,35 +59,89 @@ public class MapperUtil {
         return 1;
     }
 
-    public static List<Field> parseObject(Object object) {
-        List<Field> fieldList = new ArrayList<>();
+    /**
+     * parses out field information from an object
+     * determines the field that corresponds to the table's primary key
+     *
+     * @param object the object who's fields will be returned
+     * @return
+     */
+    public static List<FieldPair> parseFields(Object object) {
+        List<FieldPair> fieldPairList = new ArrayList<>();
         Class<?> objectClass = object.getClass();
-        /*String className = objectClass.getSimpleName().toLowerCase(Locale.ROOT);
 
-        Field table = new Field("tableName", className);
-        fieldList.add(table);*/
-
-        java.lang.reflect.Field[] fields = objectClass.getDeclaredFields();
-        for (java.lang.reflect.Field field : fields) {
+        Field[] fields = objectClass.getDeclaredFields();
+        for (Field field : fields) {
             String fieldName = field.getName();
+            String columnName = "";
+            boolean isPrimaryKey = false;
+            Annotation a = field.getDeclaredAnnotation(PrimaryKey.class);
+            Annotation b = field.getDeclaredAnnotation(ColumnName.class);
+            PrimaryKey pk = (PrimaryKey)a;
+            ColumnName cn = (ColumnName)b;
+            if (pk!=null) {
+                isPrimaryKey = true;
+            }
 
-            // access method(s)? --- getId(), getName(), getBirthday()
-            String getterName = "get" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
-            // maybe we can access the getter directly based on the field name
+            if (cn!=null) {
+                columnName = cn.key();
+            }
+
+            String getterName = field.getType().getSimpleName().matches("boolean") ?
+                    "is" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1) :
+                    "get" + fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+
             try {
                 Method getterMethod = objectClass.getMethod(getterName);
-
-                // if we invoke the getter, we get the field value
                 Object fieldValue = getterMethod.invoke(object);
-
-                Field newField = new Field(fieldName, fieldValue);
-                fieldList.add(newField);
+                FieldPair newFieldPair = new FieldPair(columnName, fieldValue, isPrimaryKey);
+                fieldPairList.add(newFieldPair);
 
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        return fieldList;
+        return fieldPairList;
+    }
+
+    public static void setField(Object object, Field field, String value) {
+            Class<?> clazz = object.getClass();
+            String fieldName = field.getName();
+            Class<?> fieldType = field.getType();
+
+            String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+
+            try {
+                Method setter = clazz.getMethod(setterName, fieldType);
+                Object fieldValue = convertStringToFieldType(value, fieldType);
+                setter.invoke(object, fieldValue);
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    private static Object convertStringToFieldType(String input, Class<?> type) throws IllegalAccessException, InstantiationException {
+        switch(type.getName()){
+            case "char":
+                return input.charAt(0);
+            case "byte":
+                return Byte.valueOf(input);
+            case "short":
+                return Short.valueOf(input);
+            case "int":
+                return Integer.valueOf(input);
+            case "long":
+                return Long.valueOf(input);
+            case "boolean":
+                return Boolean.valueOf(input);
+            case "java.lang.String":
+                return input;
+            case "java.time.LocalDate":
+                return LocalDate.parse(input);
+            default:
+                return type.newInstance();
+        }
     }
 
 }
