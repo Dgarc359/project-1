@@ -59,6 +59,13 @@ public class MapperUtil {
         return 1;
     }
 
+    /**
+     * parses out field information from an object
+     * determines the field that corresponds to the table's primary key
+     *
+     * @param object the object who's fields will be returned
+     * @return
+     */
     public static List<FieldPair> parseFields(Object object) {
         List<FieldPair> fieldPairList = new ArrayList<>();
         Class<?> objectClass = object.getClass();
