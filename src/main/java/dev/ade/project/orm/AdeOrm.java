@@ -527,9 +527,9 @@ public class AdeOrm implements Mapper {
     /**
      * delete a generic type column value of a record by a primary key of any type
      *
-     * @param tableName table to be updated
+     * @param tableName table to be deleted
      * @param id column name of the primary key
-     * @param idValue primary key value of a record to be updated
+     * @param idValue primary key value of a record to be deleted
      * @return
      */
     public boolean delete(String tableName, String id, Object idValue) throws ArgumentFormatException {
@@ -547,6 +547,12 @@ public class AdeOrm implements Mapper {
         return true;
     }
 
+    /**
+     * delete a record from the db given an object
+     *
+     * @param object object representation of record to be deleted
+     * @return
+     */
     public boolean delete(Object object) {
         if (object == null) return false;
 
@@ -563,6 +569,7 @@ public class AdeOrm implements Mapper {
         }
         try (Statement s = conn.createStatement()){
             s.execute(sql);
+            return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
