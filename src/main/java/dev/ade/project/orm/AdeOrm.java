@@ -6,12 +6,7 @@ import dev.ade.project.util.MapperUtil;
 
 import java.lang.reflect.Method;
 import java.sql.*;
-<<<<<<< HEAD
 import java.util.*;
-=======
-import java.util.ArrayList;
-import java.util.List;
->>>>>>> rp1-16/delete
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
@@ -276,7 +271,6 @@ public class AdeOrm implements Mapper {
         return result;
     }
 
-<<<<<<< HEAD
     /**
      *
      * Add a row to a database table using String tableName, List of fields (Key, values) for
@@ -399,8 +393,6 @@ public class AdeOrm implements Mapper {
         }
         return result;
     }
-=======
->>>>>>> rp1-16/delete
 
     /**
      * Update a generic type column value of a record by a primary key of any type
@@ -424,8 +416,7 @@ public class AdeOrm implements Mapper {
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
-<<<<<<< HEAD
-                return true;
+        return true;
     }
 
 
@@ -463,7 +454,7 @@ public class AdeOrm implements Mapper {
     public boolean add(Object pojo) throws ArgumentFormatException{
 
 
-        List<FieldPair> pojoFieldPairs = MapperUtil.parseObject(pojo);
+        List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
         Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
         String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
 
@@ -520,20 +511,6 @@ public class AdeOrm implements Mapper {
     }
 
     /**
-     * Update multiple generic type columns values of a record by a primary key of any type
-     * using just an object
-     * @param object record to be updated
-     * @return
-     */
-    public boolean update(Object object) {
-        return false;
-    }
-
-=======
-        return true;
-    }
-
-    /**
      * delete a generic type column value of a record by a primary key of any type
      *
      * @param tableName table to be updated
@@ -577,5 +554,4 @@ public class AdeOrm implements Mapper {
         }
         return false;
     }
->>>>>>> rp1-16/delete
 }
