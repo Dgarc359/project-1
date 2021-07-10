@@ -192,6 +192,38 @@ public class AdeOrm implements Mapper {
         }
     }
 
+    /**
+     * Update multiple generic type columns values of a record by a primary key of any type
+     * using just an object
+     * @param object record to be updated
+     * @return
+     */
+    public boolean update(Object object) {
+        if (object==null) return false;
+
+        List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
+        String tableName = object.getClass().getSimpleName();
+        String sql = "update " + tableName + " set ";
+        String columnName;
+        Object columnValue;
+        String id = "";
+        Object pk = null;
+
+        for (int i=0; i< fieldPairList.size(); i++) {
+            if (!fieldPairList.get(i).isPrimaryKey()) {
+                columnName = fieldPairList.get(i).getName();
+                columnValue = fieldPairList.get(i).getValue();
+                sql += columnName + " = " + columnValue + ", ";
+            } else {
+                id = fieldPairList.get(i).getName();
+                pk = fieldPairList.get(i).getValue();
+            }
+        }
+        sql = sql.substring(0, sql.length()-1);
+        sql += " where " + id + " = " + pk + ";";
+        return true;
+    }
+
 
     /**
      * delete a generic type column value of a record by a primary key of any type
