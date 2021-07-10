@@ -1,31 +1,32 @@
 package dev.ade.project.pojo;
 
 import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.ForeignKey;
 import dev.ade.project.annotations.PrimaryKey;
 import dev.ade.project.annotations.TableName;
 
 import java.util.Objects;
 
-@TableName(key = "users")
+@TableName(tableName = "users")
 public class User {
 
     @PrimaryKey
-    @ColumnName(key = "user_id")
+    @ColumnName(columnName = "user_id")
     private int userId;
 
-    @ColumnName(key = "first_name")
+    @ColumnName(columnName = "first_name")
     private String firstName;
 
-    @ColumnName(key = "last_name")
+    @ColumnName(columnName = "last_name")
     private String lastName;
 
-    @ColumnName(key = "gender")
+    @ColumnName(columnName = "gender")
     private char gender;
 
-    @ColumnName(key = "username")
+    @ColumnName(columnName = "username")
     private String username;
 
-    @ColumnName(key = "user_password")
+    @ColumnName(columnName = "user_password")
     private String userPassword;
 
     public User(){}

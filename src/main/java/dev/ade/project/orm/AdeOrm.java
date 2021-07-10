@@ -259,7 +259,7 @@ public class AdeOrm implements Mapper {
         }
 
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.key() + " where " + pkName + "=?";
+        String sql = "select * from " + table.tableName() + " where " + pkName + "=?";
         Object object = null;
         try {
             Constructor<?> constructor = clazz.getConstructor();
@@ -276,7 +276,7 @@ public class AdeOrm implements Mapper {
             while (rs.next()) {
                 for (int i = 0; i < fields.length; i++) {
                     ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
                 }
             }
         } catch (SQLException e) {
@@ -305,7 +305,7 @@ public class AdeOrm implements Mapper {
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
 
         String s = Arrays.stream(columnNames).collect(Collectors.joining(", ","",""));
-        String sql = "select " + s + " from " + table.key() + " where " + pkName + "=?";
+        String sql = "select " + s + " from " + table.tableName() + " where " + pkName + "=?";
         List<Object> result = new ArrayList<>();
         try(Connection conn = ConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
@@ -348,7 +348,7 @@ public class AdeOrm implements Mapper {
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
         String colNames = String.join(", ", columnNames);
 
-        String sql = "select " + colNames + " from " + table.key() + " where " + fieldName + "=?" +
+        String sql = "select " + colNames + " from " + table.tableName() + " where " + fieldName + "=?" +
                         " order by " + orderCol + " " + order;
 
         List<List<Object>> result = new ArrayList<>();
@@ -377,7 +377,7 @@ public class AdeOrm implements Mapper {
      */
     public List<Object> getAll() throws ArgumentFormatException {
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.key();
+        String sql = "select * from " + table.tableName();
         Object object = null;
         Constructor<?> constructor;
         Field[] fields = clazz.getDeclaredFields();
@@ -391,7 +391,7 @@ public class AdeOrm implements Mapper {
                 object = constructor.newInstance();
                 for (int i = 0; i < fields.length; i++) {
                     ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
                 }
                 result.add(object);
             }
@@ -418,7 +418,7 @@ public class AdeOrm implements Mapper {
         }
 
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.key() + " order by " + orderCol + " " + order;
+        String sql = "select * from " + table.tableName() + " order by " + orderCol + " " + order;
 
         Object object = null;
         Constructor<?> constructor;
@@ -432,7 +432,7 @@ public class AdeOrm implements Mapper {
                 object = constructor.newInstance();
                 for (int i = 0; i < fields.length; i++) {
                     ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.key()));
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
                 }
                 result.add(object);
             }
@@ -459,7 +459,7 @@ public class AdeOrm implements Mapper {
         }
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
         String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + table.key() + " where ";
+        String sql = "select " + colNames + " from " + table.tableName() + " where ";
 
         if (criterion.equals("and")) {
             sql += fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? and ")) + "=?";
@@ -509,9 +509,9 @@ public class AdeOrm implements Mapper {
 
         TableName tableA = clazz.getDeclaredAnnotation(TableName.class);
 
-        System.out.println(tableA.key());
+        System.out.println(tableA.tableName());
         String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableA.key() + " " + jType + " join " + tableB +
+        String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
                 " on " + pkA + " = " + fkA;
         System.out.println(sql);
         List<List<Object>> result = new ArrayList<>();
@@ -553,7 +553,7 @@ public class AdeOrm implements Mapper {
 
         TableName tableA = clazz.getDeclaredAnnotation(TableName.class);
         String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableA.key() + " " + jType + " join " + tableB +
+        String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
                 " on " + pkA + " = " + fkA + " where " + fieldName + "=?";
         List<List<Object>> result = new ArrayList<>();
         try(Connection conn = ConnectionUtil.getConnection();

@@ -6,29 +6,29 @@ import dev.ade.project.annotations.TableName;
 
 import java.util.Objects;
 
-@TableName(key = "post")
+@TableName(tableName = "post")
 public class Post {
 
-    @ColumnName(key = "post_id")
+    @PrimaryKey
+    @ColumnName(columnName = "post_id")
     private int postId;
 
-    @PrimaryKey
-    @ColumnName(key = "user_id")
+    @ColumnName(columnName = "user_id")
     private int userId;
 
-    @ColumnName(key = "title")
+    @ColumnName(columnName = "title")
     private String title;
 
-    @ColumnName(key = "country")
+    @ColumnName(columnName = "country")
     private String country;
 
-    @ColumnName(key = "city")
+    @ColumnName(columnName = "city")
     private String city;
 
-    @ColumnName(key = "tag")
+    @ColumnName(columnName = "tag")
     private String tag;
 
-    @ColumnName(key = "rating")
+    @ColumnName(columnName = "rating")
     private int rating;
 
     public Post(){}

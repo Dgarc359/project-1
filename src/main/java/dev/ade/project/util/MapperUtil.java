@@ -14,7 +14,6 @@ import java.util.List;
 import dev.ade.project.annotations.ColumnName;
 import dev.ade.project.annotations.PrimaryKey;
 
-import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
@@ -86,7 +85,7 @@ public class MapperUtil {
             }
 
             if (cn!=null) {
-                columnName = cn.key();
+                columnName = cn.columnName();
             }
 
             String getterName = field.getType().getSimpleName().matches("boolean") ?
@@ -170,7 +169,7 @@ public class MapperUtil {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(PrimaryKey.class) &&
-                    field.getDeclaredAnnotation(ColumnName.class).key().equals(fieldName)) {
+                    field.getDeclaredAnnotation(ColumnName.class).columnName().equals(fieldName)) {
                 return true;
             }
         }
