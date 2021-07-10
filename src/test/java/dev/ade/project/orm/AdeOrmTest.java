@@ -156,11 +156,11 @@ public class AdeOrmTest {
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
 */
 
-        User user = new User
-                (10,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
+        User user1 = new User
+                (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
         AdeOrm userAdeOrm = new AdeOrm(User.class);
 
-        assertTrue(userAdeOrm.add(user));
+        assertTrue(userAdeOrm.add(user1));
     }
 
     @Test

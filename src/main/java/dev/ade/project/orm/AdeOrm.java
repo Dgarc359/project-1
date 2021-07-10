@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
@@ -58,19 +59,34 @@ public class AdeOrm implements Mapper {
         System.out.println(pkVal);
 
         List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
-        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
+        Object[] fieldValues;
         String[] questionArray;
         String s;
 
 
         if (pkVal == 0) { // pkVal has been changed to 0 and is therefore default
-            sql += " values (default, ";
-            questionArray = new String[pojoFieldPairs.size() - 1];
-            fieldValues = Arrays.copyOfRange(fieldValues, 1, fieldValues.length);
+
+            Object[] colNames = pojoFieldPairs.stream().filter(w -> !w.isPrimaryKey()).map(FieldPair::getName).toArray();
+            sql += pojoFieldPairs.stream()
+                    .filter(w -> !w.isPrimaryKey())
+                    .map(FieldPair::getName)
+                    .collect(Collectors.joining(", "," ( "," )"));
+
+            System.out.println(sql);
+
+            fieldValues = pojoFieldPairs.stream().filter(w -> !w.isPrimaryKey()).map(FieldPair::getValue).toArray();
+
+            System.out.println(Arrays.toString(fieldValues));
+            questionArray = new String[pojoFieldPairs.size() -1 ];
+
         }else{ // pkVal has been changed to non-zero and therefore sql statement needs to involve it
-            sql += " values (";
+
+            fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
             questionArray = new String[pojoFieldPairs.size()];
+
         }
+
+        sql += " values (";
 
         Arrays.fill(questionArray, "?");
         s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
@@ -88,42 +104,8 @@ public class AdeOrm implements Mapper {
         } catch (SQLException throwables) {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
         }
+
         return true;
-
-
-        /*if (PrimaryKey == 0) {
-            String sql = "insert into " + table + "( " + columnNames delimited by, +" )" + " values(";
-
-            System.out.println(Arrays.toString(fieldValues));
-
-            Constructor<?> constructor;
-            Object object;
-            Field[] fields = clazz.getDeclaredFields();
-
-            List<Object> result = new ArrayList<>();
-
-            // check if primary key is an int value
-            // if it is then if it's 0 we can set the columns what the person wants
-            // if it's not zero then every column including the primary key needs to be added
-
-            try (Connection conn = ConnectionUtil.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-                constructor = clazz.getConstructor();
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    object = constructor.newInstance();
-                    for (int i = 0; i < fields.length; i++) {
-                        ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-
-                    }
-                }
-            } catch (SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException throwables) {
-                throwables.printStackTrace();
-            }
-        }else{
-            String sql = "insert into " + table + " values(";
-        }
-         */
     }
 
 
