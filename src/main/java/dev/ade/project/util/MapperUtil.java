@@ -60,6 +60,8 @@ public class MapperUtil {
                 ps.setArray(i++, (Array) value);
             } else if (value instanceof String) {
                 ps.setString(i++, (String) value);
+            } else if (value instanceof Character) {
+                ps.setString(i++, String.valueOf(value));
             } else {
                 return 0;
             }

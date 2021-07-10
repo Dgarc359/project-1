@@ -29,17 +29,11 @@ public class AdeOrm implements Mapper {
 
     public boolean add(Object pojo) throws ArgumentFormatException{
 
-        List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
-        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
-        Object[] fieldKeys = pojoFieldPairs.stream().map(FieldPair::getName).toArray();
-        System.out.println(Arrays.toString(fieldValues) + " " + Arrays.toString(fieldKeys));
-
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "insert into " + table;
+        String sql = "insert into " + table.tableName();
 
         Boolean primaryKeyIsIntCheck = false;
         int pkVal = -1;
-        ColumnName pkColumn = null;
 
         for(Field field : clazz.getDeclaredFields()){
             if(field.isAnnotationPresent(PrimaryKey.class)){
@@ -56,8 +50,6 @@ public class AdeOrm implements Mapper {
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
-
-                    pkColumn = field.getDeclaredAnnotation(ColumnName.class);
                 }
             }
         }
@@ -65,11 +57,39 @@ public class AdeOrm implements Mapper {
         System.out.println(primaryKeyIsIntCheck);
         System.out.println(pkVal);
 
-        switch(pkVal){
-            case -1: // pkVal hasn't been changed and is therefore not an int
-            case 0: // pkVal has been changed to 0 and is therefore default
-            default: // pkVal has been changed to non-zero and therefore sql statement needs to involve it
+        List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
+        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
+        String[] questionArray;
+        String s;
+
+
+        if (pkVal == 0) { // pkVal has been changed to 0 and is therefore default
+            sql += " values (default, ";
+            questionArray = new String[pojoFieldPairs.size() - 1];
+            fieldValues = Arrays.copyOfRange(fieldValues, 1, fieldValues.length);
+        }else{ // pkVal has been changed to non-zero and therefore sql statement needs to involve it
+            sql += " values (";
+            questionArray = new String[pojoFieldPairs.size()];
         }
+
+        Arrays.fill(questionArray, "?");
+        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+
+        sql += s;
+        System.out.println(sql);
+        System.out.println(Arrays.toString(fieldValues));
+
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+
+            ps.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+
 
         /*if (PrimaryKey == 0) {
             String sql = "insert into " + table + "( " + columnNames delimited by, +" )" + " values(";
@@ -103,25 +123,7 @@ public class AdeOrm implements Mapper {
         }else{
             String sql = "insert into " + table + " values(";
         }
-        String[] questionArray = new String[pojoFieldPairs.size()];
-        Arrays.fill(questionArray, "?");
-        String s;
-
-        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
-
-        sql += s;
-        System.out.println(sql);
-
-        try(Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)){
-            MapperUtil.setPs(ps, fieldValues);
-
-            ps.executeUpdate();
-
-        } catch (SQLException throwables) {
-            throw new ArgumentFormatException("Arguments format are not correct", throwables);
-        }*/
-        return true;
+         */
     }
 
 

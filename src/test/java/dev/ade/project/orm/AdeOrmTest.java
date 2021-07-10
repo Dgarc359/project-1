@@ -157,7 +157,7 @@ public class AdeOrmTest {
 */
 
         User user = new User
-                (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
+                (10,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
         AdeOrm userAdeOrm = new AdeOrm(User.class);
 
         assertTrue(userAdeOrm.add(user));
