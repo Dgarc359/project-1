@@ -201,6 +201,8 @@ public class AdeOrm implements Mapper {
     public boolean update(Object object) {
         if (object==null) return false;
 
+        Object theRecord;
+
         List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
         String tableName = object.getClass().getSimpleName();
         String sql = "update " + tableName + " set ";
@@ -219,9 +221,22 @@ public class AdeOrm implements Mapper {
                 pk = fieldPairList.get(i).getValue();
             }
         }
-        sql = sql.substring(0, sql.length()-1);
-        sql += " where " + id + " = " + pk + ";";
-        return true;
+        try {
+            theRecord = get(id, pk);
+            sql = sql.substring(0, sql.length()-1);
+            sql += " where " + id + " = " + pk + ";";
+
+            try (Connection conn = ConnectionUtil.getConnection()) {
+                Statement s = conn.createStatement();
+                s.execute(sql);
+                return true;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } catch (ArgumentFormatException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

@@ -1,6 +1,7 @@
 package dev.ade.project.pojo;
 
 import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.ForeignKey;
 import dev.ade.project.annotations.PrimaryKey;
 import dev.ade.project.annotations.TableName;
 
@@ -13,6 +14,7 @@ public class Post {
     @ColumnName(columnName = "post_id")
     private int postId;
 
+    @ForeignKey(tableName = "users", columnName = "user_id")
     @ColumnName(columnName = "user_id")
     private int userId;
 

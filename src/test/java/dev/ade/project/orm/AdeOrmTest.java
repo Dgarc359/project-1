@@ -168,7 +168,7 @@ public class AdeOrmTest {
     }
 
     @Test
-    public  void testUpdateSingleAttribute() throws ArgumentFormatException {
+    public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
         FieldPair field2 = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
@@ -177,16 +177,46 @@ public class AdeOrmTest {
     }
 
     @Test
-    public  void testUpdateMultipleAttributes() throws ArgumentFormatException {
+    public void testUpdateMultipleAttributes() throws ArgumentFormatException {
         FieldPair field = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field);
         assertTrue(adeOrm.update("post", fields, pk));
     }
 
-    public void testDeleteARecord() throws ArgumentFormatException {
-        assertTrue(adeOrm.delete("post", "post_id", 3));
+    @Test
+    public void testUpdateWithObject() throws ArgumentFormatException {
+        Post post = new Post(3, 3, "Inception", "United States", "Gary", "good movie", 4);
+        assertTrue(pAdeOrm.update(post));
     }
+
+    @Test
+    public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
+        Post post = new Post(13, 3, "Inception", "United States", "Gary", "good movie", 4);
+        assertFalse(pAdeOrm.update(post));
+    }
+    @Test
+    public void testDeleteARecord() throws ArgumentFormatException {
+        assertTrue(pAdeOrm.delete("post", "post_id", 3));
+    }
+
+    @Test
+    public void testDeleteARecordNotInDB() throws ArgumentFormatException {
+        assertFalse(pAdeOrm.delete("post", "post_id", 13));
+    }
+
+    @Test
+    public void testDeleteARecordViaObject() throws ArgumentFormatException {
+        Post post = new Post(3, 3, "Inception", "United States", "Chicago", "movie", 3);
+        assertTrue(pAdeOrm.delete(post));
+    }
+
+    @Test
+    public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {
+        Post post = new Post(7, 3, "something", "United States", "Chicago", "nope", 5);
+        assertFalse(pAdeOrm.delete(post));
+    }
+
 
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
