@@ -115,7 +115,7 @@ public class AdeOrmTest {
         List<Field> fields = Arrays.asList(field1,field2);
 
         assertTrue(adeOrm.add("users",fields,"default"));
-    }*/
+    }
 
     @Test
     public void addSinglePostWithDefaultIdCriteriaTest() throws ArgumentFormatException{
@@ -132,9 +132,9 @@ public class AdeOrmTest {
                 (postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7, postFieldPair8);
 
         assertTrue(adeOrm.add("post", postFieldPairs, -1));
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
         FieldPair postFieldPair1 = new FieldPair("post_id", 10);
         FieldPair postFieldPair2 = new FieldPair("user_id",1);
@@ -148,14 +148,19 @@ public class AdeOrmTest {
                 (postFieldPair1, postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7);
 
         assertTrue(adeOrm.add("post", postFieldPairs));
-    }
+    }*/
 
     @Test
     public void addObjectPostTest() throws ArgumentFormatException{
-        Post postJo = new Post
+        /*Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
+*/
 
-        assertTrue(adeOrm.add(postJo));
+        User user = new User
+                (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
+        AdeOrm userAdeOrm = new AdeOrm(User.class);
+
+        assertTrue(userAdeOrm.add(user));
     }
 
     @Test

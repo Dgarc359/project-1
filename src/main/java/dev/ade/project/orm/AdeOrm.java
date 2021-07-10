@@ -1,11 +1,13 @@
 package dev.ade.project.orm;
 
 import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.PrimaryKey;
 import dev.ade.project.annotations.TableName;
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,17 +24,85 @@ public class AdeOrm implements Mapper {
 
     public AdeOrm(Class<?> clazz) {
         this.clazz = clazz;
+        Connection connection = ConnectionUtil.getConnection();
     }
 
     public boolean add(Object pojo) throws ArgumentFormatException{
 
-
         List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
         Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
-        String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
+        Object[] fieldKeys = pojoFieldPairs.stream().map(FieldPair::getName).toArray();
+        System.out.println(Arrays.toString(fieldValues) + " " + Arrays.toString(fieldKeys));
 
-        System.out.println(Arrays.toString(fieldValues));
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "insert into " + table;
 
+        Boolean primaryKeyIsIntCheck = false;
+        int pkVal = -1;
+        ColumnName pkColumn = null;
+
+        for(Field field : clazz.getDeclaredFields()){
+            if(field.isAnnotationPresent(PrimaryKey.class)){
+                Class<?> fieldType = field.getType();
+                if(int.class.isAssignableFrom(fieldType)){
+                    primaryKeyIsIntCheck = true;
+                    String pkGetter = "get" + field.getName().substring(0,1).toUpperCase(Locale.ROOT) +
+                            field.getName().substring(1);
+
+                    try {
+                        Method getPk = pojo.getClass().getMethod(pkGetter);
+                        pkVal = (Integer) getPk.invoke(pojo);
+
+                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    pkColumn = field.getDeclaredAnnotation(ColumnName.class);
+                }
+            }
+        }
+        
+        System.out.println(primaryKeyIsIntCheck);
+        System.out.println(pkVal);
+
+        switch(pkVal){
+            case -1: // pkVal hasn't been changed and is therefore not an int
+            case 0: // pkVal has been changed to 0 and is therefore default
+            default: // pkVal has been changed to non-zero and therefore sql statement needs to involve it
+        }
+
+        /*if (PrimaryKey == 0) {
+            String sql = "insert into " + table + "( " + columnNames delimited by, +" )" + " values(";
+
+            System.out.println(Arrays.toString(fieldValues));
+
+            Constructor<?> constructor;
+            Object object;
+            Field[] fields = clazz.getDeclaredFields();
+
+            List<Object> result = new ArrayList<>();
+
+            // check if primary key is an int value
+            // if it is then if it's 0 we can set the columns what the person wants
+            // if it's not zero then every column including the primary key needs to be added
+
+            try (Connection conn = ConnectionUtil.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                constructor = clazz.getConstructor();
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    object = constructor.newInstance();
+                    for (int i = 0; i < fields.length; i++) {
+                        ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+
+                    }
+                }
+            } catch (SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException throwables) {
+                throwables.printStackTrace();
+            }
+        }else{
+            String sql = "insert into " + table + " values(";
+        }
         String[] questionArray = new String[pojoFieldPairs.size()];
         Arrays.fill(questionArray, "?");
         String s;
@@ -50,7 +120,7 @@ public class AdeOrm implements Mapper {
 
         } catch (SQLException throwables) {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
-        }
+        }*/
         return true;
     }
 

@@ -1,5 +1,4 @@
 -- DDL
-
 create table users(
 	user_id serial primary key,
 	first_name varchar (30),
@@ -12,7 +11,7 @@ create table users(
 
 create table post(
 	post_id serial primary key,
-	user_id serial references users,
+	user_id integer references users,
 	title varchar(30) not null,
 	country varchar(30),
 	city varchar(30),
