@@ -28,7 +28,7 @@ public class AdeOrmTest {
     Class<?> postClass = post.getClass();
     AdeOrm pAdeOrm = new AdeOrm(postClass);
 
-    @BeforeAll
+    /*@BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             RunScript.execute(connection, new FileReader("setup.sql"));
@@ -107,7 +107,7 @@ public class AdeOrmTest {
                 columnNames, "tag", "food").size());
     }
 
-    /*@Test
+    *//*@Test
     public void addSingleUserTest() throws ArgumentFormatException{
         Field field1 = new Field("username", "foxtrot");
         Field field2 = new Field("user_password", "Password123");
@@ -132,9 +132,9 @@ public class AdeOrmTest {
                 (postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7, postFieldPair8);
 
         assertTrue(adeOrm.add("post", postFieldPairs, -1));
-    }*/
+    }*//*
 
-    /*@Test
+    *//*@Test
     public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
         FieldPair postFieldPair1 = new FieldPair("post_id", 10);
         FieldPair postFieldPair2 = new FieldPair("user_id",1);
@@ -148,13 +148,13 @@ public class AdeOrmTest {
                 (postFieldPair1, postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7);
 
         assertTrue(adeOrm.add("post", postFieldPairs));
-    }*/
+    }*//*
 
     @Test
     public void addObjectPostTest() throws ArgumentFormatException{
-        /*Post postJo = new Post
+        *//*Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
-*/
+*//*
 
         User user1 = new User
                 (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
@@ -199,7 +199,7 @@ public class AdeOrmTest {
             RunScript.execute(connection, new FileReader("teardown.sql"));
         }
 
-    }
+    }*/
 
 }
 

@@ -63,7 +63,6 @@ public class AdeOrm implements Mapper {
         String[] questionArray;
         String s;
 
-
         if (pkVal == 0) { // pkVal has been changed to 0 and is therefore default
 
             Object[] colNames = pojoFieldPairs.stream().filter(w -> !w.isPrimaryKey()).map(FieldPair::getName).toArray();
