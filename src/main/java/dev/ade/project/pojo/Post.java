@@ -9,10 +9,10 @@ import java.util.Objects;
 @TableName(tableName = "post")
 public class Post {
 
+    @PrimaryKey
     @ColumnName(columnName = "post_id")
     private int postId;
 
-    @PrimaryKey
     @ColumnName(columnName = "user_id")
     private int userId;
 
@@ -115,7 +115,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return "PostPojo{" +
+        return "Post{" +
                 "postId=" + postId +
                 ", userId=" + userId +
                 ", title='" + title + '\'' +

@@ -18,6 +18,14 @@ import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
 
+    /**
+     * Method to set the argument values to their corresponding positions
+     * with correct set methods of the PreparedStatement
+     *
+     * @param ps PreparedStatement
+     * @param fieldValues varargs of fieldValues
+     * @return 0 for fail, 1 for success
+     */
     public static int setPs (PreparedStatement ps, Object... fieldValues) throws SQLException {
         if (ps == null || fieldValues == null) {
             return 0;
@@ -104,23 +112,41 @@ public class MapperUtil {
         return fieldPairList;
     }
 
-    public static void setField(Object object, Field field, String value) {
-            Class<?> clazz = object.getClass();
-            String fieldName = field.getName();
-            Class<?> fieldType = field.getType();
+    /**
+     * Method to set a field value of an object
+     *
+     * @param object object for setting field value
+     * @param field field to be set
+     * @param value field value to be added
+     * @return 0 for fail, 1 for success
+     */
+    public static int setField(Object object, Field field, String value) {
+        if (object == null || field == null || value == null) {
+            return 0;
+        }
+        Class<?> clazz = object.getClass();
+        String fieldName = field.getName();
+        Class<?> fieldType = field.getType();
 
-            String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
-            try {
-                Method setter = clazz.getMethod(setterName, fieldType);
-                Object fieldValue = convertStringToFieldType(value, fieldType);
-                setter.invoke(object, fieldValue);
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-
+        try {
+            Method setter = clazz.getMethod(setterName, fieldType);
+            Object fieldValue = convertStringToFieldType(value, fieldType);
+            setter.invoke(object, fieldValue);
+            return 1;
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
+    /**
+     * Method to convert a String to another data type
+     *
+     * @param input a String
+     * @param type data type to convert to
+     */
     private static Object convertStringToFieldType(String input, Class<?> type) throws IllegalAccessException, InstantiationException {
         switch(type.getName()){
             case "char":
@@ -130,7 +156,7 @@ public class MapperUtil {
             case "short":
                 return Short.valueOf(input);
             case "int":
-                return Integer.valueOf(input);
+                return (int)Integer.parseInt(input);
             case "long":
                 return Long.valueOf(input);
             case "boolean":
@@ -139,9 +165,22 @@ public class MapperUtil {
                 return input;
             case "java.time.LocalDate":
                 return LocalDate.parse(input);
+            case "java.time.LocalDateTime":
+                return LocalDateTime.parse(input);
             default:
                 return type.newInstance();
         }
+    }
+
+    public static boolean isPrimaryKey(Class<?> clazz, String fieldName) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(PrimaryKey.class) &&
+                    field.getDeclaredAnnotation(ColumnName.class).columnName().equals(fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

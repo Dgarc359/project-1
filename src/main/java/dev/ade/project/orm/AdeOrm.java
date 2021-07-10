@@ -15,420 +15,41 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
-    private static Connection conn;
-    // POJO class mirror with a table in the db
+    // A POJO class mirror with a table in the db
     private Class<?> clazz;
 
-    public AdeOrm() {
-    }
+    public AdeOrm() {}
 
     public AdeOrm(Class<?> clazz) {
         this.clazz = clazz;
     }
 
-    // static method to set the base connection of all orm instances to the db
-    public static void setConnection(String url, String username, String password) {
-        conn = ConnectionUtil.getConnection(url, username, password);
-    }
-
-    public static Connection getConn() {
-        return conn;
-    }
-
-    /**
-     * Get a generic type column value of a record by a primary key of any type
-     *
-     * @param tableName table to be read
-     * @param columnName column to be retrieve
-     * @param pkName column name of the primary key
-     * @param pkValue primary key value of a record to be retrieve
-     * @return
-     */
-    public <T> T get(String tableName, String columnName, String pkName, Object pkValue) throws ArgumentFormatException {
-        if (tableName == null || columnName == null || pkName == null || pkValue == null) {
-            return null;
-        }
-        String sql = "select " + columnName + " from " + tableName + " where " + pkName + "=?";
-        T result = null;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            Class<?> clazz = PreparedStatement.class;
-            MapperUtil.setPs(ps, pkValue);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = (T)rs.getString(columnName);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
+    public boolean add(Object pojo) throws ArgumentFormatException{
 
 
+        List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
+        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
+        String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
 
-    /**
-     * Get a record of a table by the primary key.
-     *
-     * @param pkName column name of the primary key
-     * @param pkValue primary key value of a record to be retrieve
-     * @return
-     */
-    public Object getById(String pkName, Object pkValue) throws ArgumentFormatException {
-        if (pkName == null || pkValue == null) {
-            return null;
-        }
-        TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.tableName() + " where " + pkName + "=?";
-        Object object = null;
-        try {
-            Constructor<?> constructor = clazz.getConstructor();
-            object = constructor.newInstance();
+        System.out.println(Arrays.toString(fieldValues));
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        Field[] fields = clazz.getDeclaredFields();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, pkValue);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                for (int i = 0; i < fields.length; i++) {
-                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
-                }
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return object;
-    }
-
-    /**
-     * Get generic type columns' values of record(s) by a column value of any type.
-     * If the primary key is used, only return one record, if other non unique value
-     * column is used, return all records with the column value
-     *
-     * @param tableName table to be read
-     * @param columnNames a list of column names of the table to retrieve
-     * @param fieldName a column name
-     * @param fieldValue the column value of record(s) to be retrieve
-     * @return
-     */
-
-    public List<List<Object>> get(String tableName, List<String> columnNames, Object fieldValue, String fieldName) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || fieldName == null || fieldValue == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName + " where " + fieldName + "=?";
-        List<List<Object>> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, fieldValue);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Get generic type columns' values of record(s) by a column value of any type.
-     * If the primary key is used, only return one record, if other non unique value
-     * column is used, return all records with the column value in the order specify
-     *
-     * @param tableName table to be read
-     * @param columnNames a list of column names of the table to retrieve
-     * @param fieldName a column name
-     * @param fieldValue the column value of record(s) to be retrieve
-     * @param orderCol the column to order by
-     * @param order "asc" for ascending, "desc" for descending
-     * @return
-     */
-
-    public List<List<Object>>get(String tableName, List<String> columnNames, Object fieldValue,
-                                 String fieldName, String orderCol, String order) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || fieldName == null || fieldValue == null ||
-                orderCol == null || order == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName + " where " + fieldName + "=?";
-        sql += " order by " + orderCol + " " + order;
-        List<List<Object>> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, fieldValue);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Get generic type columns' values of all records in a table in order
-     *
-     * @param tableName the name of a table
-     * @param orderCol the column to order by
-     * @param order "asc" for ascending, "desc" for descending
-     * @return
-     */
-    public List<List<Object>>get(String tableName, List<String> columnNames, String orderCol, String order) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || orderCol == null || order == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName + " order by " + orderCol + " " + order;
-        List<List<Object>> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Argument formats are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Get generic type columns' values of all records in a table
-     *
-     * @return
-     */
-    public List<Object> getAll() throws ArgumentFormatException {
-        TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.tableName();
-        Object object = null;
-        Constructor<?> constructor;
-        Field[] fields = clazz.getDeclaredFields();
-
-        List<Object> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            constructor = clazz.getConstructor();
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                object = constructor.newInstance();
-                for (int i = 0; i < fields.length; i++) {
-                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
-                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
-                }
-                result.add(object);
-            }
-        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new ArgumentFormatException("Argument formats are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Get generic type values of record(s) by a list of fields (key, value) pairs under
-     * "and" or "or" relationship.
-      *
-     * @param tableName table to be read
-     * @param columnNames a list of column names of the table to retrieve
-     * @param fieldPairs a list of Field objects with a key and a value of a field
-     * @param criteria "and" or "or" to specific the fields criteria
-     * @return
-     */
-    public List<List<Object>> get(String tableName, List<String> columnNames,
-                                  List<FieldPair> fieldPairs, String criteria) throws ArgumentFormatException {
-        if (tableName == null || columnNames == null || fieldPairs == null || criteria == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableName + " where ";
-
-        if (criteria.equals("and")) {
-            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? and "));
-            sql += s + "=?";
-        }
-
-        if (criteria.equals("or")) {
-            String s = fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? or "));
-            sql += s + "=?";
-        }
-
-        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
-        List<List<Object>> result = new ArrayList<>();
-        Method method = null;
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, fieldValues);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Argument formats are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     *
-     * Add a row to a database table using String tableName, List of fields (Key, values) for
-     * populating the rows, and idCriteria to set primary key
-     *
-     * @param tableName table to be read
-     * @param fieldPairs a list of field objects with a key and a value of field
-     * @param idCriteria idCriteria, can either be a custom value, or it can be set to "default"
-     *                   for default database primary key
-     * @return
-     * @throws ArgumentFormatException
-     */
-
-
-    public boolean add(String tableName, List<FieldPair> fieldPairs, int idCriteria) throws ArgumentFormatException{
-        if (tableName == null || fieldPairs == null){
-            throw new ArgumentFormatException();
-        }
-
-        String sql = "insert into " + tableName + " values (";
-
-        String[] questionArray = new String[fieldPairs.size()];
+        String[] questionArray = new String[pojoFieldPairs.size()];
         Arrays.fill(questionArray, "?");
+        String s;
 
-        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
+        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
 
-        if(idCriteria == -1){
-            sql += "default, " + s;
-        }
-        else {
-            sql += idCriteria + ", " + s;
-        }
+        sql += s;
+        System.out.println(sql);
 
-        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
-
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
             ps.executeUpdate();
 
         } catch (SQLException throwables) {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
-        }
-        return true;
-    }
-
-    /**
-     * Get generic type columns' values of record(s) of joint tables by a column value of any type.
-     *
-     * @param jType inner, left, right
-     * @param tableA left table to be join
-     * @param tableB right table to be join
-     * @param pkA primary key of left table
-     * @param fkA foreign key of right table reference left table
-     * @param columnNames a list of column names of the table to retrieve
-     * @param fieldName a column name
-     * @param fieldValue the column value of record(s) to be retrieve
-     * @return
-     */
-
-    public List<List<Object>>get(String jType, String tableA, String pkA, String tableB, String fkA,
-                                 List<String> columnNames, String fieldName, Object fieldValue) throws ArgumentFormatException {
-        if (tableA == null || pkA == null || tableB == null || fkA == null || columnNames == null ||
-                fieldName == null || fieldValue == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableA + " " + jType + " join " + tableB +
-                " on " + pkA + " = " + fkA + " where " + fieldName + "=?";
-        List<List<Object>> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, fieldValue);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Get generic type columns' values of record(s) of joint tables.
-     *
-     * @param jType inner, left, right
-     * @param tableA left table to be join
-     * @param tableB right table to be join
-     * @param pkA primary key of left table
-     * @param fkA foreign key of right table reference left table
-     * @param columnNames a list of column names of the table to retrieve
-     *
-     * @return
-     */
-
-    public List<List<Object>>get(String jType, String tableA, String pkA, String tableB, String fkA,
-                                 List<String> columnNames) throws ArgumentFormatException {
-        if (tableA == null || pkA == null || tableB == null || fkA == null || columnNames == null) {
-            return null;
-        }
-        String colNames = String.join(", ", columnNames);
-        String sql = "select " + colNames + " from " + tableA + " " + jType + " join " + tableB +
-                " on " + pkA + " = " + fkA;
-        List<List<Object>> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                for (int i = 0; i < columnNames.size(); i++) {
-                    record.add(rs.getString(columnNames.get(i)));
-                }
-                result.add(record);
-            }
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
-        }
-        return result;
-    }
-
-    /**
-     * Update a generic type column value of a record by a primary key of any type
-     *
-     * @param tableName table to be updated
-     * @param columnName name of column being updated
-     * @param id column name of the primary key
-     * @param idValue primary key value of a record to be updated
-     * @param newColumnValue updating columnName w/ this value
-     * @return
-     */
-    public boolean update(String tableName, String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
-        if (tableName == null || columnName == null || id == null || idValue == null) {
-            return false;
-        }
-        String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            MapperUtil.setPs(ps, newColumnValue, idValue);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return true;
     }
@@ -454,7 +75,8 @@ public class AdeOrm implements Mapper {
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
         System.out.println(Arrays.toString(fieldValues));
 
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
             ps.executeUpdate();
@@ -465,31 +87,76 @@ public class AdeOrm implements Mapper {
         return true;
     }
 
-    public boolean add(Object pojo) throws ArgumentFormatException{
 
+    /**
+     *
+     * Add a row to a database table using String tableName, List of fields (Key, values) for
+     * populating the rows, and idCriteria to set primary key
+     *
+     * @param tableName table to be read
+     * @param fieldPairs a list of field objects with a key and a value of field
+     * @param idCriteria idCriteria, can either be a custom value, or it can be set to "default"
+     *                   for default database primary key
+     * @return
+     * @throws ArgumentFormatException
+     */
 
-        List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
-        Object[] fieldValues = pojoFieldPairs.stream().map(FieldPair::getValue).toArray();
-        String sql = "insert into " + pojo.getClass().getSimpleName().toLowerCase(Locale.ROOT) +" values(";
+    public boolean add(String tableName, List<FieldPair> fieldPairs, int idCriteria) throws ArgumentFormatException{
+        if (tableName == null || fieldPairs == null){
+            throw new ArgumentFormatException();
+        }
 
-        System.out.println(Arrays.toString(fieldValues));
+        String sql = "insert into " + tableName + " values (";
 
-        String[] questionArray = new String[pojoFieldPairs.size()];
+        String[] questionArray = new String[fieldPairs.size()];
         Arrays.fill(questionArray, "?");
-        String s;
 
-        s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
+        String s = Arrays.stream(questionArray).collect(Collectors.joining(", ","",");"));
 
-        sql += s;
-        System.out.println(sql);
+        if(idCriteria == -1){
+            sql += "default, " + s;
+        }
+        else {
+            sql += idCriteria + ", " + s;
+        }
 
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
+
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
             ps.executeUpdate();
 
         } catch (SQLException throwables) {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
+        }
+        return true;
+    }
+
+
+    /**
+     * Update a generic type column value of a record by a primary key of any type
+     *
+     * @param tableName table to be updated
+     * @param columnName name of column being updated
+     * @param id column name of the primary key
+     * @param idValue primary key value of a record to be updated
+     * @param newColumnValue updating columnName w/ this value
+     * @return
+     */
+    public boolean update(String tableName, String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
+        if (tableName == null || columnName == null || id == null || idValue == null) {
+            return false;
+        }
+        String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
+
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, newColumnValue, idValue);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         return true;
     }
@@ -515,7 +182,8 @@ public class AdeOrm implements Mapper {
 
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
             ps.executeUpdate();
             return true;
@@ -524,12 +192,13 @@ public class AdeOrm implements Mapper {
         }
     }
 
+
     /**
      * delete a generic type column value of a record by a primary key of any type
      *
-     * @param tableName table to be deleted
+     * @param tableName table to be updated
      * @param id column name of the primary key
-     * @param idValue primary key value of a record to be deleted
+     * @param idValue primary key value of a record to be updated
      * @return
      */
     public boolean delete(String tableName, String id, Object idValue) throws ArgumentFormatException {
@@ -538,7 +207,8 @@ public class AdeOrm implements Mapper {
         }
         String sql = "delete from " + tableName + " where " + id + "=?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, idValue);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -547,12 +217,7 @@ public class AdeOrm implements Mapper {
         return true;
     }
 
-    /**
-     * delete a record from the db given an object
-     *
-     * @param object object representation of record to be deleted
-     * @return
-     */
+
     public boolean delete(Object object) {
         if (object == null) return false;
 
@@ -567,12 +232,343 @@ public class AdeOrm implements Mapper {
                 sql += tableName + " where " + id + " = " + pk;
             }
         }
-        try (Statement s = conn.createStatement()){
-            s.execute(sql);
-            return true;
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.execute(sql);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return false;
+    }
+
+
+    /**
+     * Get a record of a table by the primary key.
+     *
+     * @param pkName column name of the primary key
+     * @param pkValue primary key value of a record to be retrieve
+     * @return an object of the default pojo class for the record
+     */
+    @Override
+    public Object get(String pkName, Object pkValue) throws ArgumentFormatException {
+        if (pkName == null || pkValue == null) {
+            return null;
+        }
+        if (!MapperUtil.isPrimaryKey(clazz, pkName)) {
+            throw new ArgumentFormatException("The method only accepts using primary key to query");
+        }
+
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "select * from " + table.tableName() + " where " + pkName + "=?";
+        Object object = null;
+        try {
+            Constructor<?> constructor = clazz.getConstructor();
+            object = constructor.newInstance();
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, pkValue);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                for (int i = 0; i < fields.length; i++) {
+                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
+                }
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return object;
+    }
+
+
+    /**
+     * Get values of a record by primary key
+     *
+     * @param columnNames column(s) to be retrieve
+     * @param pkName column name of the primary key
+     * @param pkValue primary key value of a record to be retrieve
+     * @return a list of field values required by user for a record
+     */
+    public List<Object> getColumns(String pkName, Object pkValue, String... columnNames) throws ArgumentFormatException {
+        if (columnNames == null || pkName == null || pkValue == null) {
+            return null;
+        }
+        if (!MapperUtil.isPrimaryKey(clazz, pkName)) {
+            throw new ArgumentFormatException("The method only accepts using primary key to query");
+        }
+
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+
+        String s = Arrays.stream(columnNames).collect(Collectors.joining(", ","",""));
+        String sql = "select " + s + " from " + table.tableName() + " where " + pkName + "=?";
+        List<Object> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            Class<?> clazz = PreparedStatement.class;
+            MapperUtil.setPs(ps, pkValue);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                for (int i = 0; i < columnNames.length; i++) {
+                    result.add(rs.getString(columnNames[i]));
+                }
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get record(s) filter by a column value.
+     * If primary key or unique column is used, only return one record, else
+     * return all records with the column value in the order specify
+     *
+     * @param columnNames a list of column names of the table to retrieve
+     * @param fieldName a column name
+     * @param fieldValue the column value of record(s) to be retrieve
+     * @param orderCol the column to order by
+     * @param order "asc" for ascending, "desc" for descending
+     * @return a list of field values of records in specified order
+     */
+    public List<List<Object>> getRecordsInOrder(List<String> columnNames, String fieldName, Object fieldValue,
+                                        String orderCol, String order) throws ArgumentFormatException {
+        if (fieldName == null || fieldValue == null || orderCol == null || order == null) {
+            return null;
+        }
+        if (!order.equals("asc") && !order.equals("desc")) {
+            throw new ArgumentFormatException("Order must be in \"asc\" or \"desc\"");
+        }
+
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String colNames = String.join(", ", columnNames);
+
+        String sql = "select " + colNames + " from " + table.tableName() + " where " + fieldName + "=?" +
+                        " order by " + orderCol + " " + order;
+
+        List<List<Object>> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValue);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get all records in a table
+     *
+     * @return all records of the table
+     */
+    public List<Object> getAll() throws ArgumentFormatException {
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "select * from " + table.tableName();
+        Object object = null;
+        Constructor<?> constructor;
+        Field[] fields = clazz.getDeclaredFields();
+
+        List<Object> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            constructor = clazz.getConstructor();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                object = constructor.newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
+                }
+                result.add(object);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ArgumentFormatException("Argument formats are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get generic type columns' values of all records in a table in order
+     *
+     * @param orderCol the column to order by
+     * @param order "asc" for ascending, "desc" for descending
+     * @return all records in specified order
+     */
+    public List<Object> getAllInOrder(String orderCol, String order) throws ArgumentFormatException {
+        if (orderCol == null || order == null) {
+            return null;
+        }
+        if (!order.equals("asc") && !order.equals("desc")) {
+            throw new ArgumentFormatException("Order must be in \"asc\" or \"desc\"");
+        }
+
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "select * from " + table.tableName() + " order by " + orderCol + " " + order;
+        Object object = null;
+        Constructor<?> constructor;
+        Field[] fields = clazz.getDeclaredFields();
+        List<Object> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            constructor = clazz.getConstructor();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                object = constructor.newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ColumnName c = fields[i].getDeclaredAnnotation(ColumnName.class);
+                    MapperUtil.setField(object, fields[i], rs.getString(c.columnName()));
+                }
+                result.add(object);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ArgumentFormatException("Argument formats are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get specific columns of records filter by a list of fields (key, value) pairs under
+     * "and" or "or" relationship.
+     *
+     * @param columnNames a list of column names of the table to retrieve
+     * @param fieldPairs a list of Field objects with a key and a value of a field
+     * @param criterion "and" or "or" to specific relationship between field
+     * @return a list of field values of records fulfill the criterion
+     */
+    public List<List<Object>> getWithCriterion(List<String> columnNames,
+                                  List<FieldPair> fieldPairs, String criterion) throws ArgumentFormatException {
+        if (columnNames == null || fieldPairs == null || criterion == null) {
+            return null;
+        }
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + table.tableName() + " where ";
+
+        if (criterion.equals("and")) {
+            sql += fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? and ")) + "=?";
+        }
+
+        if (criterion.equals("or")) {
+            sql += fieldPairs.stream().map(FieldPair::getName).collect(Collectors.joining("=? or ")) + "=?";
+        }
+
+        Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
+        List<List<Object>> result = new ArrayList<>();
+        Method method = null;
+
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValues);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Argument formats are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get all records of join-tables.
+     *
+     * @param jType inner, left, right
+     * @param tableB right table to be join
+     * @param pkA primary key of left table
+     * @param fkA foreign key of right table reference left table
+     * @param columnNames a list of column names of the table to retrieve
+     * @return a list of all records of join-tables
+     */
+    public List<List<Object>> getJoint(String jType, String pkA, String tableB, String fkA,
+                                       List<String> columnNames) throws ArgumentFormatException {
+        if (pkA == null || tableB == null || fkA == null || columnNames == null) {
+            return null;
+        }
+
+        TableName tableA = clazz.getDeclaredAnnotation(TableName.class);
+
+        System.out.println(tableA.tableName());
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
+                " on " + pkA + " = " + fkA;
+        System.out.println(sql);
+        List<List<Object>> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
+    }
+
+
+    /**
+     * Get record(s) of joint tables filter by a column value.
+     *
+     * @param jType inner, left, right
+     * @param tableB right table to be join
+     * @param pkA primary key of default table
+     * @param fkA foreign key of right table reference left table
+     * @param columnNames a list of column names of the table to retrieve
+     * @param fieldName a column name
+     * @param fieldValue the column value of record(s) to be retrieve
+     * @return a list of field values of records of join-tables fulfill the criterion
+     */
+    public List<List<Object>> getJointWhere(String jType, String pkA, String tableB, String fkA,
+                                 List<String> columnNames, String fieldName, Object fieldValue) throws ArgumentFormatException {
+        if (pkA == null || tableB == null || fkA == null || columnNames == null ||
+                fieldName == null || fieldValue == null) {
+            return null;
+        }
+
+        TableName tableA = clazz.getDeclaredAnnotation(TableName.class);
+        String colNames = String.join(", ", columnNames);
+        String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
+                " on " + pkA + " = " + fkA + " where " + fieldName + "=?";
+        List<List<Object>> result = new ArrayList<>();
+        try(Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, fieldValue);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                List<Object> record = new ArrayList<>();
+                for (int i = 0; i < columnNames.size(); i++) {
+                    record.add(rs.getString(columnNames.get(i)));
+                }
+                result.add(record);
+            }
+        } catch (SQLException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return result;
     }
 }

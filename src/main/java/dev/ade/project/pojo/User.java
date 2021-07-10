@@ -1,6 +1,7 @@
 package dev.ade.project.pojo;
 
 import dev.ade.project.annotations.ColumnName;
+import dev.ade.project.annotations.ForeignKey;
 import dev.ade.project.annotations.PrimaryKey;
 import dev.ade.project.annotations.TableName;
 
