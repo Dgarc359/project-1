@@ -2,54 +2,89 @@ package dev.ade.project;
 
 import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.orm.AdeOrm;
-import dev.ade.project.orm.Field;
+import dev.ade.project.orm.FieldPair;
+import dev.ade.project.pojo.Post;
+import dev.ade.project.pojo.User;
 import dev.ade.project.util.ConnectionUtil;
 
-import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 // This class only serves for checking results during development, will be commented out or deleted at deployment.
 public class App {
 
     public static void main (String[] args) {
+
         // For checking results
         try {
-            AdeOrm adeOrm = new AdeOrm(ConnectionUtil.getConnection());
+            String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+            final String USERNAME = System.getenv("USERNAME");
+            final String PASSWORD = System.getenv("PASSWORD");
+            ConnectionUtil.setConnection(url, USERNAME, PASSWORD);
+            Connection conn = ConnectionUtil.getConnection();
 
-            /*
-            String result0 = adeOrm.getStringColumn("bank_user", "first_name", "userid", "harry");
-            System.out.println(result0);
-             */
+            // test connection
+            System.out.println(conn.getMetaData().getDriverName());
 
-            String result1 = adeOrm.get("bank_user", "userid", "intcol", 10);
+            AdeOrm adeOrm = new AdeOrm();
+
+            // create user orm instance
+            User user = new User();
+            Class<?> userClass = user.getClass();
+            AdeOrm uAdeOrm = new AdeOrm(userClass);
+
+            // create post orm instance
+            Post post = new Post();
+            Class<?> postClass = post.getClass();
+            AdeOrm pAdeOrm = new AdeOrm(postClass);
+
+            // test getById
+            System.out.println(uAdeOrm.get("user_id",1));
+
+            // test getAll
+            System.out.println(uAdeOrm.getAll());
+
+            // test getValue by pk
+            System.out.println((String)uAdeOrm.getColumns("user_id", 1, "username").get(0));
+
+            // test getColumnsInOrder
+            List<String> columnNames = Arrays.asList("title", "country", "city", "tag", "rating");
+            System.out.println(pAdeOrm.getRecordsInOrder(columnNames, "country", "United States", "rating", "desc"));
+
+            // test getAllInOrder
+            System.out.println(pAdeOrm.getAllInOrder("rating", "asc"));
+
+            // test getWithCriterion
+            FieldPair fieldPair1 = new FieldPair("rating", 5);
+            FieldPair fieldPair2 = new FieldPair("city", "Miami");
+            List<FieldPair> fieldPairs = Arrays.asList(fieldPair1, fieldPair2);
+            List<List<Object>> result = pAdeOrm.getWithCriterion(columnNames, fieldPairs, "and");
+            result.forEach(System.out::println);
+
+            // test getJoint
+            List<String> columnNames2 = Arrays.asList("username", "country", "city", "tag", "rating");
+            result = uAdeOrm.getJoint("inner", "users.user_id", "post", "post.user_id",
+                    columnNames2);
+            result.forEach(System.out::println);
+
+            // test getJointWhere
+            result = uAdeOrm.getJointWhere("inner", "users.user_id", "post", "post.user_id",
+                    columnNames2, "post.tag", "food");
+            result.forEach(System.out::println);
+
+            List<String> columnList = Arrays.asList("title", "city");
+            List<String> valuesList = Arrays.asList("Chocolate Ice Cream", "Denver");
+            FieldPair fielda = new FieldPair("title", "Neapolitan Ice Cream");
+            FieldPair fieldb = new FieldPair("city", "Ft. Collins");
+            FieldPair pk = new FieldPair("post_id", 3);
+
+            List<FieldPair> fieldsses = Arrays.asList(fielda,fieldb);
+
+            boolean result1 = adeOrm.update("post", fieldPairs, pk);
             System.out.println(result1);
 
-            List<String> columnNames = Arrays.asList("userid", "first_name", "last_name", "pin", "status", "last_login");
-            List<Object> result2 = adeOrm.get("bank_user", columnNames, "userid", (Object)"harry");
-            System.out.println(result2);
-
-
-            List<String> columnNames2 = Arrays.asList("trans_type", "userid", "datetime", "amount");
-            List<List<Object>> result3 = adeOrm.get("transfer_transaction", columnNames2, BigDecimal.valueOf(10), "amount");
-            System.out.println(result3);
-
-            List<List<Object>> result4 = adeOrm.get("transfer_transaction", columnNames2);
-            System.out.println(result4);
-
-            List<String> columnNames3 = Arrays.asList("trans_type", "ac_number", "amount", "datetime");
-            Field field1 = new Field("trans_type", "withdraw");
-            Field field2 = new Field("amount", BigDecimal.valueOf(500));
-            Field field3 = new Field("userid", "harry");
-            List<Field> fields = Arrays.asList(field1, field2, field3);
-            List<List<Object>> result5 = adeOrm.get("deposit_withdraw_transaction", columnNames3, fields, "and");
-            result5.forEach(System.out::println);
-
-            Field field4 = new Field("amount", BigDecimal.valueOf(1000));
-            Field field5 = new Field("amount", BigDecimal.valueOf(500));
-            List<Field> fields2 = Arrays.asList(field4, field5);
-            List<List<Object>> result6 = adeOrm.get("deposit_withdraw_transaction", columnNames3, fields2, "or");
-            result6.forEach(System.out::println);
-        } catch (ArgumentFormatException e) {
+        } catch (ArgumentFormatException | SQLException e) {
             e.printStackTrace();
         }
     }

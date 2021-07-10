@@ -1,4 +1,4 @@
-target
-.idea
-error.log
+target/
+.idea/
 adeOrm.iml
+error.log
