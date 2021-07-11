@@ -35,11 +35,11 @@ public class AdeOrmTest {
         }
     }
 
-    @Test
+    /*@Test
     public void getTestPrimaryKey() throws ArgumentFormatException {
         User user = (User) uAdeOrm.get( "user_id", 1);
         assertEquals(1, user.getUserId());
-    }
+    }*/
 
     @Test
     public void getTestNull() throws ArgumentFormatException {
@@ -154,9 +154,9 @@ public class AdeOrmTest {
     public void addObjectPostTest() throws ArgumentFormatException{
         *//*Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
-*//*
+*/
 
-        User user1 = new User
+      /*  User user1 = new User
                 (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
         AdeOrm userAdeOrm = new AdeOrm(User.class);
 
@@ -193,7 +193,7 @@ public class AdeOrmTest {
     public void testDeleteARecord() throws ArgumentFormatException {
         assertTrue(adeOrm.delete("post", "post_id", 3));
     }
-
+*/
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -201,6 +201,5 @@ public class AdeOrmTest {
         }
 
     }
-*/
 }
 
