@@ -1,3 +1,8 @@
+--drop table users;
+--create database if not exists;
+--create schema if not exists public;
+--GO
+
 -- DDL
 
 create table users(
@@ -12,7 +17,7 @@ create table users(
 
 create table post(
 	post_id serial primary key,
-	user_id serial references users,
+	user_id integer references users,
 	title varchar(30) not null,
 	country varchar(30),
 	city varchar(30),
