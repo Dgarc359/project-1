@@ -22,14 +22,12 @@ public class ConnectionUtil {
      */
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                if (IS_TEST) {
-                    connection = DriverManager.getConnection("jdbc:h2:~/test");
-                } else {
-                    //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-                    connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
-                }
+            if (IS_TEST) {
+                connection = DriverManager.getConnection("jdbc:h2:~/test");
+            } else if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -37,8 +35,7 @@ public class ConnectionUtil {
     }
 
     /**
-     * The getConnection method returns a singleton Connection object.
-     * A local database mirrors the actual deployed web database is used for testing.
+     * The setConnection method set the url record to the url static field
      *
      * @param url the endpoint with port and db schema
      * @return 0 for fail, 1 for success

@@ -193,7 +193,7 @@ public class AdeOrmTest {
     public void testDeleteARecord() throws ArgumentFormatException {
         assertTrue(adeOrm.delete("post", "post_id", 3));
     }
-
+*/
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -201,6 +201,6 @@ public class AdeOrmTest {
         }
 
     }
-*/
+
 }
 

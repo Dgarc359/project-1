@@ -19,7 +19,8 @@ public class App {
 
         // For checking results
         try {
-            String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+            //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+            String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres";
 
             AdeOrm adeOrm = new AdeOrm();
 
@@ -90,7 +91,7 @@ public class App {
             try {
                 uAdeOrm.openTransaction();
                 uAdeOrm.update2("first_name", "user_id", 1, "Ginny");
-                uAdeOrm.update2("last_name", "user_id", 1, "Weasley");
+                uAdeOrm.update2("last_name", "user_id", 10, "Weasley");
                 uAdeOrm.commitTransaction();
             } catch (Exception e) {
                 uAdeOrm.rollbackTransaction();
@@ -102,7 +103,7 @@ public class App {
             try {
                 uAdeOrm.openTransaction();
                 uAdeOrm.update2("first_name", "user_id", 1, "Leah");
-                uAdeOrm.update2("last_name", "user_id", 10, "Canavan");
+                uAdeOrm.update2("last_name", "user_id", 1, "Canavan");
                 uAdeOrm.commitTransaction();
             } catch (Exception e) {
                 uAdeOrm.rollbackTransaction();
@@ -111,18 +112,9 @@ public class App {
             }
             System.out.println(uAdeOrm.get("user_id", 1));
 
-            //User hermione = new User(0, "Hermione", "Granger", 'F', "her", "iamtalented");
-            //uAdeOrm.add(hermione);
-            System.out.println(uAdeOrm.getColumns("username", "her", "first_name", "last_name"));
-
-            //User ron = new User(0, "Ron", "Weasley", 'M', "ron", "password123");
-            //uAdeOrm.add(ron);
-            System.out.println(uAdeOrm.getColumns("username", "ron", "first_name", "last_name"));
-
-            //User harry = new User(0, "Harry", "Porter", 'M', "harry", "password123");
-            //uAdeOrm.add(harry);
-            System.out.println(uAdeOrm.getColumns("username", "harry", "first_name", "last_name"));
-
+            //User ginny = new User(0, "Ginny", "Weasley", 'F', "ginny", "password123");
+            //uAdeOrm.add(ginny);
+            System.out.println(uAdeOrm.getColumns("username", "ginny", "first_name", "last_name"));
 
         } catch (ArgumentFormatException | SQLException e) {
             e.printStackTrace();
