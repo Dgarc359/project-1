@@ -13,8 +13,8 @@ public class Post {
     @ColumnName(columnName = "post_id")
     private int postId;
 
-    @ColumnName(columnName = "user_id")
-    private int userId;
+    @ColumnName(columnName = "username")
+    private String username;
 
     @ColumnName(columnName = "title")
     private String title;
@@ -33,10 +33,10 @@ public class Post {
 
     public Post(){}
 
-    public Post(int postId, int userId, String title, String country, String city, String tag, int rating){
+    public Post(int postId, String username, String title, String country, String city, String tag, int rating){
         super();
         this.postId = postId;
-        this.userId = userId;
+        this.username = username;
         this.title = title;
         this.country = country;
         this.city = city;
@@ -52,12 +52,12 @@ public class Post {
         this.postId = postId;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getTitle() {
@@ -105,19 +105,19 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return postId == post.postId && userId == post.userId && rating == post.rating && Objects.equals(title, post.title) && Objects.equals(country, post.country) && Objects.equals(city, post.city) && Objects.equals(tag, post.tag);
+        return postId == post.postId && rating == post.rating && Objects.equals(username, post.username) && Objects.equals(title, post.title) && Objects.equals(country, post.country) && Objects.equals(city, post.city) && Objects.equals(tag, post.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postId, userId, title, country, city, tag, rating);
+        return Objects.hash(postId, username, title, country, city, tag, rating);
     }
 
     @Override
     public String toString() {
         return "Post{" +
                 "postId=" + postId +
-                ", userId=" + userId +
+                ", username='" + username + '\'' +
                 ", title='" + title + '\'' +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
