@@ -14,6 +14,7 @@ import java.util.List;
 import dev.ade.project.annotations.ColumnName;
 import dev.ade.project.annotations.PrimaryKey;
 
+import dev.ade.project.annotations.Unique;
 import dev.ade.project.orm.FieldPair;
 
 public class MapperUtil {
@@ -174,11 +175,11 @@ public class MapperUtil {
         }
     }
 
-    public static boolean isPrimaryKey(Class<?> clazz, String fieldName) {
+    public static boolean isUnique(Class<?> clazz, String fieldName) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            if (field.isAnnotationPresent(PrimaryKey.class) &&
-                    field.getDeclaredAnnotation(ColumnName.class).columnName().equals(fieldName)) {
+            if (field.getDeclaredAnnotation(ColumnName.class).columnName().equals(fieldName) &&
+                    ((field.isAnnotationPresent(PrimaryKey.class)) || field.isAnnotationPresent(Unique.class))) {
                 return true;
             }
         }

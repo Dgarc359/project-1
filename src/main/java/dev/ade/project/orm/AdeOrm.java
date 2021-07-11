@@ -383,23 +383,23 @@ public class AdeOrm implements Mapper {
 
 
     /**
-     * Get a record of a table by the primary key.
+     * Get a record of a table by a column with unique value
      *
-     * @param pkName column name of the primary key
-     * @param pkValue primary key value of a record to be retrieve
+     * @param uniCol column name with unique constraint
+     * @param colValue column value of a record to be retrieve
      * @return an object of the default pojo class for the record
      */
     @Override
-    public Object get(String pkName, Object pkValue) throws ArgumentFormatException {
-        if (pkName == null || pkValue == null) {
+    public Object get(String uniCol, Object colValue) throws ArgumentFormatException {
+        if (uniCol == null || colValue == null) {
             return null;
         }
-        if (!MapperUtil.isPrimaryKey(clazz, pkName)) {
+        if (!MapperUtil.isUnique(clazz, uniCol)) {
             throw new ArgumentFormatException("The method only accepts using primary key to query");
         }
 
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
-        String sql = "select * from " + table.tableName() + " where " + pkName + "=?";
+        String sql = "select * from " + table.tableName() + " where " + uniCol + "=?";
         Object object = null;
         try {
             Constructor<?> constructor = clazz.getConstructor();
@@ -411,7 +411,7 @@ public class AdeOrm implements Mapper {
         Field[] fields = clazz.getDeclaredFields();
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
-            MapperUtil.setPs(ps, pkValue);
+            MapperUtil.setPs(ps, colValue);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 for (int i = 0; i < fields.length; i++) {
@@ -427,30 +427,30 @@ public class AdeOrm implements Mapper {
 
 
     /**
-     * Get values of a record by primary key
+     * Get values of a record by  a column with unique value
      *
-     * @param columnNames column(s) to be retrieve
-     * @param pkName column name of the primary key
-     * @param pkValue primary key value of a record to be retrieve
+     * @param uniCol column name with unique constraint
+     * @param colValue column value of a record to be retrieve
      * @return a list of field values required by user for a record
      */
-    public List<Object> getColumns(String pkName, Object pkValue, String... columnNames) throws ArgumentFormatException {
-        if (columnNames == null || pkName == null || pkValue == null) {
+    public List<Object> getColumns(String uniCol, Object colValue, String... columnNames) throws ArgumentFormatException {
+        if (columnNames == null || uniCol == null || colValue == null) {
             return null;
         }
-        if (!MapperUtil.isPrimaryKey(clazz, pkName)) {
-            throw new ArgumentFormatException("The method only accepts using primary key to query");
+        if (!MapperUtil.isUnique(clazz, uniCol)) {
+            throw new ArgumentFormatException("The method only accepts using primary key or column with unique value" +
+                    "to query");
         }
 
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
 
         String s = Arrays.stream(columnNames).collect(Collectors.joining(", ","",""));
-        String sql = "select " + s + " from " + table.tableName() + " where " + pkName + "=?";
+        String sql = "select " + s + " from " + table.tableName() + " where " + uniCol + "=?";
         List<Object> result = new ArrayList<>();
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             Class<?> clazz = PreparedStatement.class;
-            MapperUtil.setPs(ps, pkValue);
+            MapperUtil.setPs(ps, colValue);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 for (int i = 0; i < columnNames.length; i++) {

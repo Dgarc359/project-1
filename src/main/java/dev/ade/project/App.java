@@ -111,6 +111,19 @@ public class App {
             }
             System.out.println(uAdeOrm.get("user_id", 1));
 
+            //User hermione = new User(0, "Hermione", "Granger", 'F', "her", "iamtalented");
+            //uAdeOrm.add(hermione);
+            System.out.println(uAdeOrm.getColumns("username", "her", "first_name", "last_name"));
+
+            //User ron = new User(0, "Ron", "Weasley", 'M', "ron", "password123");
+            //uAdeOrm.add(ron);
+            System.out.println(uAdeOrm.getColumns("username", "ron", "first_name", "last_name"));
+
+            //User harry = new User(0, "Harry", "Porter", 'M', "harry", "password123");
+            //uAdeOrm.add(harry);
+            System.out.println(uAdeOrm.getColumns("username", "harry", "first_name", "last_name"));
+
+
         } catch (ArgumentFormatException | SQLException e) {
             e.printStackTrace();
         }

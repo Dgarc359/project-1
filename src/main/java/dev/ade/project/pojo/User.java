@@ -1,9 +1,6 @@
 package dev.ade.project.pojo;
 
-import dev.ade.project.annotations.ColumnName;
-import dev.ade.project.annotations.ForeignKey;
-import dev.ade.project.annotations.PrimaryKey;
-import dev.ade.project.annotations.TableName;
+import dev.ade.project.annotations.*;
 
 import java.util.Objects;
 
@@ -23,6 +20,7 @@ public class User {
     @ColumnName(columnName = "gender")
     private char gender;
 
+    @Unique
     @ColumnName(columnName = "username")
     private String username;
 
