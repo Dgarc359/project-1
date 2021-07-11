@@ -20,7 +20,7 @@ public class AdeOrm implements Mapper {
     private Class<?> clazz;
     private Connection conn;
     private boolean isTransaction;
-    private List<Boolean> completes = new ArrayList<>();
+    private List<Boolean> completes;
 
     public AdeOrm() {}
 
@@ -72,7 +72,7 @@ public class AdeOrm implements Mapper {
      */
     public void openTransaction() {
         isTransaction = true;
-        completes.forEach(e -> e = true);
+        completes = new ArrayList<>();
     }
 
     /**
