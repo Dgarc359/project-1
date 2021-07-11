@@ -332,6 +332,53 @@ public class AdeOrm implements Mapper {
         }
     }
 
+    /**
+     * Update multiple generic type columns values of a record by a primary key of any type
+     * using just an object
+     * @param object record to be updated
+     * @return
+     */
+    public boolean update(Object object) throws ArgumentFormatException {
+        if (object==null) return false;
+
+        Object theRecord;
+
+        List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
+        String tableName = object.getClass().getSimpleName();
+        String sql = "update " + tableName + " set ";
+        String columnName;
+        Object columnValue;
+        String id = "";
+        Object pk = null;
+
+        for (int i=0; i< fieldPairList.size(); i++) {
+            if (!fieldPairList.get(i).isPrimaryKey()) {
+                columnName = fieldPairList.get(i).getName();
+                columnValue = fieldPairList.get(i).getValue();
+                sql += columnName + " = " + columnValue + ", ";
+            } else {
+                id = fieldPairList.get(i).getName();
+                pk = fieldPairList.get(i).getValue();
+            }
+        }
+        try {
+            theRecord = get(id, pk);
+            sql = sql.substring(0, sql.length()-2);
+            sql += " where " + id + " = " + pk;
+
+            try (Connection conn = ConnectionUtil.getConnection()) {
+                Statement s = conn.createStatement();
+                s.execute(sql);
+                return true;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } catch (ArgumentFormatException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
+        }
+        return false;
+    }
+
 
     /**
      * delete a generic type column value of a record by a primary key of any type
@@ -358,8 +405,13 @@ public class AdeOrm implements Mapper {
     }
 
 
-    public boolean delete(Object object) {
+    public boolean delete(Object object) throws ArgumentFormatException {
         if (object == null) return false;
+
+        String id = "";
+        Object pk = null;
+        Object theRecord;
+        System.out.println(object);
 
         List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
         String tableName = object.getClass().getSimpleName();
@@ -367,18 +419,20 @@ public class AdeOrm implements Mapper {
 
         for (int i = 0; i< fieldPairList.size(); i++) {
             if (fieldPairList.get(i).isPrimaryKey()) {
-                String id = fieldPairList.get(i).getName();
-                Object pk = fieldPairList.get(i).getValue();
+                id = fieldPairList.get(i).getName();
+                pk = fieldPairList.get(i).getValue();
                 sql += tableName + " where " + id + " = " + pk;
             }
         }
-        try(Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.execute(sql);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        try(Connection conn = ConnectionUtil.getConnection();
+            Statement s = conn.createStatement()){
+            theRecord = get(id, pk);
+            System.out.println(theRecord);
+            s.execute(sql);
+            return true;
+        } catch (SQLException | ArgumentFormatException e) {
+            throw new ArgumentFormatException("Arguments format are not correct", e);
         }
-        return false;
     }
 
 

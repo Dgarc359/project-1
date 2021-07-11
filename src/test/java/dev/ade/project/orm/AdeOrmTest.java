@@ -39,7 +39,7 @@ public class AdeOrmTest {
     public void getTestPrimaryKey() throws ArgumentFormatException {
         User user = (User) uAdeOrm.get( "user_id", 1);
         assertEquals(1, user.getUserId());
-    }*/
+    }
 
     @Test
     public void getTestNull() throws ArgumentFormatException {
@@ -107,7 +107,7 @@ public class AdeOrmTest {
                 columnNames, "tag", "food").size());
     }
 
-    /*@Test
+    @Test
     public void addSingleUserTest() throws ArgumentFormatException{
         Field field1 = new Field("username", "foxtrot");
         Field field2 = new Field("user_password", "Password123");
@@ -132,9 +132,9 @@ public class AdeOrmTest {
                 (postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7, postFieldPair8);
 
         assertTrue(adeOrm.add("post", postFieldPairs, -1));
-    }*//*
+    }
 
-    *//*@Test
+    @Test
     public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
         FieldPair postFieldPair1 = new FieldPair("post_id", 10);
         FieldPair postFieldPair2 = new FieldPair("user_id",1);
@@ -148,11 +148,11 @@ public class AdeOrmTest {
                 (postFieldPair1, postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7);
 
         assertTrue(adeOrm.add("post", postFieldPairs));
-    }*//*
+    }
 
     @Test
     public void addObjectPostTest() throws ArgumentFormatException{
-        *//*Post postJo = new Post
+        Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
 */
 
@@ -173,7 +173,7 @@ public class AdeOrmTest {
     }
 
     @Test
-    public  void testUpdateSingleAttribute() throws ArgumentFormatException {
+    public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
         FieldPair field2 = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
@@ -182,7 +182,7 @@ public class AdeOrmTest {
     }
 
     @Test
-    public  void testUpdateMultipleAttributes() throws ArgumentFormatException {
+    public void testUpdateMultipleAttributes() throws ArgumentFormatException {
         FieldPair field = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field);
@@ -190,8 +190,37 @@ public class AdeOrmTest {
     }
 
     @Test
+    public void testUpdateWithObject() throws ArgumentFormatException {
+        Post post = new Post(3, 3, "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
+        assertTrue(pAdeOrm.update(post));
+    }
+
+    @Test
+    public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
+        Post post = new Post(13, 3, "Inception", "United States", "Gary", "good movie", 4);
+        assertFalse(pAdeOrm.update(post));
+    }
+
+    @Test
     public void testDeleteARecord() throws ArgumentFormatException {
-        assertTrue(adeOrm.delete("post", "post_id", 3));
+        assertTrue(pAdeOrm.delete("post", "post_id", 3));
+    }
+
+    @Test
+    public void testDeleteARecordNotInDB() throws ArgumentFormatException {
+        assertFalse(pAdeOrm.delete("post", "post_id", 13));
+    }
+
+    @Test
+    public void testDeleteARecordViaObject() throws ArgumentFormatException {
+        Post post = new Post(3, 3, "Inception", "United States", "Chicago", "movie", 3);
+        assertTrue(pAdeOrm.delete(post));
+    }
+
+    @Test
+    public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {
+        Post post = new Post(7, 3, "something", "United States", "Chicago", "nope", 5);
+        assertFalse(pAdeOrm.delete(post));
     }
 */
     @AfterAll

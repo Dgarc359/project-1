@@ -1,3 +1,8 @@
+--drop table users;
+--create database if not exists;
+--create schema if not exists public;
+--GO
+
 -- DDL
 create table users(
 	first_name varchar (30),
