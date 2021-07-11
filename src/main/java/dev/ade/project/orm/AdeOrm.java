@@ -19,13 +19,27 @@ public class AdeOrm implements Mapper {
     // A POJO class mirror with a table in the db
     private Class<?> clazz;
     private Connection conn;
+    private boolean isTransaction;
+    private List<Boolean> completes = new ArrayList<>();
 
     public AdeOrm() {}
 
+    /**
+     * Constructor for create an orm instance for one POJO class
+     *
+     * @param clazz the class of a POJO class
+     * @return AdeOrm instance
+     */
     public AdeOrm(Class<?> clazz) {
         this.clazz = clazz;
     }
 
+    /**
+     * Set connection to the database
+     *
+     * @param url jdbc driver + db_endpoint + schema_name
+     * @return 0 for failure, 1 for success
+     */
     public int setConnection(String url) {
         int success;
         if (url == null) {
@@ -35,9 +49,70 @@ public class AdeOrm implements Mapper {
         return success;
     }
 
+    /**
+     * Get connection to the db, control the connection
+     * autoCommit status
+     *
+     * @return Connection instance
+     */
     public Connection getConnection() {
         conn = ConnectionUtil.getConnection();
+        if (isTransaction) {
+            try {
+                conn.setAutoCommit(false);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return conn;
+    }
+
+    /**
+     * Set the transaction status to true
+     */
+    public void openTransaction() {
+        isTransaction = true;
+        completes.forEach(e -> e = true);
+    }
+
+    /**
+     * Commit the transaction
+     */
+    public void commitTransaction() throws Exception {
+        if (completes.contains(false)) {
+            throw new Exception();
+        } else {
+            try {
+                conn.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Roll back the transaction
+     */
+    public void rollbackTransaction() {
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Close the connection, reset default status
+     */
+    public void closeTransaction() {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+            isTransaction = false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean add(Object pojo) throws ArgumentFormatException{
@@ -634,4 +709,44 @@ public class AdeOrm implements Mapper {
         }
         return result;
     }
+
+
+    public boolean update2(String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
+        if (columnName == null || id == null || idValue == null) {
+            return false;
+        }
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String sql = "update " + table.tableName() + " set " + columnName + "= ? " + " where " + id + "=?";
+
+        if (!isTransaction) {
+            try (Connection conn = getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                MapperUtil.setPs(ps, newColumnValue, idValue);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new ArgumentFormatException("Arguments format are not correct", e);
+            }
+        } else {
+            PreparedStatement ps = null;
+            try {
+                Connection conn = getConnection();
+                ps = conn.prepareStatement(sql);
+                MapperUtil.setPs(ps, newColumnValue, idValue);
+                if (ps.executeUpdate() == 0) {
+                    completes.add(false);
+                }
+            } catch (SQLException e) {
+                throw new ArgumentFormatException("Arguments format are not correct", e);
+            } finally {
+                try {
+                    assert ps != null;
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
 }

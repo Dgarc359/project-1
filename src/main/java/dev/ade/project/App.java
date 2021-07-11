@@ -8,6 +8,7 @@ import dev.ade.project.pojo.User;
 import dev.ade.project.util.ConnectionUtil;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -20,14 +21,14 @@ public class App {
         try {
             String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
 
-
-
             AdeOrm adeOrm = new AdeOrm();
 
             // create user orm instance
             User user = new User();
             Class<?> userClass = user.getClass();
             AdeOrm uAdeOrm = new AdeOrm(userClass);
+
+            // set connection
             uAdeOrm.setConnection(url);
 
             // test connection
@@ -38,7 +39,7 @@ public class App {
             Class<?> postClass = post.getClass();
             AdeOrm pAdeOrm = new AdeOrm(postClass);
 
-
+ /*
             // test getById
             System.out.println(uAdeOrm.get("user_id",1));
 
@@ -83,6 +84,32 @@ public class App {
 
             boolean result1 = adeOrm.update("post", fieldPairs, pk);
             System.out.println(result1);
+*/
+
+            // test transaction
+            try {
+                uAdeOrm.openTransaction();
+                uAdeOrm.update2("first_name", "user_id", 1, "Ginny");
+                uAdeOrm.update2("last_name", "user_id", 1, "Weasley");
+                uAdeOrm.commitTransaction();
+            } catch (Exception e) {
+                uAdeOrm.rollbackTransaction();
+            } finally {
+                uAdeOrm.closeTransaction();
+            }
+            System.out.println(uAdeOrm.get("user_id", 1));
+
+            try {
+                uAdeOrm.openTransaction();
+                uAdeOrm.update2("first_name", "user_id", 1, "Leah");
+                uAdeOrm.update2("last_name", "user_id", 10, "Canavan");
+                uAdeOrm.commitTransaction();
+            } catch (Exception e) {
+                uAdeOrm.rollbackTransaction();
+            } finally {
+                uAdeOrm.closeTransaction();
+            }
+            System.out.println(uAdeOrm.get("user_id", 1));
 
         } catch (ArgumentFormatException | SQLException e) {
             e.printStackTrace();

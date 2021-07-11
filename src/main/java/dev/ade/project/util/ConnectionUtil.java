@@ -13,8 +13,8 @@ public class ConnectionUtil {
     private static Connection connection;
     private static final boolean IS_TEST = Boolean.parseBoolean(System.getenv("TEST"));
     private static String url;
-    private static String USERNAME = System.getenv("USERNAME");
-    private static String PASSWORD = System.getenv("PASSWORD");
+    private static final String USERNAME = System.getenv("USERNAME");
+    private static final String PASSWORD = System.getenv("PASSWORD");
 
     /**
      * The getConnection method returns a singleton Connection object.
@@ -27,8 +27,6 @@ public class ConnectionUtil {
                     connection = DriverManager.getConnection("jdbc:h2:~/test");
                 } else {
                     //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-                    //final String PASSWORD = System.getenv("PASSWORD");
-                    //final String USERNAME = System.getenv("USERNAME");
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                 }
             }

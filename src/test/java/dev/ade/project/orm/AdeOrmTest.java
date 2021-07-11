@@ -27,7 +27,7 @@ public class AdeOrmTest {
     Post post = new Post();
     Class<?> postClass = post.getClass();
     AdeOrm pAdeOrm = new AdeOrm(postClass);
-/*
+
     @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -171,7 +171,7 @@ public class AdeOrmTest {
 
         assertTrue(adeOrm.add("test_table", fieldPairs));
     }
-*//*
+
     @Test
     public  void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
