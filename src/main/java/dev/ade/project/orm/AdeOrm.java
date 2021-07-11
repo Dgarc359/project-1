@@ -7,25 +7,37 @@ import dev.ade.project.exception.ArgumentFormatException;
 import dev.ade.project.util.ConnectionUtil;
 import dev.ade.project.util.MapperUtil;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdeOrm implements Mapper {
     // A POJO class mirror with a table in the db
     private Class<?> clazz;
+    private Connection conn;
 
     public AdeOrm() {}
 
     public AdeOrm(Class<?> clazz) {
         this.clazz = clazz;
-        Connection connection = ConnectionUtil.getConnection();
+    }
+
+    public int setConnection(String url) {
+        int success;
+        if (url == null) {
+            return 0;
+        }
+        success = ConnectionUtil.setConnection(url);
+        return success;
+    }
+
+    public Connection getConnection() {
+        conn = ConnectionUtil.getConnection();
+        return conn;
     }
 
     public boolean add(Object pojo) throws ArgumentFormatException{
@@ -94,7 +106,7 @@ public class AdeOrm implements Mapper {
         System.out.println(sql);
         System.out.println(Arrays.toString(fieldValues));
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
@@ -128,7 +140,7 @@ public class AdeOrm implements Mapper {
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
         System.out.println(Arrays.toString(fieldValues));
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
@@ -175,7 +187,7 @@ public class AdeOrm implements Mapper {
 
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
 
@@ -204,7 +216,7 @@ public class AdeOrm implements Mapper {
         }
         String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, newColumnValue, idValue);
             ps.executeUpdate();
@@ -235,7 +247,7 @@ public class AdeOrm implements Mapper {
 
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
             ps.executeUpdate();
@@ -260,7 +272,7 @@ public class AdeOrm implements Mapper {
         }
         String sql = "delete from " + tableName + " where " + id + "=?";
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, idValue);
             ps.executeUpdate();
@@ -285,7 +297,7 @@ public class AdeOrm implements Mapper {
                 sql += tableName + " where " + id + " = " + pk;
             }
         }
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             ps.execute(sql);
         } catch (SQLException throwables) {
@@ -322,7 +334,7 @@ public class AdeOrm implements Mapper {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
         Field[] fields = clazz.getDeclaredFields();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, pkValue);
             ResultSet rs = ps.executeQuery();
@@ -360,7 +372,7 @@ public class AdeOrm implements Mapper {
         String s = Arrays.stream(columnNames).collect(Collectors.joining(", ","",""));
         String sql = "select " + s + " from " + table.tableName() + " where " + pkName + "=?";
         List<Object> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             Class<?> clazz = PreparedStatement.class;
             MapperUtil.setPs(ps, pkValue);
@@ -405,7 +417,7 @@ public class AdeOrm implements Mapper {
                         " order by " + orderCol + " " + order;
 
         List<List<Object>> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValue);
             ResultSet rs = ps.executeQuery();
@@ -436,7 +448,7 @@ public class AdeOrm implements Mapper {
         Field[] fields = clazz.getDeclaredFields();
 
         List<Object> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             constructor = clazz.getConstructor();
             ResultSet rs = ps.executeQuery();
@@ -476,7 +488,7 @@ public class AdeOrm implements Mapper {
         Constructor<?> constructor;
         Field[] fields = clazz.getDeclaredFields();
         List<Object> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             constructor = clazz.getConstructor();
             ResultSet rs = ps.executeQuery();
@@ -525,7 +537,7 @@ public class AdeOrm implements Mapper {
         List<List<Object>> result = new ArrayList<>();
         Method method = null;
 
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
             ResultSet rs = ps.executeQuery();
@@ -561,13 +573,11 @@ public class AdeOrm implements Mapper {
 
         TableName tableA = clazz.getDeclaredAnnotation(TableName.class);
 
-        System.out.println(tableA.tableName());
         String colNames = String.join(", ", columnNames);
         String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
                 " on " + pkA + " = " + fkA;
-        System.out.println(sql);
         List<List<Object>> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -608,7 +618,7 @@ public class AdeOrm implements Mapper {
         String sql = "select " + colNames + " from " + tableA.tableName() + " " + jType + " join " + tableB +
                 " on " + pkA + " = " + fkA + " where " + fieldName + "=?";
         List<List<Object>> result = new ArrayList<>();
-        try(Connection conn = ConnectionUtil.getConnection();
+        try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValue);
             ResultSet rs = ps.executeQuery();

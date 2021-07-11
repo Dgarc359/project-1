@@ -12,16 +12,23 @@ import java.sql.SQLException;
 public class ConnectionUtil {
     private static Connection connection;
     private static final boolean IS_TEST = Boolean.parseBoolean(System.getenv("TEST"));
+    private static String url;
+    private static String USERNAME = System.getenv("USERNAME");
+    private static String PASSWORD = System.getenv("PASSWORD");
 
+    /**
+     * The getConnection method returns a singleton Connection object.
+     * A local database mirrors the actual deployed web database is used for testing.
+     */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
                 if (IS_TEST) {
                     connection = DriverManager.getConnection("jdbc:h2:~/test");
                 } else {
-                    String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-                    final String PASSWORD = System.getenv("PASSWORD");
-                    final String USERNAME = System.getenv("USERNAME");
+                    //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+                    //final String PASSWORD = System.getenv("PASSWORD");
+                    //final String USERNAME = System.getenv("USERNAME");
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                 }
             }
@@ -34,23 +41,16 @@ public class ConnectionUtil {
     /**
      * The getConnection method returns a singleton Connection object.
      * A local database mirrors the actual deployed web database is used for testing.
+     *
+     * @param url the endpoint with port and db schema
+     * @return 0 for fail, 1 for success
      */
-    public static Connection setConnection(String url, String USERNAME, String PASSWORD) {
-        try {
-            if (connection == null || connection.isClosed()) {
-                if (IS_TEST) {
-                    connection = DriverManager.getConnection("jdbc:h2:~/test");
-                } else {
-//                    String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-//                    final String PASSWORD = System.getenv("PASSWORD");
-//                    final String USERNAME = System.getenv("USERNAME");
-                    connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static int setConnection(String url) {
+        if (url == null) {
+            return 0;
         }
-        return connection;
+        ConnectionUtil.url = url;
+        return 1;
     }
 }
 

@@ -19,13 +19,8 @@ public class App {
         // For checking results
         try {
             String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-            final String USERNAME = System.getenv("USERNAME");
-            final String PASSWORD = System.getenv("PASSWORD");
-            ConnectionUtil.setConnection(url, USERNAME, PASSWORD);
-            Connection conn = ConnectionUtil.getConnection();
 
-            // test connection
-            System.out.println(conn.getMetaData().getDriverName());
+
 
             AdeOrm adeOrm = new AdeOrm();
 
@@ -33,11 +28,16 @@ public class App {
             User user = new User();
             Class<?> userClass = user.getClass();
             AdeOrm uAdeOrm = new AdeOrm(userClass);
+            uAdeOrm.setConnection(url);
+
+            // test connection
+            System.out.println(uAdeOrm.getConnection().getMetaData().getDriverName());
 
             // create post orm instance
             Post post = new Post();
             Class<?> postClass = post.getClass();
             AdeOrm pAdeOrm = new AdeOrm(postClass);
+
 
             // test getById
             System.out.println(uAdeOrm.get("user_id",1));

@@ -27,8 +27,8 @@ public class AdeOrmTest {
     Post post = new Post();
     Class<?> postClass = post.getClass();
     AdeOrm pAdeOrm = new AdeOrm(postClass);
-
-    /*@BeforeAll
+/*
+    @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             RunScript.execute(connection, new FileReader("setup.sql"));
@@ -90,24 +90,24 @@ public class AdeOrmTest {
         FieldPair condition1 = new FieldPair("user_id", 1);
         FieldPair condition2 = new FieldPair("rating", 5);
         List<FieldPair> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(5, pAdeOrm.getWithCriterion(columnNames, conditions, "or").size());
+        assertEquals(3, pAdeOrm.getWithCriterion(columnNames, conditions, "or").size());
     }
 
     @Test
     public void getJointTest() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("country", "city", "rating");
-        assertEquals(5,  uAdeOrm.getJoint("inner", "users.user_id", "post", "post.user_id",
+        assertEquals(4,  uAdeOrm.getJoint("inner", "users.user_id", "post", "post.user_id",
                 columnNames).size());
     }
 
     @Test
     public void getJointWhereTest() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("country", "city", "rating");
-        assertEquals(2,  uAdeOrm.getJointWhere("inner", "users.user_id", "post", "post.user_id",
+        assertEquals(1,  uAdeOrm.getJointWhere("inner", "users.user_id", "post", "post.user_id",
                 columnNames, "tag", "food").size());
     }
 
-    *//*@Test
+    /*@Test
     public void addSingleUserTest() throws ArgumentFormatException{
         Field field1 = new Field("username", "foxtrot");
         Field field2 = new Field("user_password", "Password123");
@@ -171,7 +171,7 @@ public class AdeOrmTest {
 
         assertTrue(adeOrm.add("test_table", fieldPairs));
     }
-
+*//*
     @Test
     public  void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
@@ -189,6 +189,7 @@ public class AdeOrmTest {
         assertTrue(adeOrm.update("post", fields, pk));
     }
 
+    @Test
     public void testDeleteARecord() throws ArgumentFormatException {
         assertTrue(adeOrm.delete("post", "post_id", 3));
     }
@@ -199,7 +200,7 @@ public class AdeOrmTest {
             RunScript.execute(connection, new FileReader("teardown.sql"));
         }
 
-    }*/
-
+    }
+*/
 }
 
