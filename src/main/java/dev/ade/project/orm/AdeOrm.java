@@ -115,7 +115,7 @@ public class AdeOrm implements Mapper {
         }
     }
 
-    public boolean add(Object pojo) throws ArgumentFormatException{
+    public Object add(Object pojo) throws ArgumentFormatException{
 
         TableName table = clazz.getDeclaredAnnotation(TableName.class);
         String sql = "insert into " + table.tableName();
@@ -191,7 +191,7 @@ public class AdeOrm implements Mapper {
             throw new ArgumentFormatException("Arguments format are not correct", throwables);
         }
 
-        return true;
+        return pojo;
     }
 
 
