@@ -34,8 +34,8 @@ public class AdeOrmTest {
             RunScript.execute(connection, new FileReader("setup.sql"));
         }
     }
-
-    /*@Test
+/*
+    @Test
     public void getTestPrimaryKey() throws ArgumentFormatException {
         User user = (User) uAdeOrm.get( "user_id", 1);
         assertEquals(1, user.getUserId());
@@ -154,9 +154,9 @@ public class AdeOrmTest {
     public void addObjectPostTest() throws ArgumentFormatException{
         Post postJo = new Post
                 (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
-*/
 
-      /*  User user1 = new User
+
+        User user1 = new User
                 (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
         AdeOrm userAdeOrm = new AdeOrm(User.class);
 
@@ -171,7 +171,7 @@ public class AdeOrmTest {
 
         assertTrue(adeOrm.add("test_table", fieldPairs));
     }
-*/
+
     @Test
     public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
