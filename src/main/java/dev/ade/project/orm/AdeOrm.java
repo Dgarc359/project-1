@@ -70,7 +70,7 @@ public class AdeOrm implements Mapper {
     /**
      * Set the transaction status to true
      */
-    public void openTransaction() {
+    public void begin() {
         isTransaction = true;
         completes = new ArrayList<>();
     }
@@ -78,7 +78,7 @@ public class AdeOrm implements Mapper {
     /**
      * Commit the transaction
      */
-    public void commitTransaction() throws Exception {
+    public void commit() throws Exception {
         if (completes.contains(false)) {
             throw new Exception();
         } else {
@@ -93,7 +93,7 @@ public class AdeOrm implements Mapper {
     /**
      * Roll back the transaction
      */
-    public void rollbackTransaction() {
+    public void rollback() {
         try {
             conn.rollback();
         } catch (SQLException e) {
@@ -104,7 +104,7 @@ public class AdeOrm implements Mapper {
     /**
      * Close the connection, reset default status
      */
-    public void closeTransaction() {
+    public void close() {
         try {
             if (conn != null) {
                 conn.close();
