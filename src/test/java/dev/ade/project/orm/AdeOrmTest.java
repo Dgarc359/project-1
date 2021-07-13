@@ -171,7 +171,7 @@ public class AdeOrmTest {
 
         assertTrue(adeOrm.add("test_table", fieldPairs));
     }
-
+*/
     @Test
     public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
