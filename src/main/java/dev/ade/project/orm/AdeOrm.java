@@ -343,8 +343,9 @@ public class AdeOrm implements Mapper {
 
         Object theRecord;
 
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
         List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
-        String tableName = object.getClass().getSimpleName();
+        String tableName = table.tableName();
         String sql = "update " + tableName + " set ";
         String columnName;
         Object columnValue;
@@ -355,7 +356,7 @@ public class AdeOrm implements Mapper {
             if (!fieldPairList.get(i).isPrimaryKey()) {
                 columnName = fieldPairList.get(i).getName();
                 columnValue = fieldPairList.get(i).getValue();
-                sql += columnName + " = " + columnValue + ", ";
+                sql += columnName + " = " + "'" + columnValue + "'" + ", ";
             } else {
                 id = fieldPairList.get(i).getName();
                 pk = fieldPairList.get(i).getValue();
@@ -365,6 +366,7 @@ public class AdeOrm implements Mapper {
             theRecord = get(id, pk);
             sql = sql.substring(0, sql.length()-2);
             sql += " where " + id + " = " + pk;
+            System.out.println(sql);
 
             try (Connection conn = ConnectionUtil.getConnection()) {
                 Statement s = conn.createStatement();
