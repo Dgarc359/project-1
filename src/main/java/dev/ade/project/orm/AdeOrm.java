@@ -411,7 +411,6 @@ public class AdeOrm implements Mapper {
         String id = "";
         Object pk = null;
         Object theRecord;
-        System.out.println(object);
 
         List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
         String tableName = object.getClass().getSimpleName();
@@ -426,11 +425,9 @@ public class AdeOrm implements Mapper {
         }
         try(Connection conn = ConnectionUtil.getConnection();
             Statement s = conn.createStatement()){
-            theRecord = get(id, pk);
-            System.out.println(theRecord);
             s.execute(sql);
             return true;
-        } catch (SQLException | ArgumentFormatException e) {
+        } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
     }

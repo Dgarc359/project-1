@@ -191,13 +191,13 @@ public class AdeOrmTest {
 
     @Test
     public void testUpdateWithObject() throws ArgumentFormatException {
-        Post post = new Post(3, 3, "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
+        Post post = new Post(3, "charlie", "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
         assertTrue(pAdeOrm.update(post));
     }
 
     @Test
     public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
-        Post post = new Post(13, 3, "Inception", "United States", "Gary", "good movie", 4);
+        Post post = new Post(13, "3", "Inception", "United States", "Gary", "good movie", 4);
         assertFalse(pAdeOrm.update(post));
     }
 
@@ -213,13 +213,13 @@ public class AdeOrmTest {
 
     @Test
     public void testDeleteARecordViaObject() throws ArgumentFormatException {
-        Post post = new Post(3, 3, "Inception", "United States", "Chicago", "movie", 3);
+        Post post = new Post(3, "charlie", "Inception", "United States", "Chicago", "movie", 3);
         assertTrue(pAdeOrm.delete(post));
     }
 
     @Test
     public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {
-        Post post = new Post(7, 3, "something", "United States", "Chicago", "nope", 5);
+        Post post = new Post(7, "fox", "something", "United States", "Chicago", "nope", 5);
         assertFalse(pAdeOrm.delete(post));
     }
 */

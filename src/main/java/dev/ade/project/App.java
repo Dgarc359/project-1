@@ -39,6 +39,12 @@ public class App {
             Class<?> postClass = post.getClass();
             AdeOrm pAdeOrm = new AdeOrm(postClass);
 
+            Post p = new Post(0, "beta", "The Aventine Hill", "Italy", "Rome", "old", 5);
+//            pAdeOrm.add(p);
+//            System.out.println(pAdeOrm.get("title", p.getTitle()));
+
+            Post p1 = new Post(6, "u", "title", "country", "city", "tag", 4);
+            pAdeOrm.delete(p1);
  /*
             // test getById
             System.out.println(uAdeOrm.get("user_id",1));
@@ -87,41 +93,41 @@ public class App {
 */
 
             // test transaction
-            try {
-                uAdeOrm.openTransaction();
-                uAdeOrm.update2("first_name", "user_id", 1, "Ginny");
-                uAdeOrm.update2("last_name", "user_id", 1, "Weasley");
-                uAdeOrm.commitTransaction();
-            } catch (Exception e) {
-                uAdeOrm.rollbackTransaction();
-            } finally {
-                uAdeOrm.closeTransaction();
-            }
-            System.out.println(uAdeOrm.get("user_id", 1));
-
-            try {
-                uAdeOrm.openTransaction();
-                uAdeOrm.update2("first_name", "user_id", 1, "Leah");
-                uAdeOrm.update2("last_name", "user_id", 10, "Canavan");
-                uAdeOrm.commitTransaction();
-            } catch (Exception e) {
-                uAdeOrm.rollbackTransaction();
-            } finally {
-                uAdeOrm.closeTransaction();
-            }
-            System.out.println(uAdeOrm.get("user_id", 1));
-
-            //User hermione = new User(0, "Hermione", "Granger", 'F', "her", "iamtalented");
-            //uAdeOrm.add(hermione);
-            System.out.println(uAdeOrm.getColumns("username", "her", "first_name", "last_name"));
-
-            //User ron = new User(0, "Ron", "Weasley", 'M', "ron", "password123");
-            //uAdeOrm.add(ron);
-            System.out.println(uAdeOrm.getColumns("username", "ron", "first_name", "last_name"));
-
-            //User harry = new User(0, "Harry", "Porter", 'M', "harry", "password123");
-            //uAdeOrm.add(harry);
-            System.out.println(uAdeOrm.getColumns("username", "harry", "first_name", "last_name"));
+//            try {
+//                uAdeOrm.openTransaction();
+//                uAdeOrm.update2("first_name", "user_id", 1, "Ginny");
+//                uAdeOrm.update2("last_name", "user_id", 1, "Weasley");
+//                uAdeOrm.commitTransaction();
+//            } catch (Exception e) {
+//                uAdeOrm.rollbackTransaction();
+//            } finally {
+//                uAdeOrm.closeTransaction();
+//            }
+//            System.out.println(uAdeOrm.get("user_id", 1));
+//
+//            try {
+//                uAdeOrm.openTransaction();
+//                uAdeOrm.update2("first_name", "user_id", 1, "Leah");
+//                uAdeOrm.update2("last_name", "user_id", 10, "Canavan");
+//                uAdeOrm.commitTransaction();
+//            } catch (Exception e) {
+//                uAdeOrm.rollbackTransaction();
+//            } finally {
+//                uAdeOrm.closeTransaction();
+//            }
+//            System.out.println(uAdeOrm.get("user_id", 1));
+//
+//            //User hermione = new User(0, "Hermione", "Granger", 'F', "her", "iamtalented");
+//            //uAdeOrm.add(hermione);
+//            System.out.println(uAdeOrm.getColumns("username", "her", "first_name", "last_name"));
+//
+//            //User ron = new User(0, "Ron", "Weasley", 'M', "ron", "password123");
+//            //uAdeOrm.add(ron);
+//            System.out.println(uAdeOrm.getColumns("username", "ron", "first_name", "last_name"));
+//
+//            //User harry = new User(0, "Harry", "Porter", 'M', "harry", "password123");
+//            //uAdeOrm.add(harry);
+//            System.out.println(uAdeOrm.getColumns("username", "harry", "first_name", "last_name"));
 
 
         } catch (ArgumentFormatException | SQLException e) {
