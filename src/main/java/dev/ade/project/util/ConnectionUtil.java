@@ -27,10 +27,13 @@ public class ConnectionUtil {
                     connection = DriverManager.getConnection("jdbc:h2:~/test");
                 } else {
                     //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
+                    Class.forName("org.postgresql.Driver");
                     connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                 }
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return connection;
