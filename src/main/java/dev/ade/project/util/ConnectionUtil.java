@@ -22,22 +22,19 @@ public class ConnectionUtil {
      */
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                if (IS_TEST) {
-                    connection = DriverManager.getConnection("jdbc:h2:~/test");
-                } else {
-                    //String url = "jdbc:postgresql://training-db.czu9b8kfiorj.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=project-1";
-                    Class.forName("org.postgresql.Driver");
-                    connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
-                }
+            if (IS_TEST) {
+                connection = DriverManager.getConnection("jdbc:h2:~/test");
+            } else if (connection == null || connection.isClosed()) {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return connection;
     }
+
 
     /**
      * The getConnection method returns a singleton Connection object.
