@@ -94,26 +94,26 @@ public class App {
 
             // test transaction
 //            try {
-//                uAdeOrm.openTransaction();
+//                uAdeOrm.begin();
 //                uAdeOrm.update2("first_name", "user_id", 1, "Ginny");
 //                uAdeOrm.update2("last_name", "user_id", 1, "Weasley");
-//                uAdeOrm.commitTransaction();
+//                uAdeOrm.commit();
 //            } catch (Exception e) {
-//                uAdeOrm.rollbackTransaction();
+//                uAdeOrm.rollback();
 //            } finally {
-//                uAdeOrm.closeTransaction();
+//                uAdeOrm.close();
 //            }
 //            System.out.println(uAdeOrm.get("user_id", 1));
 //
 //            try {
-//                uAdeOrm.openTransaction();
+//                uAdeOrm.open();
 //                uAdeOrm.update2("first_name", "user_id", 1, "Leah");
 //                uAdeOrm.update2("last_name", "user_id", 10, "Canavan");
-//                uAdeOrm.commitTransaction();
+//                uAdeOrm.commit();
 //            } catch (Exception e) {
-//                uAdeOrm.rollbackTransaction();
+//                uAdeOrm.rollback();
 //            } finally {
-//                uAdeOrm.closeTransaction();
+//                uAdeOrm.close();
 //            }
 //            System.out.println(uAdeOrm.get("user_id", 1));
 //
