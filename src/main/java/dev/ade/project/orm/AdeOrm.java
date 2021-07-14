@@ -278,17 +278,18 @@ public class AdeOrm implements Mapper {
     /**
      * Update a generic type column value of a record by a primary key of any type
      *
-     * @param tableName table to be updated
      * @param columnName name of column being updated
      * @param id column name of the primary key
      * @param idValue primary key value of a record to be updated
      * @param newColumnValue updating columnName w/ this value
      * @return
      */
-    public boolean update(String tableName, String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
-        if (tableName == null || columnName == null || id == null || idValue == null) {
+    public boolean update(String columnName, String id, Object idValue, Object newColumnValue) throws ArgumentFormatException {
+        if (columnName == null || id == null || idValue == null) {
             return false;
         }
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String tableName = table.tableName();;
         String sql = "update " + tableName + " set " + columnName + "= ? " + " where " + id + "=?";
 
         try(Connection conn = getConnection();
@@ -305,15 +306,16 @@ public class AdeOrm implements Mapper {
     /**
      * Update multiple generic type columns values of a record by a primary key of any type
      *
-     * @param tableName table to be updated
      * @param fieldPairs columns being updated along with their values
      * @param pk column name and value of the primary key
      * @return
      */
-    public boolean update(String tableName, List<FieldPair> fieldPairs, FieldPair pk) throws ArgumentFormatException {
-        if (tableName == null || fieldPairs == null || pk == null) {
+    public boolean update(List<FieldPair> fieldPairs, FieldPair pk) throws ArgumentFormatException {
+        if (fieldPairs == null || pk == null) {
             return false;
         }
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String tableName = table.tableName();;
 
         String sql = "update " + tableName + " set ";
 
@@ -348,15 +350,15 @@ public class AdeOrm implements Mapper {
         String tableName = table.tableName();
         String sql = "update " + tableName + " set ";
         String columnName;
-        Object columnValue;
+        Object[] columnValues = new Object[fieldPairList.size()];
         String id = "";
         Object pk = null;
 
         for (int i=0; i< fieldPairList.size(); i++) {
             if (!fieldPairList.get(i).isPrimaryKey()) {
                 columnName = fieldPairList.get(i).getName();
-                columnValue = fieldPairList.get(i).getValue();
-                sql += columnName + " = " + "'" + columnValue + "'" + ", ";
+                columnValues[i-1] = fieldPairList.get(i).getValue();
+                sql += columnName + " = ? " + ", ";
             } else {
                 id = fieldPairList.get(i).getName();
                 pk = fieldPairList.get(i).getValue();
@@ -367,10 +369,14 @@ public class AdeOrm implements Mapper {
             sql = sql.substring(0, sql.length()-2);
             sql += " where " + id + " = " + pk;
             System.out.println(sql);
+            for (int i=0; i< columnValues.length; i++) {
+                System.out.print(columnValues[i] + " ");
+            }
 
             try (Connection conn = ConnectionUtil.getConnection()) {
-                Statement s = conn.createStatement();
-                s.execute(sql);
+                PreparedStatement ps = conn.prepareStatement(sql);
+                MapperUtil.setPs(ps, columnValues);
+                ps.executeUpdate();
                 return true;
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -385,15 +391,17 @@ public class AdeOrm implements Mapper {
     /**
      * delete a generic type column value of a record by a primary key of any type
      *
-     * @param tableName table to be updated
      * @param id column name of the primary key
      * @param idValue primary key value of a record to be updated
      * @return
      */
-    public boolean delete(String tableName, String id, Object idValue) throws ArgumentFormatException {
-        if (tableName == null || id == null || idValue == null) {
+    public boolean delete(String id, Object idValue) throws ArgumentFormatException {
+        if (id == null || idValue == null) {
             return false;
         }
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String tableName = table.tableName();;
+
         String sql = "delete from " + tableName + " where " + id + "=?";
 
         try(Connection conn = getConnection();
@@ -415,19 +423,22 @@ public class AdeOrm implements Mapper {
         Object theRecord;
 
         List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
-        String tableName = object.getClass().getSimpleName();
-        String sql = "delete from ";
+        TableName table = clazz.getDeclaredAnnotation(TableName.class);
+        String tableName = table.tableName();;
+
+        String sql = "delete from " + tableName;
 
         for (int i = 0; i< fieldPairList.size(); i++) {
             if (fieldPairList.get(i).isPrimaryKey()) {
                 id = fieldPairList.get(i).getName();
                 pk = fieldPairList.get(i).getValue();
-                sql += tableName + " where " + id + " = " + pk;
+                sql += " where " + id + " = ?";
             }
         }
         try(Connection conn = ConnectionUtil.getConnection();
-            Statement s = conn.createStatement()){
-            s.execute(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            MapperUtil.setPs(ps, pk);
+            ps.executeUpdate();
             return true;
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);

@@ -39,8 +39,8 @@ public class App {
             Class<?> postClass = post.getClass();
             AdeOrm pAdeOrm = new AdeOrm(postClass);
 
-            Post p = new Post(0, "beta", "The Aventine Hill", "Italy", "Rome", "old", 5);
-            pAdeOrm.add(p);
+            Post p = new Post(20, "beta", "The Palatine Hill", "Italy", "Rome", "old", 5);
+            pAdeOrm.delete(p);
 //            System.out.println(pAdeOrm.get("title", p.getTitle()));
 
 //            Post p1 = new Post(6, "u", "title", "country", "city", "tag", 4);
