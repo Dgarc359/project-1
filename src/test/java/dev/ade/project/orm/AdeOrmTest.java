@@ -34,11 +34,11 @@ public class AdeOrmTest {
             RunScript.execute(connection, new FileReader("setup.sql"));
         }
     }
-/*
+
     @Test
     public void getTestPrimaryKey() throws ArgumentFormatException {
-        User user = (User) uAdeOrm.get( "user_id", 1);
-        assertEquals(1, user.getUserId());
+        User user = (User) uAdeOrm.get( "username", "alpha");
+        assertEquals("alpha", user.getUsername());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class AdeOrmTest {
 
     @Test
     public void getColumnsTest() throws ArgumentFormatException {
-        assertEquals("alpha", uAdeOrm.getColumns("user_id", 1, "username").get(0));
+        assertEquals("alpha", uAdeOrm.getColumns("username", "alpha", "username").get(0));
     }
 
     @Test
@@ -66,19 +66,19 @@ public class AdeOrmTest {
 
     @Test
     public void getAllTestNumber() throws ArgumentFormatException {
-        assertEquals(3, uAdeOrm.getAll().size());
+        assertEquals(4, uAdeOrm.getAll().size());
     }
 
     @Test
     public void getAllInOrderTestOrder() throws ArgumentFormatException {
-        User user = (User) uAdeOrm.getAllInOrder("user_id", "desc").get(0);
+        User user = (User) uAdeOrm.getAllInOrder("username", "desc").get(0);
         assertEquals("charlie",user.getUsername());
     }
 
     @Test
     public void getWithCriterionTest() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("user_id", "title", "country", "city", "rating");
-        FieldPair condition1 = new FieldPair("user_id", 2);
+        List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
+        FieldPair condition1 = new FieldPair("username", "beta");
         FieldPair condition2 = new FieldPair("rating", 5);
         List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(1, pAdeOrm.getWithCriterion(columnNames, conditions, "and").size());
@@ -86,8 +86,8 @@ public class AdeOrmTest {
 
     @Test
     public void getRecordsWithOrTest() throws ArgumentFormatException {
-        List<String> columnNames = Arrays.asList("user_id", "title", "country", "city", "rating");
-        FieldPair condition1 = new FieldPair("user_id", 1);
+        List<String> columnNames = Arrays.asList("username", "title", "country", "city", "rating");
+        FieldPair condition1 = new FieldPair("username", "alpha");
         FieldPair condition2 = new FieldPair("rating", 5);
         List<FieldPair> conditions = Arrays.asList(condition1, condition2);
         assertEquals(3, pAdeOrm.getWithCriterion(columnNames, conditions, "or").size());
@@ -96,89 +96,35 @@ public class AdeOrmTest {
     @Test
     public void getJointTest() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("country", "city", "rating");
-        assertEquals(4,  uAdeOrm.getJoint("inner", "users.user_id", "post", "post.user_id",
+        assertEquals(3,  uAdeOrm.getJoint("inner", "users.username", "post", "post.username",
                 columnNames).size());
     }
 
     @Test
     public void getJointWhereTest() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("country", "city", "rating");
-        assertEquals(1,  uAdeOrm.getJointWhere("inner", "users.user_id", "post", "post.user_id",
+        assertEquals(1,  uAdeOrm.getJointWhere("inner", "users.username", "post", "post.username",
                 columnNames, "tag", "food").size());
     }
 
     @Test
-    public void addSingleUserTest() throws ArgumentFormatException{
-        Field field1 = new Field("username", "foxtrot");
-        Field field2 = new Field("user_password", "Password123");
-
-        List<Field> fields = Arrays.asList(field1,field2);
-
-        assertTrue(adeOrm.add("users",fields,"default"));
-    }
-
-    @Test
-    public void addSinglePostWithDefaultIdCriteriaTest() throws ArgumentFormatException{
-
-        FieldPair postFieldPair2 = new FieldPair("user_id",1);
-        FieldPair postFieldPair3 = new FieldPair("title","Shrimp Linguini Alfredo");
-        FieldPair postFieldPair4 = new FieldPair("country","United States");
-        FieldPair postFieldPair5 = new FieldPair("city","Miami");
-        FieldPair postFieldPair6 = new FieldPair("tag","food");
-        FieldPair postFieldPair7 = new FieldPair("rating",5);
-        FieldPair postFieldPair8 = new FieldPair("timestamp", LocalDateTime.now());
-
-        List<FieldPair> postFieldPairs = Arrays.asList
-                (postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7, postFieldPair8);
-
-        assertTrue(adeOrm.add("post", postFieldPairs, -1));
-    }
-
-    @Test
-    public void addSinglePostWithNonDefaultIdCriteriaTest() throws ArgumentFormatException{
-        FieldPair postFieldPair1 = new FieldPair("post_id", 10);
-        FieldPair postFieldPair2 = new FieldPair("user_id",1);
-        FieldPair postFieldPair3 = new FieldPair("title","Shrimp Linguini Alfredo");
-        FieldPair postFieldPair4 = new FieldPair("country","United States");
-        FieldPair postFieldPair5 = new FieldPair("city","Miami");
-        FieldPair postFieldPair6 = new FieldPair("tag","food");
-        FieldPair postFieldPair7 = new FieldPair("rating",5);
-
-        List<FieldPair> postFieldPairs = Arrays.asList
-                (postFieldPair1, postFieldPair2, postFieldPair3, postFieldPair4, postFieldPair5, postFieldPair6, postFieldPair7);
-
-        assertTrue(adeOrm.add("post", postFieldPairs));
-    }
-
-    @Test
-    public void addObjectPostTest() throws ArgumentFormatException{
-        Post postJo = new Post
-                (11,1,"Shrimp Linguini Alfredo","United States","Miami","food",4);
-
+    public void addUserObjectTest() throws ArgumentFormatException{
 
         User user1 = new User
-                (0,"Tyler","Kelly",'M',"hardstuckwarrior","password123");
+                ("Tyler","Kelly",'M',"hardstuckwarrior","password123");
         AdeOrm userAdeOrm = new AdeOrm(User.class);
 
         assertTrue(userAdeOrm.add(user1));
     }
 
-    @Test
-    public void addSinglePostWithNonIntegerPrimaryKeyTest() throws ArgumentFormatException{
 
-        FieldPair fieldPair1 = new FieldPair("prim_key","test");
-        List<FieldPair> fieldPairs = Arrays.asList(fieldPair1);
-
-        assertTrue(adeOrm.add("test_table", fieldPairs));
-    }
-
-    @Test
+/*    @Test
     public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
         FieldPair field2 = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field1, field2);
-        assertTrue(adeOrm.update("post", fields, pk));
+        assertTrue(pAdeOrm.update(post,fields,pk);
     }
 
     @Test
@@ -187,21 +133,21 @@ public class AdeOrmTest {
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field);
         assertTrue(adeOrm.update("post", fields, pk));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testUpdateWithObject() throws ArgumentFormatException {
         Post post = new Post(3, "charlie", "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
         assertTrue(pAdeOrm.update(post));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
         Post post = new Post(13, "3", "Inception", "United States", "Gary", "good movie", 4);
         assertFalse(pAdeOrm.update(post));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testDeleteARecord() throws ArgumentFormatException {
         assertTrue(pAdeOrm.delete("post", "post_id", 3));
     }
@@ -209,20 +155,20 @@ public class AdeOrmTest {
     @Test
     public void testDeleteARecordNotInDB() throws ArgumentFormatException {
         assertFalse(pAdeOrm.delete("post", "post_id", 13));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testDeleteARecordViaObject() throws ArgumentFormatException {
         Post post = new Post(3, "charlie", "Inception", "United States", "Chicago", "movie", 3);
         assertTrue(pAdeOrm.delete(post));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {
-        Post post = new Post(7, "fox", "something", "United States", "Chicago", "nope", 5);
+        Post post = new Post(20, "fox", "something", "United States", "Chicago", "nope", 5);
         assertFalse(pAdeOrm.delete(post));
-    }
-*/
+    }*/
+
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {
         try (Connection connection = ConnectionUtil.getConnection()) {
