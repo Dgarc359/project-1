@@ -40,7 +40,9 @@ public class App {
             AdeOrm pAdeOrm = new AdeOrm(postClass);
 
             Post p = new Post(20, "beta", "The Palatine Hill", "Italy", "Rome", "old", 5);
-            pAdeOrm.delete(p);
+            User u = new User("Nicephoros","Phokas",'M',"gamma","pass");
+            pAdeOrm.update(u);
+//            pAdeOrm.update(p);
 //            System.out.println(pAdeOrm.get("title", p.getTitle()));
 
 //            Post p1 = new Post(6, "u", "title", "country", "city", "tag", 4);
