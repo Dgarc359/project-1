@@ -141,9 +141,6 @@ public class AdeOrm implements Mapper {
                 }
             }
         }
-        
-        System.out.println(primaryKeyIsIntCheck);
-        System.out.println(pkVal);
 
         List<FieldPair> pojoFieldPairs = MapperUtil.parseFields(pojo);
         Object[] fieldValues;
@@ -158,11 +155,9 @@ public class AdeOrm implements Mapper {
                     .map(FieldPair::getName)
                     .collect(Collectors.joining(", "," ( "," )"));
 
-            System.out.println(sql);
 
             fieldValues = pojoFieldPairs.stream().filter(w -> !w.isPrimaryKey()).map(FieldPair::getValue).toArray();
 
-            System.out.println(Arrays.toString(fieldValues));
             questionArray = new String[pojoFieldPairs.size() -1 ];
 
         }else{ // pkVal has been changed to non-zero and therefore sql statement needs to involve it
@@ -178,8 +173,6 @@ public class AdeOrm implements Mapper {
         s = Arrays.stream(questionArray).collect(Collectors.joining(", ", "", ");"));
 
         sql += s;
-        System.out.println(sql);
-        System.out.println(Arrays.toString(fieldValues));
 
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
@@ -213,7 +206,6 @@ public class AdeOrm implements Mapper {
 
         sql += s;
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
-        System.out.println(Arrays.toString(fieldValues));
 
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
