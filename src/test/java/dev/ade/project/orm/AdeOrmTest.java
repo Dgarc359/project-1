@@ -135,11 +135,11 @@ public class AdeOrmTest {
         assertTrue(adeOrm.update("post", fields, pk));
     }*/
 
-    @Test
+/*    @Test
     public void testUpdateWithObject() throws ArgumentFormatException {
         Post post = new Post(3, "charlie", "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
         assertTrue(pAdeOrm.update(post));
-    }
+    }*/
 
 /*    @Test
     public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
@@ -157,11 +157,11 @@ public class AdeOrmTest {
         assertFalse(pAdeOrm.delete("post", "post_id", 13));
     }*/
 
-    @Test
+/*    @Test
     public void testDeleteARecordViaObject() throws ArgumentFormatException {
         Post post = new Post(3, "charlie", "Inception", "United States", "Chicago", "movie", 3);
         assertTrue(pAdeOrm.delete(post));
-    }
+    }*/
 
 /*    @Test
     public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {

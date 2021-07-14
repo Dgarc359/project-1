@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ConnectionUtilTest {
+/*public class ConnectionUtilTest {
 
     @BeforeAll
     public static void runSetup() throws SQLException, FileNotFoundException {
@@ -34,4 +34,4 @@ public class ConnectionUtilTest {
         }
 
     }
-}
+}*/
