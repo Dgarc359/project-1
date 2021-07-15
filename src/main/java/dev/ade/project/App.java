@@ -41,7 +41,7 @@ public class App {
 
             Post p = new Post(20, "beta", "The Palatine Hill", "Italy", "Rome", "old", 5);
             User u = new User("Nicephoros","Phokas",'M',"gamma","pass");
-            pAdeOrm.update(u);
+            pAdeOrm.update(p);
 //            pAdeOrm.update(p);
 //            System.out.println(pAdeOrm.get("title", p.getTitle()));
 
