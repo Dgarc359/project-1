@@ -90,7 +90,7 @@ public class AdeOrmTest {
         FieldPair condition1 = new FieldPair("username", "alpha");
         FieldPair condition2 = new FieldPair("rating", 5);
         List<FieldPair> conditions = Arrays.asList(condition1, condition2);
-        assertEquals(3, pAdeOrm.getWithCriterion(columnNames, conditions, "or").size());
+        assertEquals(2, pAdeOrm.getWithCriterion(columnNames, conditions, "or").size());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class AdeOrmTest {
     @Test
     public void getJointWhereTest() throws ArgumentFormatException {
         List<String> columnNames = Arrays.asList("country", "city", "rating");
-        assertEquals(1,  uAdeOrm.getJointWhere("inner", "users.username", "post", "post.username",
+        assertEquals(0,  uAdeOrm.getJointWhere("inner", "users.username", "post", "post.username",
                 columnNames, "tag", "food").size());
     }
 
@@ -118,13 +118,13 @@ public class AdeOrmTest {
     }
 
 
-/*    @Test
+    @Test
     public void testUpdateSingleAttribute() throws ArgumentFormatException {
         FieldPair field1 = new FieldPair("title", "Neapolitan Ice Cream");
         FieldPair field2 = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field1, field2);
-        assertTrue(pAdeOrm.update(post,fields,pk);
+        assertTrue(pAdeOrm.update(fields,pk));
     }
 
     @Test
@@ -132,42 +132,42 @@ public class AdeOrmTest {
         FieldPair field = new FieldPair("city", "Ft. Collins");
         FieldPair pk = new FieldPair("post_id", 3);
         List<FieldPair> fields = Arrays.asList(field);
-        assertTrue(adeOrm.update("post", fields, pk));
-    }*/
+        assertTrue(pAdeOrm.update(fields, pk));
+    }
 
-/*    @Test
+    @Test
     public void testUpdateWithObject() throws ArgumentFormatException {
-        Post post = new Post(3, "charlie", "'Inception'", "'United States'", "'Gary'", "'good movie'", 4);
+        Post post = new Post(2, "beta", "Inception", "United States", "Gary", "good movie", 4);
         assertTrue(pAdeOrm.update(post));
-    }*/
+    }
 
-/*    @Test
+    @Test
     public void testUpdateWithObjectNotInDB() throws ArgumentFormatException {
         Post post = new Post(13, "3", "Inception", "United States", "Gary", "good movie", 4);
         assertFalse(pAdeOrm.update(post));
-    }*/
+    }
 
-/*    @Test
+    @Test
     public void testDeleteARecord() throws ArgumentFormatException {
-        assertTrue(pAdeOrm.delete("post", "post_id", 3));
+        assertTrue(pAdeOrm.delete("post_id", 2));
     }
 
     @Test
     public void testDeleteARecordNotInDB() throws ArgumentFormatException {
-        assertFalse(pAdeOrm.delete("post", "post_id", 13));
-    }*/
+        assertFalse(pAdeOrm.delete("post_id", 13));
+    }
 
-/*    @Test
+    @Test
     public void testDeleteARecordViaObject() throws ArgumentFormatException {
         Post post = new Post(3, "charlie", "Inception", "United States", "Chicago", "movie", 3);
         assertTrue(pAdeOrm.delete(post));
-    }*/
+    }
 
-/*    @Test
+    @Test
     public void testDeleteARecordNotInDBViaObject() throws ArgumentFormatException {
         Post post = new Post(20, "fox", "something", "United States", "Chicago", "nope", 5);
         assertFalse(pAdeOrm.delete(post));
-    }*/
+    }
 
     @AfterAll
     public static void runTeardown() throws SQLException, FileNotFoundException {

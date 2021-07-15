@@ -316,6 +316,10 @@ public class AdeOrm implements Mapper {
 
         Object[] fieldValues = fieldPairs.stream().map(FieldPair::getValue).toArray();
 
+        System.out.println(sql);
+        for (int i=0; i< fieldValues.length; i++) {
+            System.out.println(fieldValues[i]);
+        }
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, fieldValues);
@@ -332,52 +336,6 @@ public class AdeOrm implements Mapper {
      * @param object record to be updated
      * @return
      */
-//    public boolean update(Object object) throws ArgumentFormatException {
-//        if (object==null) return false;
-//
-//        Object theRecord;
-//
-//        TableName table = clazz.getDeclaredAnnotation(TableName.class);
-//        List<FieldPair> fieldPairList = MapperUtil.parseFields(object);
-//        String tableName = table.tableName();
-//        String sql = "update " + tableName + " set ";
-//        String columnName;
-//        Object[] columnValues = new Object[fieldPairList.size()];
-//        String id = "";
-//        Object pk = null;
-//
-//        for (int i=0; i< fieldPairList.size(); i++) {
-//            if (!fieldPairList.get(i).isPrimaryKey()) {
-//                columnName = fieldPairList.get(i).getName();
-//                columnValues[i-1] = fieldPairList.get(i).getValue();
-//                sql += columnName + " = ? " + ", ";
-//            } else {
-//                id = fieldPairList.get(i).getName();
-//                pk = fieldPairList.get(i).getValue();
-//            }
-//        }
-//        try {
-//            theRecord = get(id, pk);
-//            sql = sql.substring(0, sql.length()-2);
-//            sql += " where " + id + " = " + pk;
-//            System.out.println(sql);
-//            for (int i=0; i< columnValues.length; i++) {
-//                System.out.print(columnValues[i] + " ");
-//            }
-//
-//            try (Connection conn = ConnectionUtil.getConnection()) {
-//                PreparedStatement ps = conn.prepareStatement(sql);
-//                MapperUtil.setPs(ps, columnValues);
-//                ps.executeUpdate();
-//                return true;
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//        } catch (ArgumentFormatException e) {
-//            throw new ArgumentFormatException("Arguments format are not correct", e);
-//        }
-//        return false;
-//    }
     public boolean update(Object object) throws ArgumentFormatException {
         if (object==null) return false;
 
@@ -412,9 +370,10 @@ public class AdeOrm implements Mapper {
 
         try (Connection conn = ConnectionUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            MapperUtil.setPs(ps, columnValues);
-            ps.executeUpdate();
-            return true;
+            MapperUtil.setPs(ps, columnValues);;
+            int psVal = ps.executeUpdate();
+            if (psVal==1)return true;
+            return false;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -441,11 +400,13 @@ public class AdeOrm implements Mapper {
         try(Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             MapperUtil.setPs(ps, idValue);
-            ps.executeUpdate();
+            int psVal = ps.executeUpdate();
+            System.out.println(psVal);
+            if (psVal==1)return true;
+            return false;
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
-        return true;
     }
 
 
@@ -471,9 +432,10 @@ public class AdeOrm implements Mapper {
         }
         try(Connection conn = ConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
-            MapperUtil.setPs(ps, pk);
-            ps.executeUpdate();
-            return true;
+            MapperUtil.setPs(ps, pk);;
+            int psVal = ps.executeUpdate();
+            if (psVal==1)return true;
+            return false;
         } catch (SQLException e) {
             throw new ArgumentFormatException("Arguments format are not correct", e);
         }
